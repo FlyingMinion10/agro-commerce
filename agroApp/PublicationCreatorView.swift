@@ -105,7 +105,7 @@ struct PublicationCreatorView: View {
                 .frame(width: 160, alignment: .leading)
                 .padding(.top, 30)
             }
-            .frame(width: 360, height: 300)
+            .frame(width: 360, height: 260)
             .ContainerBox()
             .padding(.top)
             Spacer()

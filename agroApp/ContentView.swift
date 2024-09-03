@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var selectedTab = 5
+    @State private var selectedTab = 1
     // Cambia el número para la vista predeterminada que desees
     @State private var currentIndex = 0
     let timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
