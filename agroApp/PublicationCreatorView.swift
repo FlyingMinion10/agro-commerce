@@ -1,5 +1,11 @@
 import SwiftUI
 
+// MARK: - Tag
+struct Taag: Identifiable {
+    let id = UUID()
+    var name: String
+}
+
 struct ContainerBoxModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
@@ -23,14 +29,25 @@ extension View {
 struct PublicationCreatorView: View {
     let screenWidth = UIScreen.main.bounds.width // Obtiene el ancho de la pantalla
     
-    @State private var publisherName: String = "Juan Felipe Zepeda" // Se añade
+    // MARK: - State Variables
+    let publisherName: String = ProfileView.profileName
+    @State private var product: String = ""
     @State private var productDescription: String = ""
-    @State private var tags: [String] = []
     @State private var isShowingImagePicker: Bool = false
     @Environment(\.dismiss) var dismiss
 
+    @State private var tags: [Taag] = [
+            Taag(name: "Taag 1"),
+            Taag(name: "Taag 2"),
+            Taag(name: "Taag 3"),
+            Taag(name: "Taag 4"),
+            Taag(name: "Taag 5"),
+            Taag(name: "Taag 6"),
+            Taag(name: "Taag 7"),
+            Taag(name: "Taag 8") ]
     var body: some View {
         VStack {
+            // MARK: - Header
             HStack {
                 Button(action: {
                     dismiss()
@@ -59,37 +76,51 @@ struct PublicationCreatorView: View {
                     .foregroundColor(.gray), alignment: .bottom // Color y alineación del borde
             )
             .padding(.bottom, 10)
+            
+            // MARK: - Publisher Name
             HStack {
                 Text(publisherName)
                     .frame(width: 360)
                     .ContainerBox()
                     .font(.custom("Sans Serif", size: 25))
-                
             }
+            
+            // MARK: - Product Details
             HStack {
-                Image("Cards1")
-                    .resizable()
-                    .frame(width: 130, height: 222.5)
-                    .ContainerBox()
+                if !product.isEmpty {
+                    Image(product)
+                        .resizable()
+                        .frame(width: 130, height: 222.5)
+                        .ContainerBox()
+                }
                 VStack {
-                    Text("Producto")
+                    TextField("Producto", text: $product)
                         .bold()
-                        .font(.custom("Sans Serif", size: 30))
+                        .font(.custom("Sans Serif", size: 25))
+                        .padding(.leading, 10)
                         .frame(width: 217.5)
                         .ContainerBox()
-                    Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.")
+                    TextEditor(text: $productDescription)
+                        .padding(.leading, 10)
                         .frame(width: 217.5, height: 152.5)
                         .ContainerBox()
+                        .onChange(of: productDescription) { newValue in
+                            let limite = 140 // Establece tu límite de caracteres aquí
+                            if newValue.count > limite {
+                                productDescription = String(newValue.prefix(limite))
+                            }
+                        }
                 }
                 .frame(width: 222.5)
             }
             .padding(.top)
             .frame(width: 360)
-//            .padding()
+            
+            // MARK: - Tags
             HStack {
                 VStack {
-                    ForEach(0..<4, id: \.self) { index in // Asume 3
-                        Text("Tag \(index)")
+                    ForEach(tags.prefix(tags.count / 2), id: \.id) { tag in
+                        Text(tag.name)
                         Spacer()
                     }
                 }
@@ -97,8 +128,8 @@ struct PublicationCreatorView: View {
                 .padding(.leading, 10)
                 .padding(.top, 30)
                 VStack {
-                    ForEach(4..<8, id: \.self) { index in // Asume 3
-                        Text("Tag \(index)")
+                    ForEach(tags.suffix(tags.count - tags.count / 2), id: \.id) { tag in
+                        Text(tag.name)
                         Spacer()
                     }
                 }
@@ -108,6 +139,7 @@ struct PublicationCreatorView: View {
             .frame(width: 360, height: 260)
             .ContainerBox()
             .padding(.top)
+            
             Spacer()
         }
         .background(Color.gray.opacity(0.2))

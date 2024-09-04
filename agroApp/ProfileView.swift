@@ -3,7 +3,7 @@ import SwiftUI
 struct ProfileView: View {
     // Datos del perfil
     let screenWidth = UIScreen.main.bounds.width // Obtiene el ancho de la pantalla
-    let profileName: String = "Nombre del Perfil"
+    static let profileName: String = "Juan Felipe Zepeda"
     let profileBio: String = "Biografía del perfil"
     let profileImage: Image = Image("TuLogo")
     let followersCount: Int = 1200
@@ -38,7 +38,7 @@ struct ProfileView: View {
                             .padding(.trailing, 16)
                         
                         VStack(alignment: .leading) {
-                            Text(profileName)
+                            Text(ProfileView.profileName)
                                 .font(.headline)
                                 .fontWeight(.bold)
                             

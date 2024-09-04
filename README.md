@@ -1,5 +1,4 @@
 # AFFIN
-AFFIN Enterprise Classified
-como insertar una imagen?
+## AFFIN Enterprise Classified
 
 ![Logo Affin](agroApp/Assets.xcassets/TuLogo.imageset/AFFIN.png)
