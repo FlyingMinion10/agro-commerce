@@ -4,6 +4,7 @@ struct ProfileView: View {
     // Datos del perfil
     let screenWidth = UIScreen.main.bounds.width // Obtiene el ancho de la pantalla
     static let profileName: String = "Juan Felipe Zepeda"
+    static let accountType: String = "Productor"
     let profileBio: String = "Biografía del perfil"
     let profileImage: Image = Image("TuLogo")
     let followersCount: Int = 1200
@@ -139,7 +140,7 @@ struct ProfileView: View {
                         }
                         .padding(8)
                     }
-                    .background(Color.gray.opacity(0.1))
+                    .background(Color.backstage)
                 }
             }
         }

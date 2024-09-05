@@ -256,7 +256,7 @@ struct HomeView: View {
                     .padding(.top, 10)
                 }
             }
-            .background(Color.gray.opacity(0.1))
+            .background(Color.backstage)
         }
     }
 }
