@@ -40,7 +40,8 @@ struct PublicationCreatorView: View {
 //    static let variety: [String]? = Stock.variedades
 
     @State private var productDescription: String = ""
-    @State private var priceRatio:  String = ""
+    @State private var priceRatio:  String = "" // MFR // MFR // MFR 
+    // @State private var priceRatio:  [String] = [] 
     @State private var productQuantity:  String = ""
     @State private var selectedImage: UIImage?
     @State private var showImagePicker: Bool = false

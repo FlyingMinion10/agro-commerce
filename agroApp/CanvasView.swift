@@ -10,7 +10,7 @@ struct Publication: Identifiable {
     var cSelectedProduct: String
     var cSelectedVariery: String
     var cProductDescription: String
-    var cPriceRatio:  String
+    var cPriceRatio:  [String]
     var cProductQuantity: String
     var cSelectedImage: UIImage?
     var cTags: [Tag] = [
@@ -40,7 +40,7 @@ class PublicationViewModel: ObservableObject {
     init() {
         // Dummy data
         publications = [
-            Publication(cPublisherName: "Felipe", cPublisherType: "Productor1", cPublisherScore: 5, cPublisherPhoto: "TuLogo", cSelectedProduct: "Manzana", cSelectedVariery: "Golden", cProductDescription: "Description 1", cPriceRatio: "17.4", cProductQuantity: "25", cSelectedImage: nil, cTags: [
+            Publication(cPublisherName: "Felipe", cPublisherType: "Productor1", cPublisherScore: 5, cPublisherPhoto: "TuLogo", cSelectedProduct: "Manzana", cSelectedVariery: "Golden", cProductDescription: "Manzana gala producida en california importada por grupo Alcaraz SA de CV.", cPriceRatio: ["1-10T : $17.40", "10-20T : $17.00", "20-40 : $16.60"], cProductQuantity: "25", cSelectedImage: nil, cTags: [
                 Tag(category: "Producto", value: "Manzana"),
                 Tag(category: "Variedad", value: "Golden"),
                 Tag(category: "Calidad", value: "Alta"),
@@ -50,7 +50,7 @@ class PublicationViewModel: ObservableObject {
                 Tag(category: "Sabor", value: "Dulce"),
                 Tag(category: "Color", value: "Rojo")
             ]),
-            Publication(cPublisherName: "Pablo", cPublisherType: "Productor2", cPublisherScore: 4, cPublisherPhoto: "TuLogo", cSelectedProduct: "Lechuga", cSelectedVariery: "Iceberg", cProductDescription: "Description 2", cPriceRatio: "29.92", cProductQuantity: "10", cSelectedImage: nil, cTags: [
+            Publication(cPublisherName: "Pablo", cPublisherType: "Productor2", cPublisherScore: 4, cPublisherPhoto: "TuLogo", cSelectedProduct: "Lechuga", cSelectedVariery: "Iceberg", cProductDescription: "Description 2", cPriceRatio: ["1-10T : $18.50", "10-20T : $18.00", "20-40 : $17.50"], cProductQuantity: "10", cSelectedImage: nil, cTags: [
                 Tag(category: "Producto", value: "Lechuga"),
                 Tag(category: "Variedad", value: "Iceberg"),
                 Tag(category: "Calidad", value: "Alta"),
@@ -60,7 +60,7 @@ class PublicationViewModel: ObservableObject {
                 Tag(category: "Sabor", value: "Suave"),
                 Tag(category: "Color", value: "Verde")
             ]),
-            Publication(cPublisherName: "Dustin", cPublisherType: "Productor3", cPublisherScore: 3, cPublisherPhoto: "TuLogo", cSelectedProduct: "Jitomate", cSelectedVariery: "Cherry", cProductDescription: "Description 3", cPriceRatio: "48.5", cProductQuantity: "17", cSelectedImage: nil, cTags: [
+            Publication(cPublisherName: "Dustin", cPublisherType: "Productor3", cPublisherScore: 3, cPublisherPhoto: "TuLogo", cSelectedProduct: "Jitomate", cSelectedVariery: "Cherry", cProductDescription: "Description 3", cPriceRatio: ["1-10T : $5.80", "10-20T : $5.20", "20-40 : $5.10"], cProductQuantity: "17", cSelectedImage: nil, cTags: [
                 Tag(category: "Producto", value: "Tomate"),
                 Tag(category: "Variedad", value: "Cherry"),
                 Tag(category: "Calidad", value: "Alta"),
@@ -70,7 +70,7 @@ class PublicationViewModel: ObservableObject {
                 Tag(category: "Sabor", value: "Dulce"),
                 Tag(category: "Color", value: "Rojo")
             ]),
-            Publication(cPublisherName: "Paco", cPublisherType: "Productor4", cPublisherScore: 5, cPublisherPhoto: "TuLogo", cSelectedProduct: "Maíz", cSelectedVariery: "Amarillo", cProductDescription: "Description 4", cPriceRatio: "2.63", cProductQuantity: "32", cSelectedImage: nil, cTags: [
+            Publication(cPublisherName: "Paco", cPublisherType: "Productor4", cPublisherScore: 5, cPublisherPhoto: "TuLogo", cSelectedProduct: "Maíz", cSelectedVariery: "Amarillo", cProductDescription: "Description 4", cPriceRatio: ["1-10T : $22.40", "10-20T : $22.00", "20-40 : $21.60"], cProductQuantity: "32", cSelectedImage: nil, cTags: [
                 Tag(category: "Producto", value: "Maiz"),
                 Tag(category: "Variedad", value: "Amarillo"),
                 Tag(category: "Calidad", value: "Alta"),
@@ -149,7 +149,7 @@ struct CanvasView: View {
                                                 Spacer()
                                             }
                                             Divider()
-                                            Text("$" + publication.cPriceRatio + "/kg")
+                                            Text("$" + publication.cPriceRatio[0] + "/kg")
                                             Divider()
                                             Text(publication.cProductQuantity + " Toneladas")
                                         }
@@ -181,10 +181,11 @@ struct CanvasView: View {
 }
 
 struct DetailView: View {
-    @StateObject var viewModel = PublicationViewModel()
+    @StateObject var viewModel: PublicationViewModel = PublicationViewModel()
+    @State var selectedPrice = "Seleccionar" // Change @StateObject to @State
     let screenWidth = UIScreen.main.bounds.width 
     let screenHeight = UIScreen.main.bounds.height 
-    var publication: Publication // Asume que tienes un modelo `Publication`
+    var publication: Publication // Assume you have a `Publication` model
 
     
     var body: some View {
@@ -223,11 +224,26 @@ struct DetailView: View {
                 .frame(height: 150)
                 Divider()
                 
-                Text("$" + publication.cPriceRatio + "/kg")
+                Picker("Precio", selection: $selectedPrice) { // Remove the explicit type annotation
+                    ForEach(publication.cPriceRatio, id: \.self) { item in
+                        Text(item + "/ton").tag(item) // Remove the unnecessary type conversion
+                    }
+                }
+                .foregroundColor(.black)
+                .pickerStyle(MenuPickerStyle())
                 
                 Divider()
                 Text(publication.cProductQuantity + " Toneladas")
-                Spacer()
+                Divider()
+                ForEach(publication.cTags) { tag in
+                    HStack {
+                        Text(tag.category)
+                            .font(.headline)
+                        Text(tag.value)
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                    }
+                }
             }
             .frame(width: screenWidth-10, height: 600)
             .padding()
@@ -240,7 +256,7 @@ struct DetailView: View {
 
 struct CanvasView_Previews: PreviewProvider {
     static var previews: some View {
-        DetailView(publication: Publication(cPublisherName: "Felipe", cPublisherType: "Productor1", cPublisherScore: 5, cPublisherPhoto: "TuLogo", cSelectedProduct: "Manzana", cSelectedVariery: "Golden", cProductDescription: "Manzana gala producida en california importada por grupo Alcaraz SA de CV.", cPriceRatio: "17.4", cProductQuantity: "25", cSelectedImage: nil, cTags: [
+        DetailView(publication: Publication(cPublisherName: "Felipe", cPublisherType: "Productor1", cPublisherScore: 5, cPublisherPhoto: "TuLogo", cSelectedProduct: "Manzana", cSelectedVariery: "Golden", cProductDescription: "Manzana gala producida en california importada por grupo Alcaraz SA de CV.", cPriceRatio: ["1-10T : $17.40", "10-20T : $17.00", "20-40 : $16.60"], cProductQuantity: "25", cSelectedImage: nil, cTags: [
             Tag(category: "Producto", value: "Manzana"),
             Tag(category: "Variedad", value: "Golden"),
             Tag(category: "Calidad", value: "Alta"),
