@@ -6,9 +6,9 @@ struct ProfileView: View {
     static let profileName: String = "Juan Felipe Zepeda"
     static let accountType: String = "Productor"
     let profileBio: String = "Biografía del perfil"
-    let profileImage: Image = Image("TuLogo")
+    static let profileImage: Image = Image("TuLogo")
     let followersCount: Int = 1200
-    let reputationScore: Int = 94
+    static let reputationScore: Int = 94
     let postsCount: Int = 7
 
     var body: some View {
@@ -30,12 +30,12 @@ struct ProfileView: View {
                     
                     // Imagen de perfil y nombre
                     HStack {
-                        profileImage
+                        ProfileView.profileImage
                             .resizable()
                             .scaledToFill()
                             .frame(width: 100, height: 100)
                             .clipShape(Circle())
-                            .overlay(Circle().stroke(reputationScore < 70 ? Color.red : (reputationScore < 85 ? Color.yellow : reputationScore < 100 ? Color.green : Color.blue), lineWidth: 3))
+                            .overlay(Circle().stroke(ProfileView.reputationScore < 70 ? Color.red : (ProfileView.reputationScore < 85 ? Color.yellow : ProfileView.reputationScore < 100 ? Color.green : Color.blue), lineWidth: 3))
                             .padding(.trailing, 16)
                         
                         VStack(alignment: .leading) {
@@ -64,7 +64,7 @@ struct ProfileView: View {
                         
                         Spacer()
                         VStack {
-                            Text("\(reputationScore)")
+                            Text("\(ProfileView.reputationScore)")
                                 .font(.headline)
                                 .fontWeight(.bold)
                             Text("Reputacion")

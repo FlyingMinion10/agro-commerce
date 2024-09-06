@@ -1,14 +1,17 @@
 import SwiftUI
 import Combine
 
-struct Publication: Identifiable, Codable {
+struct Publication: Identifiable {
     var id = UUID()
     var cPublisherName: String 
     var cPublisherType: String 
+    var cPublisherScore: Int 
+    var cPublisherPhoto: String 
     var cSelectedProduct: String
     var cSelectedVariery: String
     var cProductDescription: String
     var cPriceRatio:  String
+    var cProductQuantity: String
     var cSelectedImage: UIImage?
     var cTags: [Tag] = [
         Tag(category: "Producto", value: ""),
@@ -37,41 +40,41 @@ class PublicationViewModel: ObservableObject {
     init() {
         // Dummy data
         publications = [
-            Publication(cPublisherName: "Publisher 1", cPublisherType: "Type 1", cSelectedProduct: "Product 1", cSelectedVariery: "Variety 1", cProductDescription: "Description 1", cPriceRatio: "Ratio 1", cSelectedImage: nil, cTags: [
+            Publication(cPublisherName: "Felipe", cPublisherType: "Productor1", cPublisherScore: 5, cPublisherPhoto: "TuLogo", cSelectedProduct: "Manzana", cSelectedVariery: "Golden", cProductDescription: "Description 1", cPriceRatio: "17.4", cProductQuantity: "25", cSelectedImage: nil, cTags: [
                 Tag(category: "Producto", value: "Manzana"),
                 Tag(category: "Variedad", value: "Golden"),
                 Tag(category: "Calidad", value: "Alta"),
-                Tag(category: "Región", value: "Valle del Cauca"),
+                Tag(category: "Región", value: "California"),
                 Tag(category: "Tamaño", value: "Grande"),
                 Tag(category: "Frescura", value: "Fresca"),
                 Tag(category: "Sabor", value: "Dulce"),
                 Tag(category: "Color", value: "Rojo")
             ]),
-            Publication(cPublisherName: "Publisher 2", cPublisherType: "Type 2", cSelectedProduct: "Product 2", cSelectedVariery: "Variety 2", cProductDescription: "Description 2", cPriceRatio: "Ratio 2", cSelectedImage: nil, cTags: [
+            Publication(cPublisherName: "Pablo", cPublisherType: "Productor2", cPublisherScore: 4, cPublisherPhoto: "TuLogo", cSelectedProduct: "Lechuga", cSelectedVariery: "Iceberg", cProductDescription: "Description 2", cPriceRatio: "29.92", cProductQuantity: "10", cSelectedImage: nil, cTags: [
                 Tag(category: "Producto", value: "Lechuga"),
                 Tag(category: "Variedad", value: "Iceberg"),
                 Tag(category: "Calidad", value: "Alta"),
-                Tag(category: "Región", value: "Local"),
+                Tag(category: "Región", value: "Michoacan"),
                 Tag(category: "Tamaño", value: "Mediano"),
                 Tag(category: "Frescura", value: "Fresca"),
                 Tag(category: "Sabor", value: "Suave"),
                 Tag(category: "Color", value: "Verde")
             ]),
-            Publication(cPublisherName: "Publisher 3", cPublisherType: "Type 3", cSelectedProduct: "Product 3", cSelectedVariery: "Variety 3", cProductDescription: "Description 3", cPriceRatio: "Ratio 3", cSelectedImage: nil, cTags: [
+            Publication(cPublisherName: "Dustin", cPublisherType: "Productor3", cPublisherScore: 3, cPublisherPhoto: "TuLogo", cSelectedProduct: "Jitomate", cSelectedVariery: "Cherry", cProductDescription: "Description 3", cPriceRatio: "48.5", cProductQuantity: "17", cSelectedImage: nil, cTags: [
                 Tag(category: "Producto", value: "Tomate"),
                 Tag(category: "Variedad", value: "Cherry"),
                 Tag(category: "Calidad", value: "Alta"),
-                Tag(category: "Región", value: "Andalucía"),
+                Tag(category: "Región", value: "Colima"),
                 Tag(category: "Tamaño", value: "Pequeño"),
                 Tag(category: "Frescura", value: "Fresco"),
                 Tag(category: "Sabor", value: "Dulce"),
                 Tag(category: "Color", value: "Rojo")
             ]),
-            Publication(cPublisherName: "Publisher 4", cPublisherType: "Type 4", cSelectedProduct: "Product 4", cSelectedVariery: "Variety 4", cProductDescription: "Description 4", cPriceRatio: "Ratio 4", cSelectedImage: nil, cTags: [
+            Publication(cPublisherName: "Paco", cPublisherType: "Productor4", cPublisherScore: 5, cPublisherPhoto: "TuLogo", cSelectedProduct: "Maíz", cSelectedVariery: "Amarillo", cProductDescription: "Description 4", cPriceRatio: "2.63", cProductQuantity: "32", cSelectedImage: nil, cTags: [
                 Tag(category: "Producto", value: "Maiz"),
                 Tag(category: "Variedad", value: "Amarillo"),
                 Tag(category: "Calidad", value: "Alta"),
-                Tag(category: "Región", value: "América"),
+                Tag(category: "Región", value: "Jalisco"),
                 Tag(category: "Tamaño", value: "Grande"),
                 Tag(category: "Frescura", value: "Fresco"),
                 Tag(category: "Sabor", value: "Dulce"),
@@ -82,11 +85,20 @@ class PublicationViewModel: ObservableObject {
         filteredPublications = publications
     }
 
-    func filterPublications(by cTags: [Tag]) {
+    func filterPublications(by selectedTags: [Tag]) {
+    if selectedTags.isEmpty {
+        filteredPublications = publications
+    } else {
         filteredPublications = publications.filter { publication in
-            publication.cTags.contains(where: { tag in cTags.contains(where: { $0.name == cTags.name }) })
+            for tag in selectedTags {
+                if publication.cTags.contains(where: { $0.category == tag.category && $0.value == tag.value }) {
+                    return true
+                }
+            }
+            return false
         }
     }
+}
 }
 
 struct CanvasView: View {
@@ -108,19 +120,52 @@ struct CanvasView: View {
                 .padding()
                 
                 if selectedDisplayView == .buyer {
-                    VStack {
-                        VStack {
-                            LazyVGrid(columns: [GridItem(), GridItem()], spacing: 8) {
-                                ForEach(Stock.productos, id: \.self) { producto in
-                                    Text(producto).tag(producto)
+                    ScrollView {
+                        // NavigationView {
+                            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
+                                ForEach(viewModel.filteredPublications) { publication in
+                                    NavigationLink(destination: DetailView(publication: publication)) {
+                                        VStack {
+                                            Image(publication.cSelectedProduct)
+                                                .resizable()
+                                            Text(publication.cSelectedProduct + " " + publication.cSelectedVariery)
+                                            Divider()
+                                            HStack {
+                                                Image(publication.cPublisherPhoto)
+                                                    .resizable()
+                                                    .frame(width: 50, height: 50)
+                                                Spacer()
+                                                VStack {
+                                                    HStack {
+                                                        ForEach(1...5, id: \.self) { index in
+                                                            Image(systemName: index <= publication.cPublisherScore ? "star.fill" : "star")
+                                                                .foregroundColor(index <= publication.cPublisherScore ? .yellow : .gray)
+                                                                .padding(-5)
+                                                        }
+                                                    }
+                                                    .frame(width: 50)
+                                                    Text(publication.cPublisherName)
+                                                }
+                                                Spacer()
+                                            }
+                                            Divider()
+                                            Text("$" + publication.cPriceRatio + "/kg")
+                                            Divider()
+                                            Text(publication.cProductQuantity + " Toneladas")
+                                        }
+                                        .foregroundColor(.black)
+                                        .frame(width: 140, height: 250)
+                                        .padding()
+                                        .background(Color.white)
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    }
                                 }
                             }
-                            .padding(8)
-                        }
-                        
-//                        Spacer()
+                            // .navigationTitle("Publicaciones")
+                            .padding()
+                        // }
                     }
-                    .padding()
+                    Spacer()
                 } else if selectedDisplayView == .producer {
                     VStack {
                         Text("buyer")
@@ -135,8 +180,75 @@ struct CanvasView: View {
     }
 }
 
+struct DetailView: View {
+    @StateObject var viewModel = PublicationViewModel()
+    let screenWidth = UIScreen.main.bounds.width 
+    let screenHeight = UIScreen.main.bounds.height 
+    var publication: Publication // Asume que tienes un modelo `Publication`
+
+    
+    var body: some View {
+        VStack {
+            VStack {
+                HStack {
+                    Image(publication.cPublisherPhoto)
+                        .resizable()
+                        .frame(width: 70, height: 70)
+                        .padding(.horizontal, 20)
+//                    Spacer()
+                    VStack {
+                        HStack {
+                            ForEach(1...5, id: \.self) { index in
+                                Image(systemName: index <= publication.cPublisherScore ? "star.fill" : "star")
+                                    .foregroundColor(index <= publication.cPublisherScore ? .yellow : .gray)
+                                    .padding(-5)
+                            }
+                        }
+                        .frame(width: 50)
+                        Text(publication.cPublisherName)
+                    }
+                    .padding(.horizontal, 20)
+                }
+                Divider()
+                HStack {
+                    Image(publication.cSelectedProduct)
+                        .resizable()
+                        .frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 100)
+                    VStack {
+                        Text(publication.cSelectedProduct + " " + publication.cSelectedVariery)
+                            .bold()
+                        Text(publication.cProductDescription)
+                    }
+                }
+                .frame(height: 150)
+                Divider()
+                
+                Text("$" + publication.cPriceRatio + "/kg")
+                
+                Divider()
+                Text(publication.cProductQuantity + " Toneladas")
+                Spacer()
+            }
+            .frame(width: screenWidth-10, height: 600)
+            .padding()
+            .background(Color.white)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .shadow(color: .gray, radius: 8, x: 0, y: 4) // Corrección aplicada aquí
+        }
+    }
+}
+
 struct CanvasView_Previews: PreviewProvider {
     static var previews: some View {
-        CanvasView()
+        DetailView(publication: Publication(cPublisherName: "Felipe", cPublisherType: "Productor1", cPublisherScore: 5, cPublisherPhoto: "TuLogo", cSelectedProduct: "Manzana", cSelectedVariery: "Golden", cProductDescription: "Manzana gala producida en california importada por grupo Alcaraz SA de CV.", cPriceRatio: "17.4", cProductQuantity: "25", cSelectedImage: nil, cTags: [
+            Tag(category: "Producto", value: "Manzana"),
+            Tag(category: "Variedad", value: "Golden"),
+            Tag(category: "Calidad", value: "Alta"),
+            Tag(category: "Región", value: "California"),
+            Tag(category: "Tamaño", value: "Grande"),
+            Tag(category: "Frescura", value: "Fresca"),
+            Tag(category: "Sabor", value: "Dulce"),
+            Tag(category: "Color", value: "Rojo")
+        ]))
     }
 }

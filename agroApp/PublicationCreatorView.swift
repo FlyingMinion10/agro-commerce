@@ -30,6 +30,8 @@ struct PublicationCreatorView: View {
     // MARK: - State Variables
     let publisherName: String = ProfileView.profileName
     let publisherType: String = ProfileView.accountType
+    let publisherScore: Int = ProfileView.reputationScore
+    let publisherPhoto: Image = ProfileView.profileImage
 
     @State private var selectedProduct = "Seleccionar" // Valor inicial, asegúrate de que
 //    static let products: [String]? = Stock.productos
@@ -39,6 +41,7 @@ struct PublicationCreatorView: View {
 
     @State private var productDescription: String = ""
     @State private var priceRatio:  String = ""
+    @State private var productQuantity:  String = ""
     @State private var selectedImage: UIImage?
     @State private var showImagePicker: Bool = false
     @State private var tags: [Taag] = [
@@ -153,6 +156,7 @@ struct PublicationCreatorView: View {
                             Text("Producto:")
                                 .padding(.trailing) // Añade un poco de espacio
                                 .bold()
+                            Spacer()
                             Picker("Productos", selection: $selectedProduct) {
                                 ForEach(Stock.productos, id: \.self) { producto in
                                     Text(producto).tag(producto)
@@ -165,6 +169,7 @@ struct PublicationCreatorView: View {
                             Text("Variedad:")
                                 .padding(.trailing) // Añade un poco de espacio
                                 .bold()
+                            Spacer()
                             Picker("Variedades", selection: $selectedVariery) {
                                 // Asumiendo que Stock.variedades es un diccionario [String: [String]]
                                 // donde la clave es el nombre del producto y el valor es un array de variedades
@@ -187,6 +192,20 @@ struct PublicationCreatorView: View {
                                     productDescription = String(newValue.prefix(limit))
                                 }
                             }
+                    }
+                    .padding(.horizontal)
+                    .containerBox()
+                    
+                    // MARK: - Quantity of product
+                    VStack(spacing: 15) {
+                        HStack {
+                            TextField("Toneladas", text: $productQuantity)
+                                .keyboardType(.numberPad)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                            Text("Ton")
+                                .padding(.trailing) // Añade un poco de espacio
+                                .bold()
+                        }
                     }
                     .padding(.horizontal)
                     .containerBox()
@@ -269,7 +288,7 @@ struct PublicationCreatorView: View {
     
     // MARK: - Helper Functions
     func isFormValid() -> Bool {
-        return !selectedProduct.isEmpty && !productDescription.isEmpty && !priceRatio.isEmpty
+        return !selectedProduct.isEmpty && !productDescription.isEmpty && !priceRatio.isEmpty && !productQuantity.isEmpty
     }
     
     func saveToDatabase() {
