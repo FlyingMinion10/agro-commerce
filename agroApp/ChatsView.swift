@@ -113,6 +113,9 @@ struct ArchivedView: View {
 struct ChatView: View {
     @Environment(\.dismiss) var dismiss
     let screenWidth = UIScreen.main.bounds.width 
+    let publisherType: String = ProfileView.accountType
+
+    @State private var mostrarHStack = false 
     
     @State private var tons: String = ""
     @State private var price: String = ""
@@ -120,54 +123,136 @@ struct ChatView: View {
     @State private var porcentajeIzquierdo = 50
     
     var body: some View {
-        VStack {
-            // Barra superior del chat
-            HStack {
-                // Boton para volver a la vista anterior
-                Button(action: {
-                    dismiss()
-                }) {
-                    Image(systemName: "chevron.backward")
-                        .font(.system(size: 24))
-                }
-                Spacer()
-                // Imagen de perfil o icono
-                Image(systemName: "person.circle.fill")
-                    .foregroundColor(.gray)
-                Text("Nombre de usuario")
-                    .font(.headline)
-                Spacer()
-//                Button(action: {
-//                    // Accion al presionar el boton
-//                }) {
-//                    Image(systemName: "video.fill")
-//                        .foregroundColor(.blue)
-//                }
-                Button(action: {
-                    // Accion al presionar el boton
-                }) {
-                    Image(systemName: "phone.fill")
-                        .foregroundColor(.green)
-                }
-            }
-            .padding()
-            .background(Color.white)
+        ZStack {
             VStack {
-                // Tabla de negociación
+                // Barra superior del chat
+                HStack {
+                    // Boton para volver a la vista anterior
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "chevron.backward")
+                            .font(.system(size: 24))
+                    }
+                    Spacer()
+                    // Imagen de perfil o icono
+                    Image(systemName: "person.circle.fill")
+                        .foregroundColor(.gray)
+                        .font(.system(size: 20))
+                    Text("Nombre de usuario")
+                        .font(.headline)
+                    Spacer()
+                    //                Button(action: {
+                    //                    // Accion al presionar el boton
+                    //                }) {
+                    //                    Image(systemName: "video.fill")
+                    //                        .foregroundColor(.blue)
+                    //                }
+                    Button(action: {
+                        // Accion al presionar el boton
+                    }) {
+                        Image(systemName: "phone.fill")
+                            .foregroundColor(.green)
+                            .font(.system(size: 20))
+                    }
+                }
+                .padding()
+                .background(Color.white)
+                VStack {
+                    // Tabla de negociación
+                    Button("Tablero de negociación") {
+                        withAnimation {
+                            mostrarHStack.toggle() // Cambia el estado para mostrar/ocultar el HStack
+                        }
+                    }
+                    
+                    
+                    // Lista de mensajes // Lista de mensajes // Lista de mensajes
+                    List {
+                        // Mensajes entrantes
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text("Mensaje entrante dinámico")
+                                    .font(.body)
+                                    .padding()
+                                    .background(Color.gray.opacity(0.2))
+                                    .cornerRadius(10)
+                            }
+                            Spacer()
+                        }
+                        // Mensajes salientes
+                        HStack {
+                            Spacer()
+                            VStack(alignment: .trailing) {
+                                Text("Mensaje saliente")
+                                    .font(.body)
+                                    .padding()
+                                    .background(Color.blue.opacity(0.2))
+                                    .cornerRadius(10)
+                            }
+                        }
+                    }
+                    //                .fram
+                    
+                }
+                // Barra inferior de escritura de mensaje
+                HStack {
+                    // Icono de adjunto
+                    Image(systemName: "paperclip")
+                        .foregroundColor(.gray)
+                        .font(.system(size: 25))
+                    // Campo de texto para escribir mensaje
+                    TextField("Escribe un mensaje", text: .constant(""))
+                        .padding()
+                        .background(Color.gray.opacity(0.2))
+                        .cornerRadius(10)
+                    // Icono de enviar
+                    Image(systemName: "arrow.up.circle.fill")
+                        .foregroundColor(.blue)
+                        .font(.system(size: 30))
+                }
+                .padding(10)
+                .background(Color.white)
+            }
+            .background(Color.gray.opacity(0.1))
+            .navigationBarHidden(true)
+            .blur(radius: mostrarHStack ? 3 : 0) // Aplica desenfoque si mostrarHStack es true
+            
+            // Paso 4: Agrega el HStack con una condición
+            if mostrarHStack {
+                Color.black.opacity(0.4)
+                    .edgesIgnoringSafeArea(.all)
+                    .onTapGesture {
+                        withAnimation {
+                            mostrarHStack = false
+                        }
+                    }
                 HStack (alignment: .top) {
                     VStack {
                         Text("Vendedor")
                         Divider()
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(.system(size: 45))
-                            .foregroundStyle(Color.green)
-                            .padding(.vertical, 20)
-//                        Spacer()
-                        Image(systemName: "paperplane.circle.fill")
-                            .font(.system(size: 45))
-                            .foregroundStyle(Color.gray)
-                            .padding(.vertical, 20)
-//                        Spacer()
+                        Button(action: {
+                            if publisherType == "Productor" {
+                                mostrarHStack = false
+                            }
+                        }) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.system(size: 45))
+                                .foregroundStyle(Color.gray)
+                                .padding(.vertical, 20)
+                        }
+                        //                        Spacer()
+                        Button(action: {
+                            if publisherType == "Productor" {
+                                mostrarHStack = false
+                            }
+                        }) {
+                            Image(systemName: "paperplane.circle.fill")
+                                .font(.system(size: 45))
+                                .foregroundStyle(Color.blue)
+                                .padding(.vertical, 20)
+                        }
+                        //                        Spacer()
                     }
                     .frame(maxWidth: .infinity) // Asegura el mismo ancho
                     Divider()
@@ -214,16 +299,28 @@ struct ChatView: View {
                     VStack {
                         Text("Comprador")
                         Divider()
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(.system(size: 45))
-                            .foregroundStyle(Color.gray)
-                            .padding(.vertical, 20)
-//                        Spacer()
-                        Image(systemName: "paperplane.circle.fill")
-                            .font(.system(size: 45))
-                            .foregroundStyle(Color.blue)
-                            .padding(.vertical, 20)
-//                        Spacer()
+                        Button(action: {
+                            if publisherType == "Comprador" {
+                                mostrarHStack = false
+                            }
+                        }) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.system(size: 45))
+                                .foregroundStyle(Color.green)
+                                .padding(.vertical, 20)
+                        }
+                        //                        Spacer()
+                        Button(action: {
+                            if publisherType == "Comprador" {
+                                mostrarHStack = false
+                            }
+                        }) {
+                            Image(systemName: "paperplane.circle.fill")
+                                .font(.system(size: 45))
+                                .foregroundStyle(Color.gray)
+                                .padding(.vertical, 20)
+                        }
+                        //                        Spacer()
                     }
                     .frame(maxWidth: .infinity) // Asegura el mismo ancho
                 }
@@ -231,57 +328,11 @@ struct ChatView: View {
                 .frame(width: screenWidth-40, height: 300)
                 .background(Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
-                
-                
-                // Lista de mensajes // Lista de mensajes // Lista de mensajes
-                List {
-                    // Mensajes entrantes
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text("Mensaje entrante de csaracte")
-                                .font(.body)
-                                .padding()
-                                .background(Color.gray.opacity(0.2))
-                                .cornerRadius(10)
-                        }
-                        Spacer()
-                    }
-                    // Mensajes salientes
-                    HStack {
-                        Spacer()
-                        VStack(alignment: .trailing) {
-                            Text("Mensaje saliente")
-                                .font(.body)
-                                .padding()
-                                .background(Color.blue.opacity(0.2))
-                                .cornerRadius(10)
-                        }
-                    }
-                }
-//                .fram
-                
+                // New Mods
+                .shadow(radius: 10)
+                .transition(.opacity) // Transición suave
             }
-            // Barra inferior de escritura de mensaje
-            HStack {
-                // Icono de adjunto
-                Image(systemName: "paperclip")
-                    .foregroundColor(.gray)
-                    .font(.system(size: 25))
-                // Campo de texto para escribir mensaje
-                TextField("Escribe un mensaje", text: .constant(""))
-                    .padding()
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(10)
-                // Icono de enviar
-                Image(systemName: "arrow.up.circle.fill")
-                    .foregroundColor(.blue)
-                    .font(.system(size: 30))
-            }
-            .padding(10)
-            .background(Color.white)
         }
-        .background(Color.gray.opacity(0.1))
-        .navigationBarHidden(true)
     }
 }
 
