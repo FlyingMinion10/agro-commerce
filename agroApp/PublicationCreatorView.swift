@@ -63,8 +63,7 @@ struct PublicationCreatorView: View {
 
     var body: some View {
         NavigationView {
-            
-            ScrollView {
+            VStack {
                 // MARK: - Header
                 HStack {
                     Button(action: {
@@ -93,197 +92,204 @@ struct PublicationCreatorView: View {
                         .frame(height: 1) // Altura del borde
                         .foregroundColor(.gray), alignment: .bottom // Color y alineación del borde
                 )
-                VStack(spacing: 20) {
-                    
-                    // MARK: - Publisher Name
-                    Text(publisherName)
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                
+                ScrollView {
+                    VStack(spacing: 20) {
+                        
+                        // MARK: - Publisher Name
+                        Text(publisherName)
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal)
+                            .containerBox()
+                        
+                        // MARK: - Product Image
+                        VStack {
+                            if let image = selectedImage {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 200)
+                                    .cornerRadius(12)
+                                    .onTapGesture {
+                                        showImagePicker = true
+                                    }
+                            } else if !selectedProduct.isEmpty {
+                                Group {
+                                    if let uiImage = UIImage(named: selectedProduct) {
+                                        Image(uiImage: uiImage)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(height: 200)
+                                            .cornerRadius(12)
+                                            .onTapGesture {
+                                                showImagePicker = true
+                                            }
+                                    } else {
+                                        // Devuelve un View vacío o un placeholder si no hay imagen
+                                        EmptyView()
+                                    }
+                                }
+                            } else {
+                                Button(action: {
+                                    showImagePicker = true
+                                }) {
+                                    VStack {
+                                        Image(systemName: "photo.on.rectangle.angled")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 100, height: 100)
+                                            .foregroundColor(.gray)
+                                        Text("Agregar Imagen")
+                                            .foregroundColor(.gray)
+                                    }
+                                    .frame(height: 200)
+                                }
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
                         .padding(.horizontal)
                         .containerBox()
-                    
-                    // MARK: - Product Image
-                    VStack {
-                        if let image = selectedImage {
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 200)
+                        
+                        // MARK: - Product Details
+                        VStack(spacing: 15) {
+                            HStack {
+                                Text("Producto:")
+                                    .padding(.trailing) // Añade un poco de espacio
+                                    .bold()
+                                Spacer()
+                                Picker("Productos", selection: $selectedProduct) {
+                                    ForEach(Stock.productos, id: \.self) { producto in
+                                        Text(producto).tag(producto)
+                                    }
+                                }
+                                .pickerStyle(MenuPickerStyle())
+                            }
+                            
+                            HStack {
+                                Text("Variedad:")
+                                    .padding(.trailing) // Añade un poco de espacio
+                                    .bold()
+                                Spacer()
+                                Picker("Variedades", selection: $selectedVariery) {
+                                    // Asumiendo que Stock.variedades es un diccionario [String: [String]]
+                                    // donde la clave es el nombre del producto y el valor es un array de variedades
+                                    ForEach(Stock.variedades[selectedProduct] ?? [], id: \.self) { variedad in
+                                        Text(variedad).tag(variedad)
+                                    }
+                                }
+                                .pickerStyle(MenuPickerStyle())
+                            }
+                            HStack {
+                                Text("Descripción:")
+                                Spacer()
+                            }
+                            .bold()
+                            TextEditor(text: $productDescription)
+                                .frame(height: 100)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                                )
+                                .onChange(of: productDescription) { newValue in
+                                    let limit = 140
+                                    if newValue.count > limit {
+                                        productDescription = String(newValue.prefix(limit))
+                                    }
+                                }
+                        }
+                        .padding(.horizontal)
+                        .containerBox()
+                        
+                        // MARK: - Quantity of product
+                        VStack(spacing: 15) {
+                            HStack {
+                                TextField("Toneladas", text: $productQuantity)
+                                    .keyboardType(.numberPad)
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                                Text("Ton")
+                                    .padding(.trailing) // Añade un poco de espacio
+                                    .bold()
+                            }
+                        }
+                        .padding(.horizontal)
+                        .containerBox()
+                        
+                        // MARK: - Price ratio
+                        VStack(spacing: 15) {
+                            HStack {
+                                Text("$")
+                                    .padding(.trailing) // Añade un poco de espacio
+                                    .bold()
+                                TextField("Ratio de Precio", text: $priceRatio)
+                                    .keyboardType(.numberPad)
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                            }
+                        }
+                        .padding(.horizontal)
+                        .containerBox()
+                        
+                        // MARK: - Tags
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Tags")
+                                .font(.headline)
+                            TextField("Producto", text: $tags[0].value)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                            TextField("Variedad", text: $tags[1].value)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                            TextField("Calidad", text: $tags[2].value)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                            TextField("Región", text: $tags[3].value)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                            TextField("Tamaño", text: $tags[4].value)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                            TextField("Frescura", text: $tags[5].value)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                            TextField("Sabor", text: $tags[6].value)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                            TextField("Color", text: $tags[7].value)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                            
+                        }
+                        .padding(.horizontal)
+                        .containerBox()
+                        
+                        // MARK: - Submit Button
+                        Button(action: {
+                            saveToDatabase()
+                        }) {
+                            Text("Publicar")
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.blue)
                                 .cornerRadius(12)
-                                .onTapGesture {
-                                    showImagePicker = true
-                                }
-                        } else if !selectedProduct.isEmpty {
-                            Group {
-                                if let uiImage = UIImage(named: selectedProduct) {
-                                    Image(uiImage: uiImage)
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(height: 200)
-                                        .cornerRadius(12)
-                                        .onTapGesture {
-                                            showImagePicker = true
-                                        }
-                                } else {
-                                    // Devuelve un View vacío o un placeholder si no hay imagen
-                                    EmptyView()
-                                }
-                            }
-                        } else {
-                            Button(action: {
-                                showImagePicker = true
-                            }) {
-                                VStack {
-                                    Image(systemName: "photo.on.rectangle.angled")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 100, height: 100)
-                                        .foregroundColor(.gray)
-                                    Text("Agregar Imagen")
-                                        .foregroundColor(.gray)
-                                }
-                                .frame(height: 200)
-                            }
                         }
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal)
-                    .containerBox()
-                    
-                    // MARK: - Product Details
-                    VStack(spacing: 15) {
-                        HStack {
-                            Text("Producto:")
-                                .padding(.trailing) // Añade un poco de espacio
-                                .bold()
-                            Spacer()
-                            Picker("Productos", selection: $selectedProduct) {
-                                ForEach(Stock.productos, id: \.self) { producto in
-                                    Text(producto).tag(producto)
-                                }
-                            }
-                            .pickerStyle(MenuPickerStyle())
-                        }
-                        
-                        HStack {
-                            Text("Variedad:")
-                                .padding(.trailing) // Añade un poco de espacio
-                                .bold()
-                            Spacer()
-                            Picker("Variedades", selection: $selectedVariery) {
-                                // Asumiendo que Stock.variedades es un diccionario [String: [String]]
-                                // donde la clave es el nombre del producto y el valor es un array de variedades
-                                ForEach(Stock.variedades[selectedProduct] ?? [], id: \.self) { variedad in
-                                    Text(variedad).tag(variedad)
-                                }
-                            }
-                            .pickerStyle(MenuPickerStyle())
-                        }
-                        
-                        TextEditor(text: $productDescription)
-                            .frame(height: 100)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                            )
-                            .onChange(of: productDescription) { newValue in
-                                let limit = 140
-                                if newValue.count > limit {
-                                    productDescription = String(newValue.prefix(limit))
-                                }
-                            }
-                    }
-                    .padding(.horizontal)
-                    .containerBox()
-                    
-                    // MARK: - Quantity of product
-                    VStack(spacing: 15) {
-                        HStack {
-                            TextField("Toneladas", text: $productQuantity)
-                                .keyboardType(.numberPad)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                            Text("Ton")
-                                .padding(.trailing) // Añade un poco de espacio
-                                .bold()
-                        }
-                    }
-                    .padding(.horizontal)
-                    .containerBox()
-                    
-                    // MARK: - Price ratio
-                    VStack(spacing: 15) {
-                        HStack {
-                            Text("$")
-                                .padding(.trailing) // Añade un poco de espacio
-                                .bold()
-                            TextField("Ratio de Precio", text: $priceRatio)
-                                .keyboardType(.numberPad)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                        }
-                    }
-                    .padding(.horizontal)
-                    .containerBox()
-                    
-                    // MARK: - Tags
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Tags")
-                            .font(.headline)
-                        TextField("Producto", text: $tags[0].value)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                        TextField("Variedad", text: $tags[1].value)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                        TextField("Calidad", text: $tags[2].value)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                        TextField("Región", text: $tags[3].value)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                        TextField("Tamaño", text: $tags[4].value)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                        TextField("Frescura", text: $tags[5].value)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                        TextField("Sabor", text: $tags[6].value)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                        TextField("Color", text: $tags[7].value)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding(.horizontal)
+                        .disabled(!isFormValid())
+                        .opacity(isFormValid() ? 1 : 0.5)
                         
                     }
-                    .padding(.horizontal)
-                    .containerBox()
-                    
-                    // MARK: - Submit Button
-                    Button(action: {
-                        saveToDatabase()
-                    }) {
-                        Text("Publicar")
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.blue)
-                            .cornerRadius(12)
-                    }
-                    .padding(.horizontal)
-                    .disabled(!isFormValid())
-                    .opacity(isFormValid() ? 1 : 0.5)
-                    
+                    .padding()
+                    .background(Color.gray.opacity(0.2))
                 }
-                .padding()
-                .background(Color.gray.opacity(0.2))
+                //            .navigationTitle("Crear Publicación")
+                //            .navigationBarTitleDisplayMode(.inline)
+                //            .toolbar {
+                //                ToolbarItem(placement: .navigationBarLeading) {
+                //                    Button(action: {
+                //                        dismiss()
+                //                    }) {
+                //                        Image(systemName: "chevron.backward")
+                //                            .foregroundColor(.blue)
+                //                    }
+                //                }
+                //            }
+                .sheet(isPresented: $showImagePicker) {
+                    ImagePicker(selectedImage: $selectedImage)
+                }
             }
-//            .navigationTitle("Crear Publicación")
-//            .navigationBarTitleDisplayMode(.inline)
-//            .toolbar {
-//                ToolbarItem(placement: .navigationBarLeading) {
-//                    Button(action: {
-//                        dismiss()
-//                    }) {
-//                        Image(systemName: "chevron.backward")
-//                            .foregroundColor(.blue)
-//                    }
-//                }
-//            }
-            .sheet(isPresented: $showImagePicker) {
-               ImagePicker(selectedImage: $selectedImage)
-           }
         }
     }
     

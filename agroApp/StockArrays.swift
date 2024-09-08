@@ -68,7 +68,9 @@ public struct Stock {
     // Otros
     "Café": ["Seleccionar", "Arábica", "Robusta"],
     "Cacao": ["Seleccionar", "Criollo", "Forastero", "Trinitario"]
-]
+    ]
+
+    static let transporte: [String] = ["50 - 50", "A cargo del productor", "A cargo del bodeguero", "A negociar" ]
 
 }
 
