@@ -1,13 +1,21 @@
 import SwiftUI
 import PhotosUI
+import Foundation
+// import Alamofire
 
-// MARK: - Tag
+// MARK: - Tag struct and PriceTonPair struct
 struct Taag: Identifiable {
     let id = UUID()
     var category: String
     var value: String
 }
 
+struct PriceTonPair {
+    var price: String
+    var tonRange: String
+}
+
+// MARK: - Box modifiers
 struct ContainerBoxModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
@@ -30,30 +38,30 @@ struct PublicationCreatorView: View {
     // MARK: - State Variables
     let publisherName: String = ProfileView.profileName
     let publisherType: String = ProfileView.accountType
-    let publisherScore: Int = ProfileView.reputationScore
-    let publisherPhoto: Image = ProfileView.profileImage
+    // let publisherScore: Int = ProfileView.reputationScore
+    // let publisherPhoto: Image = ProfileView.profileImage
 
     @State private var selectedProduct = "Seleccionar" // Valor inicial, asegúrate de que
 //    static let products: [String]? = Stock.productos
     
-   @State private var selectedVariery = "Seleccionar" // Valor inicial, asegúrate
+   @State private var selectedVariety = "Seleccionar" // Valor inicial, asegúrate
 //    static let variety: [String]? = Stock.variedades
 
     @State private var productDescription: String = ""
-    @State private var priceRatio:  String = "" // MFR // MFR // MFR 
-    // @State private var priceRatio:  [String] = [] 
+    // @State private var priceRatio:  String = "" // MFR // MFR // MFR 
+    @State private var priceTonPairs: [PriceTonPair] = []
+    @State private var price: String = ""
+    @State private var tonRange: String = ""
     @State private var productQuantity:  String = ""
     @State private var selectedImage: UIImage?
     @State private var showImagePicker: Bool = false
     @State private var tags: [Taag] = [
-        Taag(category: "Producto", value: ""),
-        Taag(category: "Variedad", value: ""),
         Taag(category: "Calidad", value: ""),
-        Taag(category: "Región", value: ""),
-        Taag(category: "Tamaño", value: ""),
+        Taag(category: "Region", value: ""),
+        Taag(category: "Tamano", value: ""),
         Taag(category: "Frescura", value: ""),
         Taag(category: "Sabor", value: ""),
-        Taag(category: "Color", value: "")
+        Taag(category: "Olor", value: "")
     ]
     
     @Environment(\.dismiss) var dismiss
@@ -172,7 +180,7 @@ struct PublicationCreatorView: View {
                                     .padding(.trailing) // Añade un poco de espacio
                                     .bold()
                                 Spacer()
-                                Picker("Variedades", selection: $selectedVariery) {
+                                Picker("Variedades", selection: $selectedVariety) {
                                     // Asumiendo que Stock.variedades es un diccionario [String: [String]]
                                     // donde la clave es el nombre del producto y el valor es un array de variedades
                                     ForEach(Stock.variedades[selectedProduct] ?? [], id: \.self) { variedad in
@@ -218,13 +226,35 @@ struct PublicationCreatorView: View {
                         
                         // MARK: - Price ratio
                         VStack(spacing: 15) {
-                            HStack {
-                                Text("$")
-                                    .padding(.trailing) // Añade un poco de espacio
-                                    .bold()
-                                TextField("Ratio de Precio", text: $priceRatio)
-                                    .keyboardType(.numberPad)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                            Text("Rango de precios")
+                            ForEach($priceTonPairs.indices, id: \.self) { index in
+                                HStack {
+                                    Text("$")
+                                        .padding(.trailing) // Añade un poco de espacio
+                                        .bold()
+                                    TextField("Precio", text: $priceTonPairs[index].price)
+                                        .keyboardType(.numberPad)
+                                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    Text("|")
+                                        .bold()
+                                        .padding(.horizontal) // Añade espacio a ambos lados
+                                    TextField("Rango ton", text: $priceTonPairs[index].tonRange)
+                                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    Button(action: {
+                                        priceTonPairs.remove(at: index)
+                                    }) {
+                                        Image(systemName: "minus.circle.fill")
+                                            .foregroundColor(.red)
+                                    }
+                                }
+                            }
+                            Button(action: {
+                                self.priceTonPairs.append(PriceTonPair(price: self.price, tonRange: self.tonRange))
+                                // Limpia los campos después de añadir
+                                self.price = ""
+                                self.tonRange = ""
+                            }) {
+                                Text("+")
                             }
                         }
                         .padding(.horizontal)
@@ -234,21 +264,17 @@ struct PublicationCreatorView: View {
                         VStack(alignment: .leading, spacing: 10) {
                             Text("Tags")
                                 .font(.headline)
-                            TextField("Producto", text: $tags[0].value)
+                            TextField("Calidad", text: $tags[0].value)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
-                            TextField("Variedad", text: $tags[1].value)
+                            TextField("Región", text: $tags[1].value)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
-                            TextField("Calidad", text: $tags[2].value)
+                            TextField("Tamaño", text: $tags[2].value)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
-                            TextField("Región", text: $tags[3].value)
+                            TextField("Frescura", text: $tags[3].value)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
-                            TextField("Tamaño", text: $tags[4].value)
+                            TextField("Sabor", text: $tags[4].value)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
-                            TextField("Frescura", text: $tags[5].value)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                            TextField("Sabor", text: $tags[6].value)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                            TextField("Color", text: $tags[7].value)
+                            TextField("Olor", text: $tags[5].value)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                             
                         }
@@ -295,23 +321,70 @@ struct PublicationCreatorView: View {
     
     // MARK: - Helper Functions
     func isFormValid() -> Bool {
-        return !selectedProduct.isEmpty && !productDescription.isEmpty && !priceRatio.isEmpty && !productQuantity.isEmpty
+        return !selectedProduct.isEmpty && !productDescription.isEmpty && !priceTonPairs.isEmpty && !productQuantity.isEmpty
     }
-    
+
     func saveToDatabase() {
-        // Implementa la lógica para guardar en la base de datos SQL aquí
-        // Puedes utilizar frameworks como Alamofire para hacer peticiones HTTP
-        
-        let productData = [
+        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/publications/post") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        // Formatear priceTonPairs como un array de objetos con "tonRange" y "price"
+        let priceTonPairsFormatted = priceTonPairs.map { ["tonRange": String($0.tonRange), "price": String($0.price)] }
+
+        // Formatear tags como un objeto con propiedades
+        let tagsFormatted: [String: String] = [
+            "Calidad": tags.first(where: { $0.category == "Calidad" })?.value ?? "",
+            "Region": tags.first(where: { $0.category == "Region" })?.value ?? "",
+            "Tamano": tags.first(where: { $0.category == "Tamano" })?.value ?? "",
+            "Frescura": tags.first(where: { $0.category == "Frescura" })?.value ?? "",
+            "Sabor": tags.first(where: { $0.category == "Sabor" })?.value ?? "",
+            "Olor": tags.first(where: { $0.category == "Olor" })?.value ?? ""
+        ]
+
+        // Crear el diccionario con los datos formateados
+        let productData: [String: Any] = [
             "publisherName": publisherName,
-            "product": selectedProduct,
+            "publisherType": publisherType,
+            "selectedProduct": selectedProduct,
+            "selectedVariety": selectedVariety,
             "productDescription": productDescription,
-            "tags": tags.map { $0.category },
-            // "image": Convertir la imagen a un formato adecuado para enviar
-        ] as [String : Any]
-        
-        print("Datos a guardar:", productData)
-        // Añade la lógica de guardado aquí
+            "priceTonPairs": priceTonPairsFormatted, // Array de objetos
+            "productQuantity": String(productQuantity), // Como cadena
+            "tags": tagsFormatted // Objeto con propiedades específicas
+        ]
+
+        // Serializar los datos a JSON
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: productData, options: []) else {
+            print("Error al serializar los datos del producto")
+            return
+        }
+
+        request.httpBody = httpBody
+
+        // Crear y ejecutar la tarea de red
+        let session = URLSession.shared
+        session.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error al guardar los datos: \(error)")
+                return
+            }
+
+            guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                print("Error en la respuesta del servidor")
+                return
+            }
+
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    print("Respuesta del servidor: \(json)")
+                    // Aquí puedes manejar la respuesta del servidor
+                }
+            } catch {
+                print("Error al decodificar la respuesta JSON")
+            }
+        }.resume()
     }
 }
 

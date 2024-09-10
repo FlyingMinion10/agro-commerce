@@ -3,12 +3,13 @@ import SwiftUI
 struct ProfileView: View {
     // Datos del perfil
     let screenWidth = UIScreen.main.bounds.width // Obtiene el ancho de la pantalla
+
     static let profileName: String = "Juan Felipe Zepeda"
     static let accountType: String = "Productor"
-    let profileBio: String = "Biografía del perfil"
     static let profileImage: Image = Image("TuLogo")
-    let followersCount: Int = 1200
     static let reputationScore: Int = 94
+    let profileBio: String = "Biografía del perfil"
+    let followersCount: Int = 1200
     let postsCount: Int = 7
 
     var body: some View {

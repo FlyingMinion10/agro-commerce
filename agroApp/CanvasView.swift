@@ -14,8 +14,6 @@ struct Publication: Identifiable {
     var cProductQuantity: String
     var cSelectedImage: UIImage?
     var cTags: [Tag] = [
-        Tag(category: "Producto", value: ""),
-        Tag(category: "Variedad", value: ""),
         Tag(category: "Calidad", value: ""),
         Tag(category: "Región", value: ""),
         Tag(category: "Tamaño", value: ""),
@@ -41,8 +39,6 @@ class PublicationViewModel: ObservableObject {
         // Dummy data
         publications = [
             Publication(cPublisherName: "Felipe", cPublisherType: "Productor1", cPublisherScore: 5, cPublisherPhoto: "TuLogo", cSelectedProduct: "Manzana", cSelectedVariery: "Golden", cProductDescription: "Manzana gala producida en california importada por grupo Alcaraz SA de CV.", cPriceRatio: ["1-10 ton : $17.40", "10-20 ton : $17.00", "20-40 ton : $16.60"], cProductQuantity: "25", cSelectedImage: nil, cTags: [
-                Tag(category: "Producto", value: "Manzana"),
-                Tag(category: "Variedad", value: "Golden"),
                 Tag(category: "Calidad", value: "Alta"),
                 Tag(category: "Región", value: "California"),
                 Tag(category: "Tamaño", value: "Grande"),
@@ -51,8 +47,7 @@ class PublicationViewModel: ObservableObject {
                 Tag(category: "Color", value: "Rojo")
             ]),
             Publication(cPublisherName: "Pablo", cPublisherType: "Productor2", cPublisherScore: 4, cPublisherPhoto: "TuLogo", cSelectedProduct: "Lechuga", cSelectedVariery: "Iceberg", cProductDescription: "Description 2", cPriceRatio: ["1-10 ton : $18.50", "10-20 ton : $18.00", "20-40 ton: $17.50"], cProductQuantity: "10", cSelectedImage: nil, cTags: [
-                Tag(category: "Producto", value: "Lechuga"),
-                Tag(category: "Variedad", value: "Iceberg"),
+
                 Tag(category: "Calidad", value: "Baja"),
                 Tag(category: "Región", value: "Michoacan"),
                 Tag(category: "Tamaño", value: "Mediano"),
@@ -61,8 +56,7 @@ class PublicationViewModel: ObservableObject {
                 Tag(category: "Color", value: "Verde")
             ]),
             Publication(cPublisherName: "Dustin", cPublisherType: "Productor3", cPublisherScore: 3, cPublisherPhoto: "TuLogo", cSelectedProduct: "Jitomate", cSelectedVariery: "Cherry", cProductDescription: "Description 3", cPriceRatio: ["1-10 ton : $5.80", "10-20 ton : $5.20", "20-40 ton : $5.10"], cProductQuantity: "17", cSelectedImage: nil, cTags: [
-                Tag(category: "Producto", value: "Tomate"),
-                Tag(category: "Variedad", value: "Cherry"),
+
                 Tag(category: "Calidad", value: "Medio"),
                 Tag(category: "Región", value: "Colima"),
                 Tag(category: "Tamaño", value: "Pequeño"),
@@ -71,8 +65,7 @@ class PublicationViewModel: ObservableObject {
                 Tag(category: "Color", value: "Rojo")
             ]),
             Publication(cPublisherName: "Paco", cPublisherType: "Productor4", cPublisherScore: 5, cPublisherPhoto: "TuLogo", cSelectedProduct: "Maíz", cSelectedVariery: "Amarillo", cProductDescription: "Description 4", cPriceRatio: ["1-10 ton : $22.40", "10-20 ton : $22.00", "20-40 ton : $21.60"], cProductQuantity: "32", cSelectedImage: nil, cTags: [
-                Tag(category: "Producto", value: "Maiz"),
-                Tag(category: "Variedad", value: "Amarillo"),
+
                 Tag(category: "Calidad", value: "Alta"),
                 Tag(category: "Región", value: "Jalisco"),
                 Tag(category: "Tamaño", value: "Grande"),
@@ -283,8 +276,6 @@ struct DetailView: View {
 struct CanvasView_Previews: PreviewProvider {
     static var previews: some View {
         DetailView(publication: Publication(cPublisherName: "Felipe", cPublisherType: "Productor1", cPublisherScore: 5, cPublisherPhoto: "TuLogo", cSelectedProduct: "Manzana", cSelectedVariery: "Golden", cProductDescription: "Manzana gala producida en california importada por grupo Alcaraz SA de CV.", cPriceRatio: ["(1-10) $17.40", "(10-20) $17.00", "(20-40) $16.60"], cProductQuantity: "25", cSelectedImage: nil, cTags: [
-            Tag(category: "Producto", value: "Manzana"),
-            Tag(category: "Variedad", value: "Golden"),
             Tag(category: "Calidad", value: "Alta"),
             Tag(category: "Región", value: "California"),
             Tag(category: "Tamaño", value: "Grande"),
