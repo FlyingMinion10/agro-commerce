@@ -42,13 +42,8 @@ struct PublicationCreatorView: View {
     // let publisherPhoto: Image = ProfileView.profileImage
 
     @State private var selectedProduct = "Seleccionar" // Valor inicial, asegúrate de que
-//    static let products: [String]? = Stock.productos
-    
-   @State private var selectedVariety = "Seleccionar" // Valor inicial, asegúrate
-//    static let variety: [String]? = Stock.variedades
-
+    @State private var selectedVariety = "Seleccionar" // Valor inicial, asegúrate
     @State private var productDescription: String = ""
-    // @State private var priceRatio:  String = "" // MFR // MFR // MFR 
     @State private var priceTonPairs: [PriceTonPair] = []
     @State private var price: String = ""
     @State private var tonRange: String = ""
@@ -63,6 +58,9 @@ struct PublicationCreatorView: View {
         Taag(category: "Sabor", value: ""),
         Taag(category: "Olor", value: "")
     ]
+
+    // Nuevo estado para controlar la alerta
+    @State private var showSuccessAlert = false
     
     @Environment(\.dismiss) var dismiss
     
@@ -181,8 +179,6 @@ struct PublicationCreatorView: View {
                                     .bold()
                                 Spacer()
                                 Picker("Variedades", selection: $selectedVariety) {
-                                    // Asumiendo que Stock.variedades es un diccionario [String: [String]]
-                                    // donde la clave es el nombre del producto y el valor es un array de variedades
                                     ForEach(Stock.variedades[selectedProduct] ?? [], id: \.self) { variedad in
                                         Text(variedad).tag(variedad)
                                     }
@@ -291,6 +287,17 @@ struct PublicationCreatorView: View {
                                 .padding()
                                 .background(Color.blue)
                                 .cornerRadius(12)
+                                // Mostrar la alerta cuando `showSuccessAlert` es verdadero
+                                .alert(isPresented: $showSuccessAlert) {
+                                    Alert(
+                                        title: Text("¡Éxito!"),
+                                        message: Text("Publicación creada exitosamente."),
+                                        dismissButton: .default(Text("OK"), action: {
+                                            // Reiniciar la alerta después de que se cierre
+                                            showSuccessAlert = false
+                                        })
+                                    )
+                                }
                         }
                         .padding(.horizontal)
                         .disabled(!isFormValid())
@@ -322,6 +329,25 @@ struct PublicationCreatorView: View {
     // MARK: - Helper Functions
     func isFormValid() -> Bool {
         return !selectedProduct.isEmpty && !productDescription.isEmpty && !priceTonPairs.isEmpty && !productQuantity.isEmpty
+    }
+
+    func clearForm() {
+        selectedProduct = "Seleccionar"
+        selectedVariety = "Seleccionar"
+        productDescription = ""
+        priceTonPairs = []
+        price = ""
+        tonRange = ""
+        productQuantity = ""
+        selectedImage = nil
+        tags = [
+            Taag(category: "Calidad", value: ""),
+            Taag(category: "Region", value: ""),
+            Taag(category: "Tamano", value: ""),
+            Taag(category: "Frescura", value: ""),
+            Taag(category: "Sabor", value: ""),
+            Taag(category: "Olor", value: "")
+        ]
     }
 
     func saveToDatabase() {
@@ -380,6 +406,8 @@ struct PublicationCreatorView: View {
                 if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
                     print("Respuesta del servidor: \(json)")
                     // Aquí puedes manejar la respuesta del servidor
+                    showSuccessAlert = true
+                    clearForm()
                 }
             } catch {
                 print("Error al decodificar la respuesta JSON")
