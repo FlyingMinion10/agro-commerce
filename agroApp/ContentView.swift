@@ -26,7 +26,7 @@ struct ContentView: View {
                             Text("Inicio")
                         }
                     
-                    PublicationListView()
+                    CanvasView()
                         .tabItem {
 //                            Image(systemName: "dollarsign.circle")
                             Image(systemName: "carrot")

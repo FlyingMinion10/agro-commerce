@@ -5,7 +5,7 @@ struct ProfileView: View {
     let screenWidth = UIScreen.main.bounds.width // Obtiene el ancho de la pantalla
 
     static let profileName: String = "Juan Felipe Zepeda"
-    static let accountType: String = "Productor"
+    static let accountType: String = "Bodeguero"
     static let profileImage: Image = Image("TuLogo")
     static let reputationScore: Int = 94
     let profileBio: String = "Biografía del perfil"

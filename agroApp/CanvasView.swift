@@ -9,7 +9,7 @@ struct Tag: Identifiable, Codable {
 
 // Publication debe conformar a Codable (Decodable + Encodable)
 struct Publication: Identifiable, Codable {
-    var id: Int
+    var id: Int?
     var cPublisherName: String
     var cPublisherType: String
     var cSelectedProduct: String
@@ -20,20 +20,20 @@ struct Publication: Identifiable, Codable {
     var cTags: [Tag]
 }
 
-struct PublicationListView: View {
+struct CanvasView: View {
     @State private var publications: [Publication] = []
     
-    @State private var selectedDisplayView: displayView = .buyer
+    @State private var selectedDisplayView: displayView = .sell
     enum displayView: String, CaseIterable {
-        case producer, buyer
+        case sell, buy
     }
     
     var body: some View {
         NavigationView {
             VStack {
                 Picker("Modelo de vista", selection: $selectedDisplayView) {
-                    Text("Comprador").tag(displayView.buyer)
-                    Text("Productor").tag(displayView.producer)
+                    Text("Comprar").tag(displayView.buy)
+                    Text("Vender").tag(displayView.sell)
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .padding()
@@ -105,7 +105,18 @@ struct PublicationListView: View {
     
     // Función para obtener todas las publicaciones
     func fetchPublications() {
-        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/publications/get") else {
+        guard let baseUrl = URL(string: "https://my-backend-production.up.railway.app/api/publications/get") else {
+            print("URL no válida")
+            return
+        }
+        
+        // Construir la URL con el parámetro de consulta
+        var urlComponents = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false)!
+        urlComponents.queryItems = [
+            URLQueryItem(name: "publisherType", value: selectedDisplayView == .buy ? "Productor" : "Bodeguero")
+        ]
+        
+        guard let url = urlComponents.url else {
             print("URL no válida")
             return
         }
@@ -257,8 +268,8 @@ struct DetailView: View {
 
 
         
-struct PublicationListView_Previews: PreviewProvider {
+struct CanvasView_Previews: PreviewProvider {
     static var previews: some View {
-        PublicationListView()
+        CanvasView()
     }
 }
