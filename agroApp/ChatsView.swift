@@ -300,7 +300,7 @@ struct ChatView: View {
                         Text("Comprador")
                         Divider()
                         Button(action: {
-                            if publisherType == "Comprador" {
+                            if publisherType == "Bodeguero" {
                                 mostrarHStack = false
                             }
                         }) {
@@ -311,7 +311,7 @@ struct ChatView: View {
                         }
                         //                        Spacer()
                         Button(action: {
-                            if publisherType == "Comprador" {
+                            if publisherType == "Bodeguero" {
                                 mostrarHStack = false
                             }
                         }) {

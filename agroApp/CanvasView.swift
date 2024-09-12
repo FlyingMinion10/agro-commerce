@@ -37,6 +37,9 @@ struct CanvasView: View {
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .padding()
+                .onChange(of: selectedDisplayView) { _ in
+                    fetchPublications()
+                }
                 if publications.isEmpty {
                     Text("No se encontraron publicaciones.")
                         .padding()
