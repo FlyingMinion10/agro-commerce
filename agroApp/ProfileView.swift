@@ -1,9 +1,8 @@
 import SwiftUI
 
 struct ProfileView: View {
-    // Datos del perfil
+    @Binding var isAuthenticated: Bool 
     let screenWidth = UIScreen.main.bounds.width // Obtiene el ancho de la pantalla
-
     static let profileName: String = "Juan Felipe Zepeda"
     static let accountType: String = "Bodeguero"
     static let profileImage: Image = Image("TuLogo")
@@ -20,7 +19,7 @@ struct ProfileView: View {
                     HStack {
                         Spacer()
                         
-                        NavigationLink(destination: SettingsView(userEmail: "usuario@example.com", userPassword: "password123")) {
+                        NavigationLink(destination: SettingsView(isAuthenticated: $isAuthenticated)) {
                             Image(systemName: "ellipsis")
                                 .font(.system(size: 24))
                                 .foregroundColor(.black)
@@ -149,30 +148,27 @@ struct ProfileView: View {
 }
 
 struct SettingsView: View {
-    @State private var passcodeLockEnabled = true
-    @State private var faceIDEnabled = true
-    var userEmail: String
-    var userPassword: String
+    @Binding var isAuthenticated: Bool
 
     var body: some View {
         NavigationView {
             List {
                 Section(header: Text("SECURITY")) {
-                    Toggle(isOn: $faceIDEnabled) {
+                    Toggle(isOn: .constant(true)) {
                         Text("Face ID")
                     }
                     .padding(.top)
                     .font(.headline)
-                    Text("If your device has Touch ID or Face ID enabled, you can also use that to unlock the app.")
+                    Text("Si tu dispositivo tiene Touch ID o Face ID, también puedes usarlo para desbloquear la app.")
                         .font(.caption)
                         .padding(.bottom)
                 }
                 
                 Section(header: Text("ACCOUNT")) {
                     NavigationLink(destination: PaymentView()) {
-                        Text("Metodo de pago")
+                        Text("Método de pago")
                     }
-                    Text("Registra un metodo de pago para hacer compras desde la App")
+                    Text("Registra un método de pago para hacer compras desde la app.")
                         .font(.caption)
                         .padding(.bottom)
                 }
@@ -180,25 +176,26 @@ struct SettingsView: View {
                 Section(header: Text("ABOUT")) {}
                 
                 NavigationLink(destination: HelpView()) {
-                    Text("Help")
+                    Text("Ayuda")
                 }
                 NavigationLink(destination: AffinWebsiteView()) {
-                    Text("Go to guich.mx")
+                    Text("Ir a guich.mx")
                 }
                 NavigationLink(destination: TermsOfUseView()) {
-                    Text("Terms of use")
+                    Text("Términos de uso")
                 }
                 NavigationLink(destination: PrivacyPolicyView()) {
-                    Text("Privacy Policy")
+                    Text("Política de privacidad")
                 }
-                NavigationLink(destination: DeleteAccountView()) {
-                    Text("Delete Account")
+                NavigationLink(destination: LogOut(isAuthenticated: $isAuthenticated)) {
+                    Text("Cerrar Sesión")
                 }
             }
-            .navigationBarTitle("Settings", displayMode: .inline)
+            .navigationBarTitle("Ajustes", displayMode: .inline)
         }
     }
 }
+
 
 struct PaymentView: View {
     @State private var selectedPaymentMethod: PaymentMethod = .creditCard
@@ -274,14 +271,39 @@ struct PrivacyPolicyView: View {
     }
 }
 
-struct DeleteAccountView: View {
+struct LogOut: View {
+    @Binding var isAuthenticated: Bool
+
     var body: some View {
-        Text("Delete Account View")
+        VStack {
+            Text("Cerrar Sesión")
+                .font(.largeTitle)
+                .padding()
+
+            Button(action: {
+                logout()
+            }) {
+                Text("Cerrar Sesión")
+                    .padding()
+                    .background(Color.red)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+            }
+        }
+        .padding()
+    }
+
+    func logout() {
+        // Eliminar credenciales del Keychain
+        KeychainHelper.shared.delete(service: "com.tuapp.login", account: "userCredentials")
+        // Actualizar el estado de autenticación
+        isAuthenticated = false
     }
 }
 
-struct ProfileView_Previews: PreviewProvider {
-    static var previews: some View {
-        ProfileView()
-    }
-}
+
+//struct ProfileView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ProfileView()
+//    }
+//}
