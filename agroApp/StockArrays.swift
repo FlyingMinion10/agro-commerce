@@ -70,8 +70,7 @@ public struct Stock {
     "Cacao": ["Seleccionar", "Criollo", "Forastero", "Trinitario"]
     ]
 
-    static let transporte: [String] = ["50 - 50", "A cargo del productor", "A cargo del bodeguero", "A negociar" ]
-
+    static let transporte: [String] = ["A cargo del productor", "A cargo del bodeguero", "A cargo de AFFIN"]
 }
 
 // OtroArchivo.swift

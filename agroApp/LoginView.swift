@@ -2,8 +2,10 @@ import SwiftUI
 
 struct LoginView: View {
     @Binding var isAuthenticated: Bool
-    @State private var email = ""
+    @State private var userInput = ""
     @State private var password = ""
+    @State private var showAlert = false
+    @State private var alertMessage = ""
     @State private var isShowingRegister = false
 
     var body: some View {
@@ -12,7 +14,7 @@ struct LoginView: View {
                 .font(.largeTitle)
                 .padding()
 
-            TextField("Correo electrónico", text: $email)
+            TextField("Correo electrónico o teléfono", text: $userInput)
                 .padding()
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .autocapitalization(.none)
@@ -22,8 +24,7 @@ struct LoginView: View {
                 .textFieldStyle(RoundedBorderTextFieldStyle())
 
             Button(action: {
-                // Lógica de autenticación
-                loginUser(email: email, password: password)
+                loginUser()
             }) {
                 Text("Iniciar Sesión")
                     .padding()
@@ -31,7 +32,7 @@ struct LoginView: View {
                     .foregroundColor(.white)
                     .cornerRadius(8)
             }
-
+            
             Button(action: {
                 isShowingRegister = true
             }) {
@@ -43,14 +44,35 @@ struct LoginView: View {
             }
         }
         .padding()
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Mensaje"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+        }
     }
 
-    func loginUser(email: String, password: String) {
-        // Suponiendo que el login fue exitoso
-        let credentials = "\(email):\(password)"
-        if let credentialsData = credentials.data(using: .utf8) {
-            KeychainHelper.shared.save(credentialsData, service: "com.tuapp.login", account: "userCredentials")
-            isAuthenticated = true
-        }
+    func loginUser() {
+        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/login?userInput=\(userInput)&password=\(password)") else { return }
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, error == nil else {
+                DispatchQueue.main.async {
+                    alertMessage = "Error en la solicitud"
+                    showAlert = true
+                }
+                return
+            }
+
+            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+                DispatchQueue.main.async {
+                    isAuthenticated = true
+                    alertMessage = "Inicio de sesión exitoso"
+                    showAlert = true
+                }
+            } else {
+                DispatchQueue.main.async {
+                    alertMessage = "Credenciales inválidas"
+                    showAlert = true
+                }
+            }
+        }.resume()
     }
 }
