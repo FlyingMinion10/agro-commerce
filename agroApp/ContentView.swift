@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var isAuthenticated = false
-    @State private var selectedTab = 2
+    @State private var selectedTab = 4
 
     var body: some View {
         VStack {

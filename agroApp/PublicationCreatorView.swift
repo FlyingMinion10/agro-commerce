@@ -196,7 +196,8 @@ struct PublicationCreatorView: View {
                                     RoundedRectangle(cornerRadius: 8)
                                         .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                                 )
-                                .onChange(of: productDescription) { newValue in
+//                                .onChange(of: productDescription) { newValue in
+                                .onChange(of: productDescription) { oldValue, newValue in
                                     let limit = 140
                                     if newValue.count > limit {
                                         productDescription = String(newValue.prefix(limit))

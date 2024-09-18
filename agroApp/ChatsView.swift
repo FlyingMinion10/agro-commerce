@@ -1,5 +1,7 @@
 import SwiftUI
 
+
+
 struct ChatsView: View {
     var body: some View {
         NavigationView {
@@ -59,6 +61,7 @@ struct ChatsView: View {
                 }
             }
         }
+
     }
 }
 
@@ -113,7 +116,7 @@ struct ArchivedView: View {
 struct ChatView: View {
     @Environment(\.dismiss) var dismiss
     let screenWidth = UIScreen.main.bounds.width 
-    let publisherType: String = ProfileView.accountType
+    let publisherType: String = UserData.shared.accountType
 
     @State private var mostrarHStack = false 
     

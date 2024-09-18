@@ -8,7 +8,11 @@
 import SwiftUI
 
 @main
-struct agroAppApp: App {
+struct agroAppApp: App {    
+    init() {
+        FirebaseApp.configure()
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()

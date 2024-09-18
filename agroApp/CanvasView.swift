@@ -37,7 +37,7 @@ struct CanvasView: View {
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .padding()
-                .onChange(of: selectedDisplayView) { _ in
+                .onChange(of: selectedDisplayView) {
                     fetchPublications()
                 }
                 if publications.isEmpty {

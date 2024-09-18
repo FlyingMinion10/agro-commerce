@@ -53,19 +53,55 @@ struct LoginView: View {
         guard let url = URL(string: "https://my-backend-production.up.railway.app/api/login?userInput=\(userInput)&password=\(password)") else { return }
 
         URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data, error == nil else {
+            if let error = error {
                 DispatchQueue.main.async {
-                    alertMessage = "Error en la solicitud"
+                    alertMessage = "Error en la solicitud: \(error.localizedDescription)"
                     showAlert = true
                 }
                 return
             }
-
-            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+            guard let httpResponse = response as? HTTPURLResponse else {
                 DispatchQueue.main.async {
-                    isAuthenticated = true
-                    alertMessage = "Inicio de sesión exitoso"
+                    alertMessage = "Error en la respuesta del servidor"
                     showAlert = true
+                }
+                return
+            }
+            if httpResponse.statusCode == 200 {
+                guard let data = data else {
+                    DispatchQueue.main.async {
+                        alertMessage = "Datos no recibidos"
+                        showAlert = true
+                    }
+                    return
+                }
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: [])
+                    guard let responseDict = json as? [String: Any],
+                        let userData = responseDict["userData"] as? [String: Any] else {
+                        DispatchQueue.main.async {
+                            alertMessage = "Error al procesar los datos del usuario"
+                            showAlert = true
+                        }
+                        return
+                    }
+                    print(responseDict)
+                    let name = userData["name"] as? String
+                    let accountType = userData["accountType"] as? String
+                    // Almacenar datos del usuario de forma local
+                    UserDefaults.standard.set(name, forKey: "profileName")
+                    UserDefaults.standard.set(accountType, forKey: "accountType")
+                    
+                    DispatchQueue.main.async {
+                        isAuthenticated = true
+                        alertMessage = "Inicio de sesión exitoso"
+                        showAlert = true
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        alertMessage = "Error al decodificar los datos: \(error.localizedDescription)"
+                        showAlert = true
+                    }
                 }
             } else {
                 DispatchQueue.main.async {

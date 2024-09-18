@@ -35,7 +35,7 @@ struct RegisterView: View {
 
             Picker("Tipo de cuenta", selection: $accountType) {
                 Text("Productor").tag("Productor")
-                Text("Consumidor").tag("Consumidor")
+                Text("Bodeguero").tag("Bodeguero")
             }
             .padding()
             .pickerStyle(SegmentedPickerStyle())

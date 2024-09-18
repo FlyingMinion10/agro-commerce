@@ -1,10 +1,11 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @Binding var isAuthenticated: Bool 
+    @Binding var isAuthenticated: Bool
     let screenWidth = UIScreen.main.bounds.width // Obtiene el ancho de la pantalla
-    static let profileName: String = "Juan Felipe Zepeda"
-    static let accountType: String = "Bodeguero"
+    static let profileName: String = UserDefaults.standard.string(forKey: "profileName") ?? ""
+    static let accountType: String = UserDefaults.standard.string(forKey: "accountType") ?? ""
+    
     static let profileImage: Image = Image("TuLogo")
     static let reputationScore: Int = 94
     let profileBio: String = "Biografía del perfil"
