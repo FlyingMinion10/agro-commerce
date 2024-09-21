@@ -1,4 +1,6 @@
 import SwiftUI
+import FirebaseAuth
+
 
 struct ContentView: View {
     @State private var isAuthenticated = false
@@ -69,6 +71,21 @@ struct MainTabView: View {
                     Text("Cuenta")
                 }
                 .tag(4)
+        }
+        .onAppear {
+            Task {
+                await authenticateAnonymously()
+            }
+        }
+
+    }
+    func authenticateAnonymously() async {
+        do {
+            let authResult = try await Auth.auth().signInAnonymously()
+            let user = authResult.user
+            print("Usuario autenticado anónimamente con UID: \(user.uid)")
+        } catch {
+            print("Error en autenticación anónima: \(error.localizedDescription)")
         }
     }
 }

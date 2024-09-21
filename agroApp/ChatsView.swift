@@ -1,16 +1,34 @@
 import SwiftUI
+import Firebase
+import FirebaseFirestore
+import FirebaseAuth
 
+// Elementos de los chats
+struct Chat: Identifiable {
+    var id: String
+    var participants: [String]
+    var lastMessage: String
+    var timestamp: Timestamp
+    var isArchived: Bool
+}
 
-
+// MARK: - Vista principal de chats
 struct ChatsView: View {
+    @State private var chats: [Chat] = []
+    let db = Firestore.firestore()
+    
+    @State private var activeChats: [Chat] = []
+    @State private var archivedChats: [Chat] = []
+    @State private var newChatId: String? = nil
+
+    
     var body: some View {
         NavigationView {
             List {
-                // Seccion de chats archivados
+                // Sección de chats archivados
                 Section(header: Text("Archivados")) {
                     NavigationLink(destination: ArchivedView()) {
                         HStack {
-                            // Imagen de perfil o icono
                             Image(systemName: "archivebox.fill")
                                 .foregroundColor(.gray)
                             VStack(alignment: .leading) {
@@ -20,23 +38,30 @@ struct ChatsView: View {
                         }
                     }
                 }
-                
-                // Seccion de chats activos
+
+                // Sección de chats activos
                 Section(header: Text("Activos")) {
-                    ForEach(0..<4) { _ in
-                        NavigationLink(destination: ChatView()) {
+                    ForEach(activeChats) { chat in
+                        NavigationLink(destination: ChatView(chatId: chat.id)) {
                             HStack {
-                                // Imagen de perfil o icono
                                 Image(systemName: "person.circle.fill")
                                     .foregroundColor(.gray)
                                 VStack(alignment: .leading) {
-                                    Text("Nombre de usuario")
+                                    Text("Chat con \(getChatPartnerName(chat: chat))")
                                         .font(.headline)
-                                    Text("Ultimo mensaje")
+                                    Text(chat.lastMessage)
                                         .font(.subheadline)
                                         .foregroundColor(.gray)
                                 }
                             }
+                        }
+                        .swipeActions {
+                            Button(action: {
+                                archiveChat(chatId: chat.id)
+                            }) {
+                                Label("Archivar", systemImage: "archivebox")
+                            }
+                            .tint(.orange)
                         }
                     }
                 }
@@ -54,76 +79,237 @@ struct ChatsView: View {
                 // Boton de crear nuevo chat
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        // Accion al presionar el boton
+                        // Acción para crear un nuevo chat
+                        createNewChat(with: "userIdDelOtroUsuario") // AGREGAR EL ID DEL OTRO USUARIO
                     }) {
                         Image(systemName: "plus")
                     }
+
                 }
             }
         }
-
     }
+    
+    // MARK: - Funcion para crear chats
+    func createNewChat(with otherUserId: String) {
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+
+        let chatData = [
+            "participants": [userId, otherUserId],
+            "lastMessage": "",
+            "timestamp": Timestamp(date: Date()),
+            "isArchived": false
+        ] as [String : Any]
+
+        var ref: DocumentReference? = nil
+        ref = db.collection("chats").addDocument(data: chatData) { error in
+            if let error = error {
+                print("Error al crear chat: \(error.localizedDescription)")
+            } else if let chatId = ref?.documentID {
+                // Actualiza newChatId para activar la navegación
+                self.newChatId = chatId
+            }
+        }
+    }
+    
+    // Funcion para guardar chats
+    func getChats() {
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+
+        // Obtener chats activos
+        db.collection("chats")
+            .whereField("participants", arrayContains: userId)
+            .whereField("isArchived", isEqualTo: false)
+            .order(by: "timestamp", descending: true)
+            .addSnapshotListener { (querySnapshot, error) in
+                guard let documents = querySnapshot?.documents else {
+                    print("No hay documentos de chats activos")
+                    return
+                }
+
+                self.activeChats = documents.map { docSnapshot -> Chat in
+                    let data = docSnapshot.data()
+                    let id = docSnapshot.documentID
+                    let participants = data["participants"] as? [String] ?? []
+                    let lastMessage = data["lastMessage"] as? String ?? ""
+                    let timestamp = data["timestamp"] as? Timestamp ?? Timestamp(date: Date())
+                    let isArchived = data["isArchived"] as? Bool ?? false
+                    return Chat(id: id, participants: participants, lastMessage: lastMessage, timestamp: timestamp, isArchived: isArchived)
+                }
+            }
+
+        // Obtener chats archivados
+        db.collection("chats")
+            .whereField("participants", arrayContains: userId)
+            .whereField("isArchived", isEqualTo: true)
+            .order(by: "timestamp", descending: true)
+            .addSnapshotListener { (querySnapshot, error) in
+                guard let documents = querySnapshot?.documents else {
+                    print("No hay documentos de chats archivados")
+                    return
+                }
+
+                self.archivedChats = documents.map { docSnapshot -> Chat in
+                    let data = docSnapshot.data()
+                    let id = docSnapshot.documentID
+                    let participants = data["participants"] as? [String] ?? []
+                    let lastMessage = data["lastMessage"] as? String ?? ""
+                    let timestamp = data["timestamp"] as? Timestamp ?? Timestamp(date: Date())
+                    let isArchived = data["isArchived"] as? Bool ?? false
+                    return Chat(id: id, participants: participants, lastMessage: lastMessage, timestamp: timestamp, isArchived: isArchived)
+                }
+            }
+    }
+    
+    // MARK: - Archive & Unarchive
+    func archiveChat(chatId: String) {
+        db.collection("chats").document(chatId).updateData([
+            "isArchived": true
+        ]) { error in
+            if let error = error {
+                print("Error al archivar chat: \(error.localizedDescription)")
+            } else {
+                print("Chat archivado con éxito")
+            }
+        }
+    }
+    
+    func unarchiveChat(chatId: String) {
+        db.collection("chats").document(chatId).updateData([
+            "isArchived": false
+        ]) { error in
+            if let error = error {
+                print("Error al desarchivar chat: \(error.localizedDescription)")
+            } else {
+                print("Chat desarchivado con éxito")
+            }
+        }
+    }
+    
+    func getChatPartnerName(chat: Chat) -> String {
+        guard let userId = Auth.auth().currentUser?.uid else { return "Usuario" }
+        let partnerId = chat.participants.first { $0 != userId } ?? "Usuario"
+        // Si tienes una colección de usuarios en Firestore, puedes obtener el nombre real del usuario usando su ID.
+        return partnerId
+    }
+
+    
 }
 
+// MARK: - Vista de chats archivados
 struct ArchivedView: View {
+    @State private var archivedChats: [Chat] = []
+    let db = Firestore.firestore()
+
     var body: some View {
         List {
-            // Sección de chats archivados
-            Section {
-                ForEach(0..<4) { _ in
-                    NavigationLink(destination: ChatView()) {
-                        HStack {
-                            // Imagen de perfil o ícono
-                            Image(systemName: "person.circle.fill")
+            ForEach(archivedChats) { chat in
+                NavigationLink(destination: ChatView(chatId: chat.id)) {
+                    HStack {
+                        Image(systemName: "archivebox.fill")
+                            .foregroundColor(.gray)
+                        VStack(alignment: .leading) {
+                            Text("Chat con \(getChatPartnerName(chat: chat))")
+                                .font(.headline)
+                            Text(chat.lastMessage)
+                                .font(.subheadline)
                                 .foregroundColor(.gray)
-                            VStack(alignment: .leading) {
-                                Text("Nombre de usuario")
-                                    .font(.headline)
-                                Text("Último mensaje")
-                                    .font(.subheadline)
-                                    .foregroundColor(.gray)
-                            }
                         }
                     }
+                }
+                .swipeActions {
+                    Button(action: {
+                        unarchiveChat(chatId: chat.id)
+                    }) {
+                        Label("Desarchivar", systemImage: "arrow.up.square")
+                    }
+                    .tint(.blue)
                 }
             }
         }
         .navigationTitle("Archivados")
-        .toolbar {
-            // Botón de búsqueda
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    // Acción al presionar el botón
-                }) {
-                    Image(systemName: "magnifyingglass")
+        .onAppear {
+            getArchivedChats()
+        }
+    }
+
+    func getArchivedChats() {
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+
+        db.collection("chats")
+            .whereField("participants", arrayContains: userId)
+            .whereField("isArchived", isEqualTo: true)
+            .order(by: "timestamp", descending: true)
+            .addSnapshotListener { (querySnapshot, error) in
+                guard let documents = querySnapshot?.documents else {
+                    print("No hay documentos de chats archivados")
+                    return
+                }
+
+                self.archivedChats = documents.map { docSnapshot -> Chat in
+                    let data = docSnapshot.data()
+                    let id = docSnapshot.documentID
+                    let participants = data["participants"] as? [String] ?? []
+                    let lastMessage = data["lastMessage"] as? String ?? ""
+                    let timestamp = data["timestamp"] as? Timestamp ?? Timestamp(date: Date())
+                    let isArchived = data["isArchived"] as? Bool ?? false
+                    return Chat(id: id, participants: participants, lastMessage: lastMessage, timestamp: timestamp, isArchived: isArchived)
                 }
             }
-            // Botón de crear nuevo chat
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    // Acción al presionar el botón
-                }) {
-                    Image(systemName: "plus")
-                }
+    }
+
+    func unarchiveChat(chatId: String) {
+        db.collection("chats").document(chatId).updateData([
+            "isArchived": false
+        ]) { error in
+            if let error = error {
+                print("Error al desarchivar chat: \(error.localizedDescription)")
+            } else {
+                print("Chat desarchivado con éxito")
             }
         }
+    }
+
+    func getChatPartnerName(chat: Chat) -> String {
+        guard let userId = Auth.auth().currentUser?.uid else { return "Usuario" }
+        let partnerId = chat.participants.first { $0 != userId } ?? "Usuario"
+        return partnerId
     }
 }
 
 
-// Vista individual del chat
+// MARK: - Estructura de objeto de mensajes
+struct Message: Identifiable {
+    var id: String
+    var text: String
+    var senderId: String
+    var timestamp: Timestamp
+}
 
+// MARK: - Vista individual del chat
 struct ChatView: View {
     @Environment(\.dismiss) var dismiss
     let screenWidth = UIScreen.main.bounds.width 
     let publisherType: String = UserData.shared.accountType
-
-    @State private var mostrarHStack = false 
-    
+    // Negociacion Monopoly
+    @State private var mostrarHStack = false
     @State private var tons: String = ""
     @State private var price: String = ""
     @State private var transport: String = ""
     @State private var porcentajeIzquierdo = 50
+    // Mensajes
+    @State private var messages: [Message] = []
+    @State private var messageText: String = ""
+    let db = Firestore.firestore()
+    var chatId: String
+
+    // Formatear fecha y mensaje
+    private let messageFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
+        return formatter
+    }()
     
     var body: some View {
         ZStack {
@@ -170,52 +356,58 @@ struct ChatView: View {
                     }
                     
                     
-                    // Lista de mensajes // Lista de mensajes // Lista de mensajes
-                    List {
-                        // Mensajes entrantes
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text("Mensaje entrante dinámico")
-                                    .font(.body)
-                                    .padding()
-                                    .background(Color.gray.opacity(0.2))
-                                    .cornerRadius(10)
+                    // MARK: - Lista de mensajes
+                    List(messages) { message in
+                        if message.senderId == Auth.auth().currentUser?.uid {
+                            // Mensaje saliente
+                            HStack {
+                                Spacer()
+                                VStack(alignment: .trailing) {
+                                    Text(message.text)
+                                        .font(.body)
+                                        .padding()
+                                        .background(Color.blue.opacity(0.2))
+                                        .cornerRadius(10)
+                                    Text("\(message.timestamp.dateValue(), formatter: messageFormatter)")
+                                        .font(.caption)
+                                        .foregroundColor(.gray)
+                                }
                             }
-                            Spacer()
-                        }
-                        // Mensajes salientes
-                        HStack {
-                            Spacer()
-                            VStack(alignment: .trailing) {
-                                Text("Mensaje saliente")
-                                    .font(.body)
-                                    .padding()
-                                    .background(Color.blue.opacity(0.2))
-                                    .cornerRadius(10)
+                        } else {
+                            // Mensaje entrante
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text(message.text)
+                                        .font(.body)
+                                        .padding()
+                                        .background(Color.gray.opacity(0.2))
+                                        .cornerRadius(10)
+                                    Text("\(message.timestamp.dateValue(), formatter: messageFormatter)")
+                                        .font(.caption)
+                                        .foregroundColor(.gray)
+                                }
+                                Spacer()
                             }
                         }
                     }
-                    //                .fram
-                    
                 }
-                // Barra inferior de escritura de mensaje
+                // MARK: - Barra inferior de escritura de mensaje
                 HStack {
-                    // Icono de adjunto
-                    Image(systemName: "paperclip")
-                        .foregroundColor(.gray)
-                        .font(.system(size: 25))
                     // Campo de texto para escribir mensaje
-                    TextField("Escribe un mensaje", text: .constant(""))
-                        .padding()
+                    TextField("Escribe un mensaje", text: $messageText)
+                        .padding(10)
                         .background(Color.gray.opacity(0.2))
                         .cornerRadius(10)
-                    // Icono de enviar
-                    Image(systemName: "arrow.up.circle.fill")
-                        .foregroundColor(.blue)
-                        .font(.system(size: 30))
+                    // Botón de enviar
+                    Button(action: sendMessage) {
+                        Image(systemName: "arrow.up.circle.fill")
+                            .foregroundColor(.blue)
+                            .font(.system(size: 30))
+                    }
                 }
                 .padding(10)
                 .background(Color.white)
+
             }
             .background(Color.gray.opacity(0.1))
             .navigationBarHidden(true)
@@ -337,11 +529,57 @@ struct ChatView: View {
             }
         }
     }
+    
+    // MARK: - Funcion para obtener mensajes
+    func getMessages() {
+        db.collection("chats").document(chatId).collection("messages") // Cambiar chat_id por el id unico
+            .order(by: "timestamp", descending: false)
+            .addSnapshotListener { (querySnapshot, error) in
+                guard let documents = querySnapshot?.documents else {
+                    print("No hay documentos")
+                    return
+                }
+
+                self.messages = documents.map { docSnapshot -> Message in
+                    let data = docSnapshot.data()
+                    let id = docSnapshot.documentID
+                    let text = data["text"] as? String ?? ""
+                    let senderId = data["senderId"] as? String ?? ""
+                    let timestamp = data["timestamp"] as? Timestamp ?? Timestamp(date: Date())
+                    return Message(id: id, text: text, senderId: senderId, timestamp: timestamp)
+                }
+            }
+    }
+    // MARK: - Funcion para enviar mensajes
+    func sendMessage() {
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+
+        let newMessage = [
+            "text": messageText,
+            "senderId": userId,
+            "timestamp": Timestamp(date: Date())
+        ] as [String : Any]
+
+        let chatRef = db.collection("chats").document(chatId)
+        let messagesRef = chatRef.collection("messages")
+
+        messagesRef.addDocument(data: newMessage) { error in
+            if let error = error {
+                print("Error al enviar mensaje: \(error.localizedDescription)")
+            } else {
+                self.messageText = ""
+                // Actualizar último mensaje en el chat
+                chatRef.updateData([
+                    "lastMessage": newMessage["text"] ?? "",
+                    "timestamp": newMessage["timestamp"] ?? Timestamp(date: Date())
+                ])
+            }
+        }
+    }
 }
 
 struct ChatsView_Previews: PreviewProvider {
     static var previews: some View {
-//        ChatsView()
-        ChatView()
+        ContentView()
     }
 }
