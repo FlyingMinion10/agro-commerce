@@ -58,14 +58,14 @@
 		06E5B7B02C931E51000B6C70 /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
 		06E5B7B22C932520000B6C70 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		06F466092C9B2AD900C428CB /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		06FFC4362C837A5D005432AE /* agroApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = agroApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		06FFC4362C837A5D005432AE /* affinApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = affinApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		06FFC4392C837A5D005432AE /* agroAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = agroAppApp.swift; sourceTree = "<group>"; };
 		06FFC43B2C837A5D005432AE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		06FFC43D2C837A60005432AE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		06FFC4402C837A60005432AE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		06FFC4462C837A61005432AE /* agroAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = agroAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		06FFC4462C837A61005432AE /* affinAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = affinAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		06FFC44A2C837A61005432AE /* agroAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = agroAppTests.swift; sourceTree = "<group>"; };
-		06FFC4502C837A61005432AE /* agroAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = agroAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		06FFC4502C837A61005432AE /* affinAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = affinAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		06FFC4542C837A61005432AE /* agroAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = agroAppUITests.swift; sourceTree = "<group>"; };
 		06FFC4562C837A61005432AE /* agroAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = agroAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		06FFC4632C837B04005432AE /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -129,9 +129,9 @@
 		06FFC4372C837A5D005432AE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				06FFC4362C837A5D005432AE /* agroApp.app */,
-				06FFC4462C837A61005432AE /* agroAppTests.xctest */,
-				06FFC4502C837A61005432AE /* agroAppUITests.xctest */,
+				06FFC4362C837A5D005432AE /* affinApp.app */,
+				06FFC4462C837A61005432AE /* affinAppTests.xctest */,
+				06FFC4502C837A61005432AE /* affinAppUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -183,9 +183,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		06FFC4352C837A5D005432AE /* agroApp */ = {
+		06FFC4352C837A5D005432AE /* affinApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 06FFC45A2C837A61005432AE /* Build configuration list for PBXNativeTarget "agroApp" */;
+			buildConfigurationList = 06FFC45A2C837A61005432AE /* Build configuration list for PBXNativeTarget "affinApp" */;
 			buildPhases = (
 				06FFC4322C837A5D005432AE /* Sources */,
 				06FFC4332C837A5D005432AE /* Frameworks */,
@@ -195,14 +195,14 @@
 			);
 			dependencies = (
 			);
-			name = agroApp;
+			name = affinApp;
 			productName = agroApp;
-			productReference = 06FFC4362C837A5D005432AE /* agroApp.app */;
+			productReference = 06FFC4362C837A5D005432AE /* affinApp.app */;
 			productType = "com.apple.product-type.application";
 		};
-		06FFC4452C837A61005432AE /* agroAppTests */ = {
+		06FFC4452C837A61005432AE /* affinAppTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 06FFC45D2C837A61005432AE /* Build configuration list for PBXNativeTarget "agroAppTests" */;
+			buildConfigurationList = 06FFC45D2C837A61005432AE /* Build configuration list for PBXNativeTarget "affinAppTests" */;
 			buildPhases = (
 				06FFC4422C837A61005432AE /* Sources */,
 				06FFC4432C837A61005432AE /* Frameworks */,
@@ -213,14 +213,14 @@
 			dependencies = (
 				06FFC4482C837A61005432AE /* PBXTargetDependency */,
 			);
-			name = agroAppTests;
+			name = affinAppTests;
 			productName = agroAppTests;
-			productReference = 06FFC4462C837A61005432AE /* agroAppTests.xctest */;
+			productReference = 06FFC4462C837A61005432AE /* affinAppTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		06FFC44F2C837A61005432AE /* agroAppUITests */ = {
+		06FFC44F2C837A61005432AE /* affinAppUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 06FFC4602C837A61005432AE /* Build configuration list for PBXNativeTarget "agroAppUITests" */;
+			buildConfigurationList = 06FFC4602C837A61005432AE /* Build configuration list for PBXNativeTarget "affinAppUITests" */;
 			buildPhases = (
 				06FFC44C2C837A61005432AE /* Sources */,
 				06FFC44D2C837A61005432AE /* Frameworks */,
@@ -231,9 +231,9 @@
 			dependencies = (
 				06FFC4522C837A61005432AE /* PBXTargetDependency */,
 			);
-			name = agroAppUITests;
+			name = affinAppUITests;
 			productName = agroAppUITests;
-			productReference = 06FFC4502C837A61005432AE /* agroAppUITests.xctest */;
+			productReference = 06FFC4502C837A61005432AE /* affinAppUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -259,7 +259,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 06FFC4312C837A5D005432AE /* Build configuration list for PBXProject "agroApp" */;
+			buildConfigurationList = 06FFC4312C837A5D005432AE /* Build configuration list for PBXProject "affinApp" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -275,9 +275,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				06FFC4352C837A5D005432AE /* agroApp */,
-				06FFC4452C837A61005432AE /* agroAppTests */,
-				06FFC44F2C837A61005432AE /* agroAppUITests */,
+				06FFC4352C837A5D005432AE /* affinApp */,
+				06FFC4452C837A61005432AE /* affinAppTests */,
+				06FFC44F2C837A61005432AE /* affinAppUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -351,12 +351,12 @@
 /* Begin PBXTargetDependency section */
 		06FFC4482C837A61005432AE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 06FFC4352C837A5D005432AE /* agroApp */;
+			target = 06FFC4352C837A5D005432AE /* affinApp */;
 			targetProxy = 06FFC4472C837A61005432AE /* PBXContainerItemProxy */;
 		};
 		06FFC4522C837A61005432AE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 06FFC4352C837A5D005432AE /* agroApp */;
+			target = 06FFC4352C837A5D005432AE /* affinApp */;
 			targetProxy = 06FFC4512C837A61005432AE /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -558,7 +558,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/agroApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/agroApp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/affinApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/affinApp";
 			};
 			name = Debug;
 		};
@@ -577,7 +577,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/agroApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/agroApp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/affinApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/affinApp";
 			};
 			name = Release;
 		};
@@ -618,7 +618,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		06FFC4312C837A5D005432AE /* Build configuration list for PBXProject "agroApp" */ = {
+		06FFC4312C837A5D005432AE /* Build configuration list for PBXProject "affinApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				06FFC4582C837A61005432AE /* Debug */,
@@ -627,7 +627,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		06FFC45A2C837A61005432AE /* Build configuration list for PBXNativeTarget "agroApp" */ = {
+		06FFC45A2C837A61005432AE /* Build configuration list for PBXNativeTarget "affinApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				06FFC45B2C837A61005432AE /* Debug */,
@@ -636,7 +636,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		06FFC45D2C837A61005432AE /* Build configuration list for PBXNativeTarget "agroAppTests" */ = {
+		06FFC45D2C837A61005432AE /* Build configuration list for PBXNativeTarget "affinAppTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				06FFC45E2C837A61005432AE /* Debug */,
@@ -645,7 +645,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		06FFC4602C837A61005432AE /* Build configuration list for PBXNativeTarget "agroAppUITests" */ = {
+		06FFC4602C837A61005432AE /* Build configuration list for PBXNativeTarget "affinAppUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				06FFC4612C837A61005432AE /* Debug */,
