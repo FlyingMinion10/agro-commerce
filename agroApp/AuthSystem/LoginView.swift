@@ -88,9 +88,11 @@ struct LoginView: View {
                     print(responseDict)
                     let name = userData["name"] as? String
                     let accountType = userData["accountType"] as? String
+                    let userName = userData["userName"] as? String
                     // Almacenar datos del usuario de forma local
                     UserDefaults.standard.set(name, forKey: "profileName")
                     UserDefaults.standard.set(accountType, forKey: "accountType")
+                    UserDefaults.standard.set(userName, forKey: "userName")
                     
                     DispatchQueue.main.async {
                         isAuthenticated = true

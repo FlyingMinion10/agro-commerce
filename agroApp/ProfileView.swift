@@ -5,6 +5,7 @@ struct ProfileView: View {
     let screenWidth = UIScreen.main.bounds.width // Obtiene el ancho de la pantalla
     static let profileName: String = UserDefaults.standard.string(forKey: "profileName") ?? ""
     static let accountType: String = UserDefaults.standard.string(forKey: "accountType") ?? ""
+    static let userName: String = UserDefaults.standard.string(forKey: "userName") ?? ""
     
     static let profileImage: Image = Image("TuLogo")
     static let reputationScore: Int = 94

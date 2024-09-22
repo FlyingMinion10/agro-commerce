@@ -12,6 +12,7 @@ struct Publication: Identifiable, Codable {
     var id: Int?
     var cPublisherName: String
     var cPublisherType: String
+    var cPublisherUserName: String // Added for test
     var cSelectedProduct: String
     var cSelectedVariety: String
     var cProductDescription: String
@@ -23,7 +24,7 @@ struct Publication: Identifiable, Codable {
 struct CanvasView: View {
     @State private var publications: [Publication] = []
     
-    @State private var selectedDisplayView: displayView = .sell
+    @State private var selectedDisplayView: displayView = .buy
     enum displayView: String, CaseIterable {
         case sell, buy
     }
@@ -43,6 +44,7 @@ struct CanvasView: View {
                 if publications.isEmpty {
                     Text("No se encontraron publicaciones.")
                         .padding()
+                    Spacer()
                 } else {
                     ScrollView {
                         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
@@ -140,14 +142,14 @@ struct CanvasView: View {
 
             // Imprimir los datos recibidos en formato JSON
             if let jsonString = String(data: data, encoding: .utf8) {
-                print("Datos recibidos del servidor: \(jsonString)")
+//                print("Datos recibidos del servidor: \(jsonString)") PRINT FOR DEBUG
             }
 
             do {
                 let decodedPublications = try JSONDecoder().decode([Publication].self, from: data)
                 DispatchQueue.main.async {
                     self.publications = decodedPublications
-                    print("Publicaciones decodificadas correctamente: \(decodedPublications)")
+//                    print("Publicaciones decodificadas correctamente: \(decodedPublications)") PRINT FOR DEBUG
                 }
             } catch {
                 print("Error al decodificar las publicaciones: \(error)")
@@ -172,17 +174,24 @@ struct CanvasView: View {
 
 
 struct DetailView: View {
-   @State private var dSelectedPrice = "" // Change @StateObject to @State
-   @State private var dSelectedQuantity = ""
-   @State private var dSelectedTransport = ""
+    @State private var showSuccessAlert = false
+    
+    @State private var dOffertedPrice = "" // Change @StateObject to @State
+    @State private var dRequestedQuantity = ""
+    @State private var dSelectedTransport = ""
+    @State private var showPopup = false
+    @State private var porcentajeIzquierdo = 50
 
-   let screenWidth = UIScreen.main.bounds.width
-   let screenHeight = UIScreen.main.bounds.height
-   var publication: Publication // Assume you have a `Publication` model
+    let screenWidth = UIScreen.main.bounds.width
+    let screenHeight = UIScreen.main.bounds.height
+    
+    var publication: Publication // Assume you have a `Publication` model
+    let buyerUserName: String = ProfileView.profileName
+    
 
    
    var body: some View {
-       VStack {
+       ZStack {
            VStack {
                HStack {
                    Image("TuLogo")
@@ -235,38 +244,201 @@ struct DetailView: View {
                    }
                    .padding(.leading, -10)
                    Divider()
-                   VStack(alignment: .center, spacing: 30) {
-                       Text("Precio por tonelada:")
-                       Picker("Precio", selection: $dSelectedPrice) { // Remove the explicit type annotation
+                   VStack() {
+                       VStack {
+                           Text("Precio por kilogramo:")
+                           
                            ForEach(publication.cPriceRatio, id: \.self) { item in
-                               Text(item + " /ton").tag(item) // Remove the unnecessary type conversion
+                               Text(item + " /kg").tag(item) // Remove the unnecessary type conversion
                            }
+                           .foregroundColor(.black)
                        }
-                       .foregroundColor(.black)
-                       .pickerStyle(MenuPickerStyle())
-                       TextField("Toneladas", text: $dSelectedQuantity)
-                           .keyboardType(.numberPad)
-                           .frame(width: 100)
-                           .textFieldStyle(RoundedBorderTextFieldStyle())
-                       Text("Transporte:")
-                       Picker("Transporte", selection: $dSelectedTransport) { // Remove
-                           ForEach(Stock.transporte, id: \.self) { medio in
-                               Text(medio).tag(medio) // Remove the unnecessary type conversion
-                           }
+                       Spacer()
+                       Button(action: {
+                           showPopup = true
+                       }) {
+                           Text("Mostrar Pop-up")
+                               .padding()
+                               .background(Color.blue)
+                               .foregroundColor(.white)
+                               .cornerRadius(8)
                        }
-                       .foregroundColor(.black)
-                       .pickerStyle(MenuPickerStyle())
                    }
                    .frame(width: 200)
+                   .padding(.vertical, 40)
                }
            }
-           .frame(width: screenWidth-10, height: 600)
+           .frame(width: screenWidth-10, height: 650)
            .padding()
            .background(Color.white)
            .clipShape(RoundedRectangle(cornerRadius: 8))
-           .shadow(color: .gray, radius: 8, x: 0, y: 4) // Corrección aplicada aquí
-       }
+//           .shadow(color: .gray, radius: 8, x: 0, y: 4) // Corrección aplicada aquí
+           .blur(radius: showPopup ? 3 : 0)
+
+           if showPopup {
+               VStack (spacing: 30) {
+                   VStack {
+                       Text("Precio por kilogramo:")
+                           .textCase(.uppercase)
+                           .padding(.bottom, 10)
+                       ForEach(publication.cPriceRatio, id: \.self) { item in
+                           Text(item + " /kg").tag(item) // Remove the unnecessary type conversion
+                       }
+                       .foregroundColor(.black)
+                       TextField("Precio a ofertar ($ /kg)", text: $dOffertedPrice)
+                           .keyboardType(.numberPad)
+                           .frame(maxWidth: .infinity)
+                           .textFieldStyle(RoundedBorderTextFieldStyle())
+                   }
+                   VStack {
+                       Text("Toneladas a comprar")
+                       TextField("Cantidad en toneladas", text: $dRequestedQuantity)
+                           .keyboardType(.numberPad)
+                           .frame(maxWidth: .infinity)
+                           .textFieldStyle(RoundedBorderTextFieldStyle())
+                   }
+                   VStack {
+                       Text("Transporte:")
+                       Picker("Transporte", selection: $dSelectedTransport) {
+                           ForEach(Stock.transporte, id: \.self) { medio in
+                               Text(medio).tag(medio)
+                           }
+                       }
+                       .foregroundColor(.black)
+                       .pickerStyle(MenuPickerStyle())
+                       
+                       if dSelectedTransport == "A cargo de AFFIN" {
+                           Text("Comprador \(porcentajeIzquierdo)% - \(100 - porcentajeIzquierdo)% Vendedor")
+                           HStack {
+                               Button(action: {
+                                   if porcentajeIzquierdo > 0 {
+                                       porcentajeIzquierdo -= 1
+                                   }
+                               }) {
+                                   Image(systemName: "arrow.left")
+                               }
+                               
+                               Button(action: {
+                                   if porcentajeIzquierdo < 100 {
+                                       porcentajeIzquierdo += 1
+                                   }
+                               }) {
+                                   Image(systemName: "arrow.right")
+                               }
+                           }
+                           .padding(.leading, 20)
+                       }
+                   }
+                   Button(action: {
+                       // action here
+                       createInteraction()
+                   }) {
+                       Text("Enviar oferta")
+                           .frame(width: 250)
+                           .padding(10)
+                           .background(Color.accentColor)
+                           .foregroundColor(.white)
+                           .cornerRadius(8)
+                           .alert(isPresented: $showSuccessAlert) {
+                               Alert(
+                                   title: Text("¡Éxito!"),
+                                   message: Text("Oferta enviada exitosamente."),
+                                   dismissButton: .default(Text("OK"), action: {
+                                       // Reiniciar la alerta después de que se cierre
+                                       showSuccessAlert = false
+                                   })
+                               )
+                           }
+                   }
+                   .disabled(!isFormValid())
+                   .opacity(isFormValid() ? 1 : 0.5)
+                   
+                   Button(action: {
+                       showPopup = false
+                   }) {
+                       Text("Cerrar")
+                           .frame(width: 250)
+                           .padding(10)
+                           .background(Color.white)
+                           .foregroundColor(.red)
+                           .cornerRadius(8)
+                           .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.red, lineWidth: 2)
+                           )
+                   }
+               }
+               .frame(width: 300)
+               .padding()
+               .background(Color.white)
+               .clipShape(RoundedRectangle(cornerRadius: 16))
+               .shadow(color: .gray, radius: 8, x: 0, y: 4)
+           }
+        }
    }
+    func isFormValid() -> Bool {
+        return !dOffertedPrice.isEmpty && !dRequestedQuantity.isEmpty && !dSelectedTransport.isEmpty
+    }
+    
+    func createInteraction() {
+        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/interaction/create") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        var dTransportPercentages: String = "100-0"
+        
+        if dSelectedTransport == "A cargo de AFFIN" {
+            dTransportPercentages = "\(porcentajeIzquierdo)-\(100 - porcentajeIzquierdo)"
+        } else {
+            dTransportPercentages = "100-0"
+        }
+        print("buyerUserName", buyerUserName)
+        // Crear el diccionario con los datos formateados
+        let interactionInitData: [String: Any] = [
+            "buyer": buyerUserName,
+            "seller": publication.cPublisherUserName,
+            "price": dOffertedPrice,
+            "quantity": dRequestedQuantity,
+            "transport": dSelectedTransport,
+            "percentages": dTransportPercentages,
+            "last_mod": buyerUserName,
+            "accepted": false
+        ]
+
+        // Serializar los datos a JSON
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: interactionInitData, options: []) else {
+            print("Error al serializar los datos del producto")
+            return
+        }
+
+        request.httpBody = httpBody
+
+        // Crear y ejecutar la tarea de red
+        let session = URLSession.shared
+        session.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error al guardar los datos: \(error)")
+                return
+            }
+
+            guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                print("Error en la respuesta del servidor")
+                return
+            }
+
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    print("Respuesta del servidor: \(json)")
+                    // Aquí puedes manejar la respuesta del servidor
+                    showSuccessAlert = true
+//                    clearForm() MFM
+                }
+            } catch {
+                print("Error al decodificar la respuesta JSON")
+            }
+        }.resume()
+    }
 }
 
 
