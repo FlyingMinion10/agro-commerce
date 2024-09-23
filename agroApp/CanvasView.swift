@@ -186,7 +186,7 @@ struct DetailView: View {
     let screenHeight = UIScreen.main.bounds.height
     
     var publication: Publication // Assume you have a `Publication` model
-    let buyerUserName: String = ProfileView.profileName
+    let buyerUserName: String = ProfileView.userName
     
 
    
