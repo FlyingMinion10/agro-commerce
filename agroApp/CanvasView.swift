@@ -21,6 +21,7 @@ struct Publication: Identifiable, Codable {
     var cTags: [Tag]
 }
 
+// MARK: - CanvasView
 struct CanvasView: View {
     @State private var publications: [Publication] = []
     
@@ -172,7 +173,7 @@ struct CanvasView: View {
     }
 }
 
-
+// MARK: - DetailView
 struct DetailView: View {
     @State private var showSuccessAlert = false
     

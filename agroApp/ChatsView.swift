@@ -3,14 +3,25 @@ import Firebase
 import FirebaseFirestore
 import FirebaseAuth
 
+// Estructura auxiliar para manejar la conversión de 0/1 a false/true
+struct Archived: Decodable {
+    var value: Bool
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let intValue = try container.decode(Int.self)
+        self.value = intValue == 1
+    }
+}
+
 // Elementos de los chats
-struct Chat: Identifiable, Codable {
+struct Chat: Identifiable, Decodable {
     var id: Int?
     var interaction_id: Int
     var buyer: String
     var seller: String
-    var last_message: Timestamp
-    var archived: Bool
+    var last_message: String
+    var archived: Archived // Usar la estructura auxiliar
 }
 
 // MARK: - Vista principal de chats
@@ -19,8 +30,7 @@ struct ChatsView: View {
     @State private var activeChats: [Chat] = []
     @State private var archivedChats: [Chat] = []
 
-    @State private var newChatId: String? = nil
-
+    private let publisherUserName: String = ProfileView.userName
     
     var body: some View {
         NavigationView {
@@ -41,15 +51,15 @@ struct ChatsView: View {
 
                 // Sección de chats activos
                 Section(header: Text("Activos")) {
-                    ForEach(activeChats) { chat in
-                        NavigationLink(destination: ChatView(chatId: chat.interaction_id)) {
+                    ForEach(chats) { chat in
+                        NavigationLink(destination: ChatView(chat: chat)) {
                             HStack {
                                 Image(systemName: "person.circle.fill")
                                     .foregroundColor(.gray)
                                 VStack(alignment: .leading) {
-                                    Text("Chat con \(chat.buyer)")
+                                    Text("Chat con \(ProfileView.accountType == "Bodeguero" ? chat.seller : chat.buyer)")
                                         .font(.headline)
-                                    Text("chat.last_message")
+                                    Text(chat.last_message) // Mostrar el último mensaje
                                         .font(.subheadline)
                                         .foregroundColor(.gray)
                                 }
@@ -90,16 +100,20 @@ struct ChatsView: View {
             return
         }
         
+        print("User:", publisherUserName)
         // Construir la URL con el parámetro de consulta
         var urlComponents = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false)!
         urlComponents.queryItems = [
-            URLQueryItem(name: "user", value: ProfileView.userName)
+            URLQueryItem(name: "userName", value: publisherUserName),
+            URLQueryItem(name: "archived", value: "0")
         ]
         
         guard let url = urlComponents.url else {
             print("URL no válida")
             return
         }
+
+        print("URL final: \(url)") // PRINT FOR DEBUG
 
         var request = URLRequest(url: url)
         request.cachePolicy = .reloadIgnoringLocalCacheData
@@ -117,14 +131,14 @@ struct ChatsView: View {
 
             // Imprimir los datos recibidos en formato JSON
             if let jsonString = String(data: data, encoding: .utf8) {
-//                print("Datos recibidos del servidor: \(jsonString)") PRINT FOR DEBUG
+                print("Datos recibidos del servidor: \(jsonString)") // PRINT FOR DEBUG
             }
 
             do {
                 let decodedChats = try JSONDecoder().decode([Chat].self, from: data)
                 DispatchQueue.main.async {
                     self.chats = decodedChats
-//                    print("Publicaciones decodificadas correctamente: \(decodedPublications)") PRINT FOR DEBUG
+                    print("Chats decodificados correctamente: \(decodedChats)") // PRINT FOR DEBUG
                 }
             } catch {
                 print("Error al decodificar las publicaciones: \(error)")
@@ -147,7 +161,6 @@ struct ChatsView: View {
     }
 }
 
-// MARK: - Estructura de objeto de mensajes
 struct Message: Identifiable, Codable {
     var id: Int?
     var interaction_id: Int
@@ -171,7 +184,7 @@ struct ChatView: View {
     @State private var messages: [Message] = []
     @State private var messageText: String = ""
     let db = Firestore.firestore()
-    var chatId: Int
+    var chat: Chat // Assume you have a `Publication` model
 
     // Formatear fecha y mensaje
     private let messageFormatter: DateFormatter = {
@@ -198,7 +211,7 @@ struct ChatView: View {
                     Image(systemName: "person.circle.fill")
                         .foregroundColor(.gray)
                         .font(.system(size: 20))
-                    Text("Nombre de usuario")
+                    Text(ProfileView.accountType == "Bodeguero" ? chat.seller : chat.buyer)
                         .font(.headline)
                     Spacer()
                     //                Button(action: {
@@ -226,9 +239,8 @@ struct ChatView: View {
                     }
                 }
                     
-                    
+                Spacer()
 
-                // MARK: - Barra inferior de escritura de mensaje
                 HStack {
                     // Campo de texto para escribir mensaje
                     TextField("Escribe un mensaje", text: $messageText)
@@ -250,7 +262,7 @@ struct ChatView: View {
             .navigationBarHidden(true)
             .blur(radius: mostrarHStack ? 3 : 0) // Aplica desenfoque si mostrarHStack es true
             
-            // Paso 4: Agrega el HStack con una condición
+            // MARK: - Agrega el HStack con una condición
             if mostrarHStack {
                 Color.black.opacity(0.4)
                     .edgesIgnoringSafeArea(.all)
@@ -363,7 +375,7 @@ struct ChatView: View {
                 // New Mods
                 .shadow(radius: 10)
                 .transition(.opacity) // Transición suave
-            
+                
             }
         }
     }
