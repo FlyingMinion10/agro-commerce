@@ -283,7 +283,7 @@ struct ChatView: View {
                     }
                 HStack (alignment: .top) {
                     VStack {
-                        Text("Vendedor")
+                        Text("Yo mero")
                         Divider()
                         
                         if let firstMonopoly = monopoly.first, firstMonopoly.accepted {
@@ -306,7 +306,7 @@ struct ChatView: View {
                         } else if let firstMonopoly = monopoly.first, myUserName != firstMonopoly.last_mod {
                             Button(action: {
 
-                                // aceptarPropuesta()
+                                acceptDeal()
                                 mostrarMonopoly = false
                                 
                             }) {
@@ -370,7 +370,7 @@ struct ChatView: View {
                     Divider()
                     
                     VStack {
-                        Text("Comprador")
+                        Text("Interlocutor")
                         Divider()
                         
                         if let firstMonopoly = monopoly.first, myUserName != firstMonopoly.last_mod {
@@ -473,6 +473,54 @@ struct ChatView: View {
                 }
             }
         }.resume()
+    }
+
+    func acceptDeal() {
+        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/monopoly/accept") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+
+        // Crear el diccionario con los datos formateados
+        let idToAcceptDeal: [String: Any] = [
+            "interaction_id": m_id
+        ]
+
+        // Serializar los datos a JSON
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: idToAcceptDeal, options: []) else {
+            print("Error al serializar los datos para aceptar monopoly")
+            return
+        }
+
+        request.httpBody = httpBody
+
+        // Crear y ejecutar la tarea de red
+        let session = URLSession.shared
+        session.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error al guardar los datos: \(error)")
+                return
+            }
+
+            guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                print("Error en la respuesta del servidor")
+                return
+            }
+
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    print("Respuesta del servidor: \(json)")
+                    // Aquí puedes manejar la respuesta del servidor
+                }
+            } catch {
+                print("Error al decodificar la respuesta JSON")
+            }
+        }.resume()
+    }
+
+    func editMonopoly() {
+
     }
 }
 
