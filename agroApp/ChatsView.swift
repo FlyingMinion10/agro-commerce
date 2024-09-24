@@ -110,9 +110,9 @@ struct ChatsView: View {
             }
 
             // Imprimir los datos recibidos en formato JSON
-            if let jsonString = String(data: data, encoding: .utf8) {
-                print("Datos recibidos del servidor: \(jsonString)") // PRINT FOR DEBUG
-            }
+//            if let jsonString = String(data: data, encoding: .utf8) {
+//                print("Datos recibidos del servidor fetchChats: \(jsonString)") // PRINT FOR DEBUG
+//            }
 
             do {
                 let decodedChats = try JSONDecoder().decode([Chat].self, from: data)
@@ -161,15 +161,15 @@ struct ChatRow: View {
 }
 
 struct Message: Identifiable, Codable {
-    var id: Int?
-    var interaction_id: Int
+    var id: Int? // interaction_id ON server
     var sender: String
     var text: String
-    var timestamp: Date
+//    var timestamp: Date
 }
 
+// Modelo Monopoly
 struct Monopoly: Identifiable, Decodable {
-    var id: Int?
+    var id: Int? // interaction_id ON server
     var price: String
     var quantity: String
     var transport: String
@@ -183,30 +183,30 @@ struct ChatView: View {
     @Environment(\.dismiss) var dismiss
     let screenWidth = UIScreen.main.bounds.width
     private let myUserName: String = ProfileView.userName
-    
+
     @State private var monopoly: [Monopoly] = []
     @State private var messages: [Message] = []
     var m_id: Int // Assume you have a `Publication` model
     var m_buyer: String
     var m_seller: String
-    
-    // Negociacion Monopoly
+
+    // Negociación Monopoly
     @State private var mostrarMonopoly = false
     @State private var tons: String = ""
     @State private var price: String = ""
     @State private var transport: String = ""
-    @State private var porcentajeIzquierdo = 50
-    @State private var justEdited : Bool = false
+    @State private var percentages: String = ""
+    @State private var justEdited: Bool = false
 
     // Mensajes
     @State private var messageText: String = ""
-    
+
     var body: some View {
         ZStack {
             VStack {
                 // Barra superior del chat
                 HStack {
-                    // Boton para volver a la vista anterior
+                    // Botón para volver a la vista anterior
                     Button(action: {
                         dismiss()
                     }) {
@@ -221,14 +221,8 @@ struct ChatView: View {
                     Text(ProfileView.accountType == "Bodeguero" ? m_seller : m_buyer)
                         .font(.headline)
                     Spacer()
-                    //                Button(action: {
-                    //                    // Accion al presionar el boton
-                    //                }) {
-                    //                    Image(systemName: "video.fill")
-                    //                        .foregroundColor(.blue)
-                    //                }
                     Button(action: {
-                        // Accion al presionar el boton
+                        // Acción al presionar el botón
                     }) {
                         Image(systemName: "phone.fill")
                             .foregroundColor(.green)
@@ -238,16 +232,16 @@ struct ChatView: View {
                 .padding()
                 .background(Color.white)
                 VStack {
-                    // Tabla de negociación
+                    // Botón para mostrar el Monopoly
                     Button("Tablero de negociación") {
                         withAnimation {
                             mostrarMonopoly.toggle() // Cambia el estado para mostrar/ocultar el HStack
                         }
                     }
                 }
-                
+
                 Spacer()
-                
+
                 HStack {
                     // Campo de texto para escribir mensaje
                     TextField("Escribe un mensaje", text: $messageText)
@@ -263,7 +257,7 @@ struct ChatView: View {
                 }
                 .padding(10)
                 .background(Color.white)
-                
+
             }
             .onAppear {
                 fetchMonopoly()
@@ -271,7 +265,7 @@ struct ChatView: View {
             .background(Color.gray.opacity(0.1))
             .navigationBarHidden(true)
             .blur(radius: mostrarMonopoly ? 3 : 0) // Aplica desenfoque si mostrarMonopoly es true
-            
+
             // MARK: - Mostrar Monopoly
             if mostrarMonopoly {
                 Color.black.opacity(0.4)
@@ -281,11 +275,12 @@ struct ChatView: View {
                             mostrarMonopoly = false
                         }
                     }
-                HStack (alignment: .top) {
+                HStack(alignment: .top) {
+                    // Columna "Yo mero"
                     VStack {
                         Text("Yo mero")
                         Divider()
-                        
+
                         if let firstMonopoly = monopoly.first, firstMonopoly.accepted {
                             Image(systemName: "checkmark.circle.fill")
                                 .font(.system(size: 45))
@@ -293,22 +288,18 @@ struct ChatView: View {
                                 .padding(.vertical, 20)
                         } else if justEdited {
                             Button(action: {
-
-                                // sendPropuesta()
+                                editMonopoly()
                                 mostrarMonopoly = false
-                                
                             }) {
                                 Image(systemName: "paperplane.circle.fill")
                                     .font(.system(size: 45))
                                     .foregroundStyle(Color.gray)
                                     .padding(.vertical, 20)
-                            };
+                            }
                         } else if let firstMonopoly = monopoly.first, myUserName != firstMonopoly.last_mod {
                             Button(action: {
-
                                 acceptDeal()
                                 mostrarMonopoly = false
-                                
                             }) {
                                 Image(systemName: "checkmark.circle.fill")
                                     .font(.system(size: 45))
@@ -317,67 +308,92 @@ struct ChatView: View {
                             }
                         } else {
                             Button(action: {
-                                // Codigo para aceptar la desa
-//                                aceptarPropuesta()
+                                // Acción para aceptar la propuesta
                                 mostrarMonopoly = false
-                                
                             }) {
                                 Image(systemName: "paperplane.circle.fill")
                                     .font(.system(size: 45))
                                     .foregroundStyle(Color.blue)
                                     .padding(.vertical, 20)
-                            };
+                            }
                         }
-                        
+
                     }
                     .frame(maxWidth: .infinity) // Asegura el mismo ancho
-                    
+
                     Divider()
+                    // Columna "Negociación"
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Negociación")
                         Divider()
                         Text("Cantidad:")
                         HStack {
                             if let firstMonopoly = monopoly.first {
-                                Text(firstMonopoly.quantity)
+                                if myUserName != firstMonopoly.last_mod {
+                                    TextField("Cantidad", text: $tons)
+                                        .onChange(of: tons) { _ in
+                                            justEdited = true
+                                        }
+                                } else {
+                                    Text(firstMonopoly.quantity)
+                                }
                             }
                         }
 
                         Text("Precio:")
                         HStack {
                             if let firstMonopoly = monopoly.first {
-                                Text(firstMonopoly.price)
+                                if myUserName != firstMonopoly.last_mod {
+                                    TextField("Precio", text: $price)
+                                        .onChange(of: price) { _ in
+                                            justEdited = true
+                                        }
+                                } else {
+                                    Text(firstMonopoly.price)
+                                }
                             }
                         }
 
                         Text("Transporte:")
                         HStack {
                             if let firstMonopoly = monopoly.first {
-                                Text(firstMonopoly.transport)
+                                if myUserName != firstMonopoly.last_mod {
+                                    TextField("Transporte", text: $transport)
+                                        .onChange(of: transport) { _ in
+                                            justEdited = true
+                                        }
+                                } else {
+                                    Text(firstMonopoly.transport)
+                                }
                             }
                         }
-                        
+
                         if let firstMonopoly = monopoly.first, firstMonopoly.transport == "A cargo de AFFIN" {
                             Text("Porcentajes:")
                             HStack {
-                                Text(firstMonopoly.percentages)
+                                if myUserName != firstMonopoly.last_mod {
+                                    TextField("Porcentajes", text: $percentages)
+                                        .onChange(of: percentages) { _ in
+                                            justEdited = true
+                                        }
+                                } else {
+                                    Text(firstMonopoly.percentages)
+                                }
                             }
                         }
-                        
-                        
+
                     }
                     .frame(width: 120) // Asegura el mismo ancho
                     Divider()
-                    
+                    // Columna "Interlocutor"
                     VStack {
                         Text("Interlocutor")
                         Divider()
-                        
+
                         if let firstMonopoly = monopoly.first, myUserName != firstMonopoly.last_mod {
                             Button(action: {
-                                // aceptarPropuesta()
+                                // Acción para aceptar la propuesta
                                 mostrarMonopoly = false
-                                
                             }) {
                                 Image(systemName: "checkmark.circle.fill")
                                     .font(.system(size: 45))
@@ -386,43 +402,42 @@ struct ChatView: View {
                             }
                         } else {
                             Button(action: {
-                                // aceptarPropuesta()
+                                // Acción para aceptar la propuesta
                                 mostrarMonopoly = false
-                                
                             }) {
                                 Image(systemName: "checkmark.circle.fill")
                                     .font(.system(size: 45))
                                     .foregroundStyle(Color.gray)
                                     .padding(.vertical, 20)
-                            };
+                            }
                         }
                     }
                     .frame(maxWidth: .infinity) // Asegura el mismo ancho
                 }
                 .padding(10)
-                .frame(width: screenWidth-40, height: 300)
+                .frame(width: screenWidth - 40, height: 300)
                 .background(Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
-                // New Mods
                 .shadow(radius: 10)
                 .transition(.opacity) // Transición suave
-                
+
             }
         }
     }
-//    MARK: - Funcion para obtener el monopoly
+
+    // MARK: - Función para obtener el Monopoly
     func fetchMonopoly() {
         guard let baseUrl = URL(string: "https://my-backend-production.up.railway.app/api/monopoly/get") else {
             print("URL no válida")
             return
         }
-        
+
         // Construir la URL con el parámetro de consulta
         var urlComponents = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false)!
         urlComponents.queryItems = [
             URLQueryItem(name: "interaction_id", value: String(m_id)), // Convertir Int? a String?
         ]
-        
+
         guard let url = urlComponents.url else {
             print("URL no válida")
             return
@@ -445,15 +460,22 @@ struct ChatView: View {
             }
 
             // Imprimir los datos recibidos en formato JSON
-            if let jsonString = String(data: data, encoding: .utf8) {
-                print("Datos recibidos del servidor Monopoly: \(jsonString)") // PRINT FOR DEBUG
-            }
+//            if let jsonString = String(data: data, encoding: .utf8) {
+//                print("Datos recibidos del servidor Monopoly: \(jsonString)") // PRINT FOR DEBUG
+//            }
 
             do {
                 let decodedMonopoly = try JSONDecoder().decode([Monopoly].self, from: data)
                 DispatchQueue.main.async {
                     self.monopoly = decodedMonopoly
                     print("Monopoly decodificado correctamente: \(decodedMonopoly)") // PRINT FOR DEBUG
+
+                    if let firstMonopoly = decodedMonopoly.first {
+                        self.tons = firstMonopoly.quantity
+                        self.price = firstMonopoly.price
+                        self.transport = firstMonopoly.transport
+                        self.percentages = firstMonopoly.percentages
+                    }
                 }
             } catch {
                 print("Error al decodificar las publicaciones: \(error)")
@@ -475,12 +497,12 @@ struct ChatView: View {
         }.resume()
     }
 
+    // MARK: - Función para aceptar el trato
     func acceptDeal() {
         guard let url = URL(string: "https://my-backend-production.up.railway.app/api/monopoly/accept") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
 
         // Crear el diccionario con los datos formateados
         let idToAcceptDeal: [String: Any] = [
@@ -504,7 +526,7 @@ struct ChatView: View {
             }
 
             guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-                print("Error en la respuesta del servidor")
+                print("Error en la respuesta del servidor acceptDeal()")
                 return
             }
 
@@ -519,8 +541,53 @@ struct ChatView: View {
         }.resume()
     }
 
+    // MARK: - Función para editar el Monopoly
     func editMonopoly() {
+        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/monopoly/edit") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
+        // Crear el diccionario con los datos actualizados
+        let monopolyData: [String: Any] = [
+            "interaction_id": m_id,
+            "price": price,
+            "quantity": tons,
+            "transport": transport,
+            "percentages": percentages,
+            "last_mod": myUserName
+        ]
+
+        // Serializar los datos a JSON
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: monopolyData, options: []) else {
+            print("Error al serializar los datos para editar monopoly")
+            return
+        }
+
+        request.httpBody = httpBody
+
+        // Crear y ejecutar la tarea de red
+        let session = URLSession.shared
+        session.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error al guardar los datos: \(error)")
+                return
+            }
+
+            guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                print("Error en la respuesta del servidor editMonopoly()")
+                return
+            }
+
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    print("Respuesta del servidor: \(json)")
+                    // Aquí puedes manejar la respuesta del servidor
+                }
+            } catch {
+                print("Error al decodificar la respuesta JSON")
+            }
+        }.resume()
     }
 }
 
