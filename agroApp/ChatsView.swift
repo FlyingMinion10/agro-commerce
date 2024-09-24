@@ -21,7 +21,7 @@ struct Chat: Identifiable, Decodable {
     var seller: String
     var buyer_name: String
     var seller_name: String
-    var last_message: String
+    var item_preview: String
     var archived: Archived // Usar la estructura auxiliar
 }
 
@@ -118,7 +118,7 @@ struct ChatsView: View {
                 let decodedChats = try JSONDecoder().decode([Chat].self, from: data)
                 DispatchQueue.main.async {
                     self.chats = decodedChats
-                    print("Chats decodificados correctamente: \(decodedChats)") // PRINT FOR DEBUG
+                    print("Chats decodificados correctamente ") // PRINT FOR DEBUG
                 }
             } catch {
                 print("Error al decodificar los chats: \(error)")
@@ -147,12 +147,14 @@ struct ChatRow: View {
     
     var body: some View {
         HStack {
-            Image(systemName: "person.circle.fill")
-                .foregroundColor(.gray)
+            Image(chat.item_preview.split(separator: " ").first.map(String.init) ?? "")
+                .resizable()
+                .frame(width: 40, height: 40)
+//                .foregroundColor(.gray)
             VStack(alignment: .leading) {
                 Text("Chat con \(myAccountType == "Bodeguero" ? chat.seller_name : chat.buyer_name)")
                     .font(.headline)
-                Text(chat.last_message) // Mostrar el último mensaje
+                Text(chat.item_preview) // Mostrar el último mensaje
                     .font(.subheadline)
                     .foregroundColor(.gray)
             }
@@ -277,7 +279,6 @@ struct ChatView: View {
                     // Campo de texto para escribir mensaje
                     TextField("Escribe un mensaje...", text: $newMessageText, onCommit: {
                         sendMessageAction()
-                        newMessageText = ""
                     })
                     .padding(10)
                     .background(Color.gray.opacity(0.2))
@@ -691,9 +692,15 @@ struct ChatView: View {
             }
 
             do {
-                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                    print("Respuesta del servidor: \(json)")
-                    // Aquí puedes manejar la respuesta del servidor
+//              Aquí puedes manejar la respuesta del servidor
+                print("Monopoly editado exitosamente")
+                // Una vez que la solicitud se complete exitosamente, llamar a fetchMonopoly() en el hilo principal
+                DispatchQueue.main.async {
+                    self.fetchMonopoly()
+                    // Opcionalmente, restablecer el estado de justEdited si es necesario
+                    self.justEdited = false
+                    // Opcionalmente, puedes cerrar la vista de Monopoly si así lo deseas
+                    self.mostrarMonopoly = false
                 }
             } catch {
                 print("Error al decodificar la respuesta JSON")
@@ -738,10 +745,9 @@ struct ChatView: View {
             }
     
             do {
-                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                    print("Respuesta del servidor: \(json)")
-                    // Aquí puedes manejar la respuesta del servidor
-                }
+//                Aquí puedes manejar la respuesta del servidor
+                print("Mensaje enviado exitosamente")
+                self.newMessageText = ""
             } catch {
                 print("Error al decodificar la respuesta JSON")
             }

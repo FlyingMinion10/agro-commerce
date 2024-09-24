@@ -119,7 +119,8 @@ struct CanvasView: View {
         // Construir la URL con el parámetro de consulta
         var urlComponents = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false)!
         urlComponents.queryItems = [
-            URLQueryItem(name: "publisherType", value: selectedDisplayView == .buy ? "Productor" : "Bodeguero")
+            URLQueryItem(name: "filterType", value: "publisherType"),
+            URLQueryItem(name: "primaryFilter", value: selectedDisplayView == .buy ? "Productor" : "Bodeguero")
         ]
         
         guard let url = urlComponents.url else {
@@ -313,7 +314,7 @@ struct DetailView: View {
                            HStack {
                                Button(action: {
                                    if porcentajeIzquierdo > 0 {
-                                       porcentajeIzquierdo -= 1
+                                       porcentajeIzquierdo += 1
                                    }
                                }) {
                                    Image(systemName: "arrow.left")
@@ -321,7 +322,7 @@ struct DetailView: View {
                                
                                Button(action: {
                                    if porcentajeIzquierdo < 100 {
-                                       porcentajeIzquierdo += 1
+                                       porcentajeIzquierdo -= 1
                                    }
                                }) {
                                    Image(systemName: "arrow.right")
@@ -381,19 +382,22 @@ struct DetailView: View {
         return !dOffertedPrice.isEmpty && !dRequestedQuantity.isEmpty && !dSelectedTransport.isEmpty
     }
     
+    // MARK: - Create interaction
     func createInteraction() {
         guard let url = URL(string: "https://my-backend-production.up.railway.app/api/interaction/create") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
+        // Establecer valores no definidos arriba
         var dTransportPercentages: String = "100-0"
-        
         if dSelectedTransport == "A cargo de AFFIN" {
             dTransportPercentages = "\(porcentajeIzquierdo)-\(100 - porcentajeIzquierdo)"
         } else {
             dTransportPercentages = "100-0"
         }
+        let item = publication.cSelectedProduct + " " + publication.cSelectedVariety
+        
         print("buyerUserName", buyerUserName)
         // Crear el diccionario con los datos formateados
         let interactionInitData: [String: Any] = [
@@ -406,7 +410,8 @@ struct DetailView: View {
             "transport": dSelectedTransport,
             "percentages": dTransportPercentages,
             "last_mod": buyerUserName,
-            "accepted": false
+            "accepted": false,
+            "item": item
         ]
 
         // Serializar los datos a JSON

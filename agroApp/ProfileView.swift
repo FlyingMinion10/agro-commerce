@@ -1,5 +1,18 @@
 import SwiftUI
 
+//struct Publication: Identifiable, Codable {
+//    var id: Int?
+//    var cPublisherName: String
+//    var cPublisherType: String
+//    var cPublisherUserName: String // Added for test
+//    var cSelectedProduct: String
+//    var cSelectedVariety: String
+//    var cProductDescription: String
+//    var cProductQuantity: String
+//    var cPriceRatio: [String]
+//    var cTags: [Tag]
+//}
+
 struct ProfileView: View {
     @Binding var isAuthenticated: Bool
     let screenWidth = UIScreen.main.bounds.width // Obtiene el ancho de la pantalla
@@ -12,6 +25,8 @@ struct ProfileView: View {
     let profileBio: String = "Biografía del perfil"
     let followersCount: Int = 1200
     let postsCount: Int = 7
+    
+    @State private var myPublications: [Publication] = []
 
     var body: some View {
         NavigationView {
@@ -127,25 +142,124 @@ struct ProfileView: View {
                     .padding(.bottom, 20)
                     .padding(.horizontal, 40)
                     
-                    // Publicaciones
+                    // MARK: - Mis Publicaciones
                     VStack {
-                        LazyVGrid(columns: [GridItem(), GridItem()], spacing: 8) {
-                            ForEach(0..<10, id: \.self) { index in
-                                // Mostrar imagen de publicación
-                                VStack {
-                                    Image("postImage\(index)")
-                                        .resizable()
-                                        .scaledToFit()
+                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
+                            ForEach(myPublications) { publication in
+                                NavigationLink(destination: DetailView(publication: publication)) {
+                                    VStack() {
+                                        Image(publication.cSelectedProduct)
+                                            .resizable()
+                                            .scaledToFit()
+                                        Text(publication.cSelectedProduct + " " + publication.cSelectedVariety)
+                                            .font(.headline)
+                                        Divider()
+                                        HStack {
+                                            Image("TuLogo")
+                                                .resizable()
+                                                .frame(width: 50, height: 50)
+                                            Spacer()
+                                            VStack {
+                                                HStack {
+                                                    ForEach(1...5, id: \.self) { index in
+                                                        Image(systemName: index <= 4 ? "star.fill" : "star")
+                                                            .foregroundColor(index <= 4 ? .yellow : .gray)
+                                                            .padding(-5)
+                                                    }
+                                                }
+                                                .frame(width: 50)
+                                                Text(publication.cPublisherName)
+                                            }
+                                            Spacer()
+                                        }
+                                        Divider()
+                                        
+                                        Text("$\(publication.cPriceRatio[0]) /kg")
+                                        
+                                        Divider()
+                                        Text("\(publication.cProductQuantity) Toneladas")
+                                    }
+                                    .foregroundColor(.black)
+                                    .frame(width: 140, height: 250)
+                                    .padding()
+                                    .background(Color.white)
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
                                 }
-                                .clipShape(RoundedRectangle(cornerRadius: 16))
                             }
                         }
-                        .padding(8)
+                        .padding()
                     }
                     .background(Color.backstage)
                 }
             }
+            .onAppear() {
+                fetchMyPublications()
+            }
         }
+    }
+    
+    // MARK: - Funcion para obtener pubs
+    func fetchMyPublications() {
+        guard let baseUrl = URL(string: "https://my-backend-production.up.railway.app/api/publications/get") else {
+            print("URL no válida")
+            return
+        }
+        
+        // Construir la URL con el parámetro de consulta
+        var urlComponents = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false)!
+        urlComponents.queryItems = [
+            URLQueryItem(name: "filterType", value: "publisherUserName"),
+            URLQueryItem(name: "primaryFilter", value: ProfileView.userName)
+        ]
+        
+        guard let url = urlComponents.url else {
+            print("URL no válida")
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error fetching publications: \(error.localizedDescription)")
+                return
+            }
+
+            guard let data = data else {
+                print("No se recibieron datos.")
+                return
+            }
+
+            // Imprimir los datos recibidos en formato JSON PRINT FOR DEBUG
+//            if let jsonString = String(data: data, encoding: .utf8) {
+//               print("Datos recibidos del servidor: \(jsonString)")
+//            }
+
+            do {
+                let decodedPublications = try JSONDecoder().decode([Publication].self, from: data)
+                DispatchQueue.main.async {
+                    self.myPublications = decodedPublications
+//                    print("Publicaciones decodificadas correctamente: \(decodedPublications)") PRINT FOR DEBUG
+                }
+            } catch {
+                print("Error al decodificar las publicaciones: \(error)")
+                if let decodingError = error as? DecodingError {
+                    switch decodingError {
+                    case .typeMismatch(let key, let context):
+                        print("Tipo no coincide para la clave \(key), \(context.debugDescription)")
+                    case .valueNotFound(let key, let context):
+                        print("Valor no encontrado para la clave \(key), \(context.debugDescription)")
+                    case .keyNotFound(let key, let context):
+                        print("Clave no encontrada \(key), \(context.debugDescription)")
+                    case .dataCorrupted(let context):
+                        print("Datos corruptos: \(context.debugDescription)")
+                    @unknown default:
+                        print("Error desconocido de decodificación")
+                    }
+                }
+            }
+        }.resume()
     }
 }
 

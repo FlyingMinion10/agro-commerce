@@ -4,7 +4,7 @@ import FirebaseAuth
 
 struct ContentView: View {
     @State private var isAuthenticated = false
-    @State private var selectedTab = 3
+    @State private var selectedTab = 4
 
     var body: some View {
         VStack {
@@ -81,7 +81,7 @@ struct MainTabView: View {
 
     }
     func authenticateAnonymously() async {
-        print("Deberia autenticarse en Firebase.")
+        // print("Deberia autenticarse en Firebase.")
         // do {
         //     let authResult = try await Auth.auth().signInAnonymously()
         //     let user = authResult.user
