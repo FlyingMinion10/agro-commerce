@@ -42,7 +42,7 @@ struct ChatsView: View {
                 // Sección de chats activos
                 Section(header: Text("Activos")) {
                     ForEach(chats) { chat in
-                        NavigationLink(destination: ChatView(m_id: chat.id!, m_buyer: chat.buyer, m_seller: chat.seller)) {
+                        NavigationLink(destination: ChatView(m_id: chat.id!, m_buyerName: chat.buyer_name, m_sellerName: chat.seller_name)) {
                             ChatRow(chat: chat, myAccountType: myAccountType)
                         }
                         .swipeActions {
@@ -93,7 +93,7 @@ struct ChatsView: View {
             return
         }
 
-        print("URL final: \(url)") // PRINT FOR DEBUG
+        // print("URL final: \(url)") // PRINT FOR DEBUG
 
         var request = URLRequest(url: url)
         request.cachePolicy = .reloadIgnoringLocalCacheData
@@ -121,7 +121,7 @@ struct ChatsView: View {
                     print("Chats decodificados correctamente: \(decodedChats)") // PRINT FOR DEBUG
                 }
             } catch {
-                print("Error al decodificar las publicaciones: \(error)")
+                print("Error al decodificar los chats: \(error)")
                 if let decodingError = error as? DecodingError {
                     switch decodingError {
                     case .typeMismatch(let key, let context):
@@ -187,8 +187,8 @@ struct ChatView: View {
     @State private var monopoly: [Monopoly] = []
     @State private var messages: [Message] = []
     var m_id: Int // Assume you have a `Publication` model
-    var m_buyer: String
-    var m_seller: String
+    var m_buyerName: String
+    var m_sellerName: String
 
     // Negociación Monopoly
     @State private var mostrarMonopoly = false
@@ -218,7 +218,7 @@ struct ChatView: View {
                     Image(systemName: "person.circle.fill")
                         .foregroundColor(.gray)
                         .font(.system(size: 20))
-                    Text(ProfileView.accountType == "Bodeguero" ? m_seller : m_buyer)
+                    Text(ProfileView.accountType == "Bodeguero" ? m_sellerName : m_buyerName)
                         .font(.headline)
                     Spacer()
                     Button(action: {
@@ -241,6 +241,28 @@ struct ChatView: View {
                 }
 
                 Spacer()
+                // MARK: - TRABAJANDO AQUI MFR
+                List {
+                    ForEach(messages) { message in
+                        HStack {
+                            if message.sender == myUserName {
+                                Spacer()
+                                Text(message.text)
+                                    .padding()
+                                    .background(Color.accentColor.opacity(1))
+                                    .cornerRadius(10)
+                                    .foregroundColor(.white)
+                            } else {
+                                Text(message.text)
+                                    .padding()
+                                    .background(Color.gray.opacity(0.2))
+                                    .cornerRadius(10)
+                                    .foregroundColor(.black)
+                                Spacer()
+                            }
+                        }
+                    }
+                }
 
                 HStack {
                     // Campo de texto para escribir mensaje
@@ -251,7 +273,7 @@ struct ChatView: View {
                     // Botón de enviar
                     Button(action: {}) {
                         Image(systemName: "arrow.up.circle.fill")
-                            .foregroundColor(.blue)
+                            .foregroundColor(.accentColor)
                             .font(.system(size: 30))
                     }
                 }
@@ -261,6 +283,7 @@ struct ChatView: View {
             }
             .onAppear {
                 fetchMonopoly()
+                fetchMessages()
             }
             .background(Color.gray.opacity(0.1))
             .navigationBarHidden(true)
@@ -425,7 +448,7 @@ struct ChatView: View {
         }
     }
 
-    // MARK: - Función para obtener el Monopoly
+    // MARK: - Función para obtener Mply
     func fetchMonopoly() {
         guard let baseUrl = URL(string: "https://my-backend-production.up.railway.app/api/monopoly/get") else {
             print("URL no válida")
@@ -443,7 +466,7 @@ struct ChatView: View {
             return
         }
 
-        print("URL final: \(url)") // PRINT FOR DEBUG
+        // print("URL final: \(url)") // PRINT FOR DEBUG
 
         var request = URLRequest(url: url)
         request.cachePolicy = .reloadIgnoringLocalCacheData
@@ -478,7 +501,7 @@ struct ChatView: View {
                     }
                 }
             } catch {
-                print("Error al decodificar las publicaciones: \(error)")
+                print("Error al decodificar el monopoly: \(error)")
                 if let decodingError = error as? DecodingError {
                     switch decodingError {
                     case .typeMismatch(let key, let context):
@@ -497,6 +520,72 @@ struct ChatView: View {
         }.resume()
     }
 
+    // MARK: - Función para obtener Msj
+    func fetchMessages() {
+        guard let baseUrl = URL(string: "https://my-backend-production.up.railway.app/api/messages/get") else {
+            print("URL no válida")
+            return
+        }
+
+        // Construir la URL con el parámetro de consulta
+        var urlComponents = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false)!
+        urlComponents.queryItems = [
+            URLQueryItem(name: "interaction_id", value: String(m_id)), // Convertir Int? a String?
+        ]
+
+        guard let url = urlComponents.url else {
+            print("URL no válida")
+            return
+        }
+
+        // print("URL final: \(url)") // PRINT FOR DEBUG
+
+        var request = URLRequest(url: url)
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error fetching publications: \(error.localizedDescription)")
+                return
+            }
+
+            guard let data = data else {
+                print("No se recibieron datos Monopoly.")
+                return
+            }
+
+            // Imprimir los datos recibidos en formato JSON
+            if let jsonString = String(data: data, encoding: .utf8) {
+                print("Datos recibidos del servidor Messages: \(jsonString)") // PRINT FOR DEBUG
+            }
+
+            do {
+                let decodedMessages = try JSONDecoder().decode([Message].self, from: data)
+                DispatchQueue.main.async {
+                    self.messages = decodedMessages
+                    print("Mensajes decodificado correctamente: \(decodedMessages)") // PRINT FOR DEBUG
+
+                }
+            } catch {
+                print("Error al decodificar los mensajes: \(error)")
+                if let decodingError = error as? DecodingError {
+                    switch decodingError {
+                    case .typeMismatch(let key, let context):
+                        print("Tipo no coincide para la clave \(key), \(context.debugDescription)")
+                    case .valueNotFound(let key, let context):
+                        print("Valor no encontrado para la clave \(key), \(context.debugDescription)")
+                    case .keyNotFound(let key, let context):
+                        print("Clave no encontrada \(key), \(context.debugDescription)")
+                    case .dataCorrupted(let context):
+                        print("Datos corruptos: \(context.debugDescription)")
+                    @unknown default:
+                        print("Error desconocido de decodificación")
+                    }
+                }
+            }
+        }.resume()
+    }
+    
     // MARK: - Función para aceptar el trato
     func acceptDeal() {
         guard let url = URL(string: "https://my-backend-production.up.railway.app/api/monopoly/accept") else { return }
@@ -541,7 +630,7 @@ struct ChatView: View {
         }.resume()
     }
 
-    // MARK: - Función para editar el Monopoly
+    // MARK: - Función para editar Mply
     func editMonopoly() {
         guard let url = URL(string: "https://my-backend-production.up.railway.app/api/monopoly/edit") else { return }
         var request = URLRequest(url: url)
@@ -589,6 +678,8 @@ struct ChatView: View {
             }
         }.resume()
     }
+    
+    
 }
 
 struct ChatsView_Previews: PreviewProvider {
