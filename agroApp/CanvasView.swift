@@ -188,7 +188,7 @@ struct DetailView: View {
     
     var publication: Publication // Assume you have a `Publication` model
     let buyerUserName: String = ProfileView.userName
-    
+    let buyerProfileName: String = ProfileView.profileName
 
    
    var body: some View {
@@ -399,6 +399,8 @@ struct DetailView: View {
         let interactionInitData: [String: Any] = [
             "buyer": buyerUserName,
             "seller": publication.cPublisherUserName,
+            "buyer_name": buyerProfileName,
+            "seller_name": publication.cPublisherName,
             "price": dOffertedPrice,
             "quantity": dRequestedQuantity,
             "transport": dSelectedTransport,

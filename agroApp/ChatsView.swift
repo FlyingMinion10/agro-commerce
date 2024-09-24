@@ -17,9 +17,10 @@ struct Archived: Decodable {
 // Elementos de los chats
 struct Chat: Identifiable, Decodable {
     var id: Int?
-    var interaction_id: Int
     var buyer: String
     var seller: String
+    var buyer_name: String
+    var seller_name: String
     var last_message: String
     var archived: Archived // Usar la estructura auxiliar
 }
@@ -30,40 +31,19 @@ struct ChatsView: View {
     @State private var activeChats: [Chat] = []
     @State private var archivedChats: [Chat] = []
 
-    private let publisherUserName: String = ProfileView.userName
+    private let myUserName: String = ProfileView.userName
+    private let myAccountType: String = ProfileView.accountType
     
     var body: some View {
         NavigationView {
             List {
                 // Sección de chats archivados
-//                Section(header: Text("Archivados")) {
-//                    NavigationLink(destination: ArchivedView()) {
-//                        HStack {
-//                            Image(systemName: "archivebox.fill")
-//                                .foregroundColor(.gray)
-//                            VStack(alignment: .leading) {
-//                                Text("Chats archivados")
-//                                    .font(.headline)
-//                            }
-//                        }
-//                    }
-//                }
 
                 // Sección de chats activos
                 Section(header: Text("Activos")) {
                     ForEach(chats) { chat in
-                        NavigationLink(destination: ChatView(chat: chat)) {
-                            HStack {
-                                Image(systemName: "person.circle.fill")
-                                    .foregroundColor(.gray)
-                                VStack(alignment: .leading) {
-                                    Text("Chat con \(ProfileView.accountType == "Bodeguero" ? chat.seller : chat.buyer)")
-                                        .font(.headline)
-                                    Text(chat.last_message) // Mostrar el último mensaje
-                                        .font(.subheadline)
-                                        .foregroundColor(.gray)
-                                }
-                            }
+                        NavigationLink(destination: ChatView(m_id: chat.id!, m_buyer: chat.buyer, m_seller: chat.seller)) {
+                            ChatRow(chat: chat, myAccountType: myAccountType)
                         }
                         .swipeActions {
                             Button(action: {
@@ -100,11 +80,11 @@ struct ChatsView: View {
             return
         }
         
-        print("User:", publisherUserName)
+        print("User:", myUserName)
         // Construir la URL con el parámetro de consulta
         var urlComponents = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false)!
         urlComponents.queryItems = [
-            URLQueryItem(name: "userName", value: publisherUserName),
+            URLQueryItem(name: "userName", value: myUserName),
             URLQueryItem(name: "archived", value: "0")
         ]
         
@@ -161,6 +141,25 @@ struct ChatsView: View {
     }
 }
 
+struct ChatRow: View {
+    var chat: Chat
+    var myAccountType: String
+    
+    var body: some View {
+        HStack {
+            Image(systemName: "person.circle.fill")
+                .foregroundColor(.gray)
+            VStack(alignment: .leading) {
+                Text("Chat con \(myAccountType == "Bodeguero" ? chat.seller_name : chat.buyer_name)")
+                    .font(.headline)
+                Text(chat.last_message) // Mostrar el último mensaje
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+            }
+        }
+    }
+}
+
 struct Message: Identifiable, Codable {
     var id: Int?
     var interaction_id: Int
@@ -169,30 +168,38 @@ struct Message: Identifiable, Codable {
     var timestamp: Date
 }
 
+struct Monopoly: Identifiable, Decodable {
+    var id: Int?
+    var price: String
+    var quantity: String
+    var transport: String
+    var percentages: String
+    var accepted: Bool
+    var last_mod: String
+}
+
 // MARK: - Vista individual del chat
 struct ChatView: View {
     @Environment(\.dismiss) var dismiss
-    let screenWidth = UIScreen.main.bounds.width 
-    let publisherType: String = UserData.shared.accountType
+    let screenWidth = UIScreen.main.bounds.width
+    private let myUserName: String = ProfileView.userName
+    
+    @State private var monopoly: [Monopoly] = []
+    @State private var messages: [Message] = []
+    var m_id: Int // Assume you have a `Publication` model
+    var m_buyer: String
+    var m_seller: String
+    
     // Negociacion Monopoly
-    @State private var mostrarHStack = false
+    @State private var mostrarMonopoly = false
     @State private var tons: String = ""
     @State private var price: String = ""
     @State private var transport: String = ""
     @State private var porcentajeIzquierdo = 50
-    // Mensajes
-    @State private var messages: [Message] = []
-    @State private var messageText: String = ""
-    let db = Firestore.firestore()
-    var chat: Chat // Assume you have a `Publication` model
+    @State private var justEdited : Bool = false
 
-    // Formatear fecha y mensaje
-    private let messageFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .short
-        return formatter
-    }()
+    // Mensajes
+    @State private var messageText: String = ""
     
     var body: some View {
         ZStack {
@@ -211,7 +218,7 @@ struct ChatView: View {
                     Image(systemName: "person.circle.fill")
                         .foregroundColor(.gray)
                         .font(.system(size: 20))
-                    Text(ProfileView.accountType == "Bodeguero" ? chat.seller : chat.buyer)
+                    Text(ProfileView.accountType == "Bodeguero" ? m_seller : m_buyer)
                         .font(.headline)
                     Spacer()
                     //                Button(action: {
@@ -234,13 +241,13 @@ struct ChatView: View {
                     // Tabla de negociación
                     Button("Tablero de negociación") {
                         withAnimation {
-                            mostrarHStack.toggle() // Cambia el estado para mostrar/ocultar el HStack
+                            mostrarMonopoly.toggle() // Cambia el estado para mostrar/ocultar el HStack
                         }
                     }
                 }
-                    
+                
                 Spacer()
-
+                
                 HStack {
                     // Campo de texto para escribir mensaje
                     TextField("Escribe un mensaje", text: $messageText)
@@ -256,115 +263,139 @@ struct ChatView: View {
                 }
                 .padding(10)
                 .background(Color.white)
-
+                
+            }
+            .onAppear {
+                fetchMonopoly()
             }
             .background(Color.gray.opacity(0.1))
             .navigationBarHidden(true)
-            .blur(radius: mostrarHStack ? 3 : 0) // Aplica desenfoque si mostrarHStack es true
+            .blur(radius: mostrarMonopoly ? 3 : 0) // Aplica desenfoque si mostrarMonopoly es true
             
-            // MARK: - Agrega el HStack con una condición
-            if mostrarHStack {
+            // MARK: - Mostrar Monopoly
+            if mostrarMonopoly {
                 Color.black.opacity(0.4)
                     .edgesIgnoringSafeArea(.all)
                     .onTapGesture {
                         withAnimation {
-                            mostrarHStack = false
+                            mostrarMonopoly = false
                         }
                     }
                 HStack (alignment: .top) {
                     VStack {
                         Text("Vendedor")
                         Divider()
-                        Button(action: {
-                            if publisherType == "Productor" {
-                                mostrarHStack = false
-                            }
-                        }) {
-                            Image(systemName: "checkmark.circle.fill")
-                                .font(.system(size: 45))
-                                .foregroundStyle(Color.gray)
-                                .padding(.vertical, 20)
-                        }
-                        //                        Spacer()
-                        Button(action: {
-                            if publisherType == "Productor" {
-                                mostrarHStack = false
-                            }
-                        }) {
-                            Image(systemName: "paperplane.circle.fill")
-                                .font(.system(size: 45))
-                                .foregroundStyle(Color.blue)
-                                .padding(.vertical, 20)
-                        }
-                        //                        Spacer()
-                    }
-                    .frame(maxWidth: .infinity) // Asegura el mismo ancho
-                    Divider()
-                    VStack(alignment: .leading) {
-                        Text("Negociación")
-                        Divider()
-                        Text("Cantidad:")
-                        HStack {
-                            TextField("Toneladas", text: $tons)
-                            Text("ton")
-                        }
-                        Spacer()
-                        Text("Precio:")
-                        HStack {
-                            Text("$")
-                            TextField("MXN", text: $price)
-                            Text("/kg")
-                        }
-                        Spacer()
-                        Text("Transporte:")
-                        Text("\(porcentajeIzquierdo)% - \(100 - porcentajeIzquierdo)%")
-                        HStack {
-                            Button(action: {
-                                if porcentajeIzquierdo > 0 {
-                                    porcentajeIzquierdo -= 1
-                                }
-                            }) {
-                                Image(systemName: "arrow.left")
-                            }
-                            
-                            Button(action: {
-                                if porcentajeIzquierdo < 100 {
-                                    porcentajeIzquierdo += 1
-                                }
-                            }) {
-                                Image(systemName: "arrow.right")
-                            }
-                        }
-                        .padding(.leading, 20)
-                        Spacer()
-                    }
-                    .frame(width: 120) // Asegura el mismo ancho
-                    Divider()
-                    VStack {
-                        Text("Comprador")
-                        Divider()
-                        Button(action: {
-                            if publisherType == "Bodeguero" {
-                                mostrarHStack = false
-                            }
-                        }) {
+                        
+                        if let firstMonopoly = monopoly.first, firstMonopoly.accepted {
                             Image(systemName: "checkmark.circle.fill")
                                 .font(.system(size: 45))
                                 .foregroundStyle(Color.green)
                                 .padding(.vertical, 20)
-                        }
-                        //                        Spacer()
-                        Button(action: {
-                            if publisherType == "Bodeguero" {
-                                mostrarHStack = false
+                        } else if justEdited {
+                            Button(action: {
+
+                                // sendPropuesta()
+                                mostrarMonopoly = false
+                                
+                            }) {
+                                Image(systemName: "paperplane.circle.fill")
+                                    .font(.system(size: 45))
+                                    .foregroundStyle(Color.gray)
+                                    .padding(.vertical, 20)
+                            };
+                        } else if let firstMonopoly = monopoly.first, myUserName != firstMonopoly.last_mod {
+                            Button(action: {
+
+                                // aceptarPropuesta()
+                                mostrarMonopoly = false
+                                
+                            }) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.system(size: 45))
+                                    .foregroundStyle(Color.gray)
+                                    .padding(.vertical, 20)
                             }
-                        }) {
-                            Image(systemName: "paperplane.circle.fill")
-                                .font(.system(size: 45))
-                                .foregroundStyle(Color.gray)
-                                .padding(.vertical, 20)
+                        } else {
+                            Button(action: {
+                                // Codigo para aceptar la desa
+//                                aceptarPropuesta()
+                                mostrarMonopoly = false
+                                
+                            }) {
+                                Image(systemName: "paperplane.circle.fill")
+                                    .font(.system(size: 45))
+                                    .foregroundStyle(Color.blue)
+                                    .padding(.vertical, 20)
+                            };
                         }
-                        //                        Spacer()
+                        
+                    }
+                    .frame(maxWidth: .infinity) // Asegura el mismo ancho
+                    
+                    Divider()
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Negociación")
+                        Divider()
+                        Text("Cantidad:")
+                        HStack {
+                            if let firstMonopoly = monopoly.first {
+                                Text(firstMonopoly.quantity)
+                            }
+                        }
+
+                        Text("Precio:")
+                        HStack {
+                            if let firstMonopoly = monopoly.first {
+                                Text(firstMonopoly.price)
+                            }
+                        }
+
+                        Text("Transporte:")
+                        HStack {
+                            if let firstMonopoly = monopoly.first {
+                                Text(firstMonopoly.transport)
+                            }
+                        }
+                        
+                        if let firstMonopoly = monopoly.first, firstMonopoly.transport == "A cargo de AFFIN" {
+                            Text("Porcentajes:")
+                            HStack {
+                                Text(firstMonopoly.percentages)
+                            }
+                        }
+                        
+                        
+                    }
+                    .frame(width: 120) // Asegura el mismo ancho
+                    Divider()
+                    
+                    VStack {
+                        Text("Comprador")
+                        Divider()
+                        
+                        if let firstMonopoly = monopoly.first, myUserName != firstMonopoly.last_mod {
+                            Button(action: {
+                                // aceptarPropuesta()
+                                mostrarMonopoly = false
+                                
+                            }) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.system(size: 45))
+                                    .foregroundStyle(Color.green)
+                                    .padding(.vertical, 20)
+                            }
+                        } else {
+                            Button(action: {
+                                // aceptarPropuesta()
+                                mostrarMonopoly = false
+                                
+                            }) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.system(size: 45))
+                                    .foregroundStyle(Color.gray)
+                                    .padding(.vertical, 20)
+                            };
+                        }
                     }
                     .frame(maxWidth: .infinity) // Asegura el mismo ancho
                 }
@@ -378,6 +409,70 @@ struct ChatView: View {
                 
             }
         }
+    }
+//    MARK: - Funcion para obtener el monopoly
+    func fetchMonopoly() {
+        guard let baseUrl = URL(string: "https://my-backend-production.up.railway.app/api/monopoly/get") else {
+            print("URL no válida")
+            return
+        }
+        
+        // Construir la URL con el parámetro de consulta
+        var urlComponents = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false)!
+        urlComponents.queryItems = [
+            URLQueryItem(name: "interaction_id", value: String(m_id)), // Convertir Int? a String?
+        ]
+        
+        guard let url = urlComponents.url else {
+            print("URL no válida")
+            return
+        }
+
+        print("URL final: \(url)") // PRINT FOR DEBUG
+
+        var request = URLRequest(url: url)
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error fetching publications: \(error.localizedDescription)")
+                return
+            }
+
+            guard let data = data else {
+                print("No se recibieron datos Monopoly.")
+                return
+            }
+
+            // Imprimir los datos recibidos en formato JSON
+            if let jsonString = String(data: data, encoding: .utf8) {
+                print("Datos recibidos del servidor Monopoly: \(jsonString)") // PRINT FOR DEBUG
+            }
+
+            do {
+                let decodedMonopoly = try JSONDecoder().decode([Monopoly].self, from: data)
+                DispatchQueue.main.async {
+                    self.monopoly = decodedMonopoly
+                    print("Monopoly decodificado correctamente: \(decodedMonopoly)") // PRINT FOR DEBUG
+                }
+            } catch {
+                print("Error al decodificar las publicaciones: \(error)")
+                if let decodingError = error as? DecodingError {
+                    switch decodingError {
+                    case .typeMismatch(let key, let context):
+                        print("Tipo no coincide para la clave \(key), \(context.debugDescription)")
+                    case .valueNotFound(let key, let context):
+                        print("Valor no encontrado para la clave \(key), \(context.debugDescription)")
+                    case .keyNotFound(let key, let context):
+                        print("Clave no encontrada \(key), \(context.debugDescription)")
+                    case .dataCorrupted(let context):
+                        print("Datos corruptos: \(context.debugDescription)")
+                    @unknown default:
+                        print("Error desconocido de decodificación")
+                    }
+                }
+            }
+        }.resume()
     }
 }
 
