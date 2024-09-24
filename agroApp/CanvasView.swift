@@ -142,9 +142,9 @@ struct CanvasView: View {
             }
 
             // Imprimir los datos recibidos en formato JSON
-            if let jsonString = String(data: data, encoding: .utf8) {
-//                print("Datos recibidos del servidor: \(jsonString)") PRINT FOR DEBUG
-            }
+//            if let jsonString = String(data: data, encoding: .utf8) {
+//               print("Datos recibidos del servidor: \(jsonString)") PRINT FOR DEBUG
+//            }
 
             do {
                 let decodedPublications = try JSONDecoder().decode([Publication].self, from: data)

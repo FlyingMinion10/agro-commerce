@@ -161,7 +161,7 @@ struct ChatRow: View {
 }
 
 struct Message: Identifiable, Codable {
-    var id: Int? // interaction_id ON server
+    var id: Int? // Real UU id
     var sender: String
     var text: String
 //    var timestamp: Date
@@ -199,7 +199,7 @@ struct ChatView: View {
     @State private var justEdited: Bool = false
 
     // Mensajes
-    @State private var messageText: String = ""
+    @State private var newMessageText: String = ""
 
     var body: some View {
         ZStack {
@@ -241,37 +241,51 @@ struct ChatView: View {
                 }
 
                 Spacer()
-                // MARK: - TRABAJANDO AQUI MFR
-                List {
-                    ForEach(messages) { message in
-                        HStack {
-                            if message.sender == myUserName {
-                                Spacer()
-                                Text(message.text)
-                                    .padding()
-                                    .background(Color.accentColor.opacity(1))
-                                    .cornerRadius(10)
-                                    .foregroundColor(.white)
-                            } else {
-                                Text(message.text)
-                                    .padding()
-                                    .background(Color.gray.opacity(0.2))
-                                    .cornerRadius(10)
-                                    .foregroundColor(.black)
-                                Spacer()
+
+                ScrollViewReader { proxy in
+                    List {
+                        ForEach(messages) { message in
+                            HStack {
+                                if message.sender == myUserName {
+                                    Spacer()
+                                    Text(message.text)
+                                        .padding()
+                                        .background(Color.accentColor.opacity(1))
+                                        .cornerRadius(10)
+                                        .foregroundColor(.white)
+                                } else {
+                                    Text(message.text)
+                                        .padding()
+                                        .background(Color.gray.opacity(0.2))
+                                        .cornerRadius(10)
+                                        .foregroundColor(.black)
+                                    Spacer()
+                                }
                             }
+                            .id(message.id) // Asegúrate de que cada mensaje tenga un id único
+                        }
+                    }
+                    .onAppear {
+                        if let lastMessage = messages.last {
+                            proxy.scrollTo(lastMessage.id, anchor: .bottom)
                         }
                     }
                 }
+                .frame(width: screenWidth)
 
                 HStack {
                     // Campo de texto para escribir mensaje
-                    TextField("Escribe un mensaje", text: $messageText)
-                        .padding(10)
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(10)
+                    TextField("Escribe un mensaje...", text: $newMessageText, onCommit: {
+                        sendMessageAction()
+                        newMessageText = ""
+                    })
+                    .padding(10)
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(10)
                     // Botón de enviar
-                    Button(action: {}) {
+                    Button(action: {
+                        sendMessageAction()
+                    }) {
                         Image(systemName: "arrow.up.circle.fill")
                             .foregroundColor(.accentColor)
                             .font(.system(size: 30))
@@ -285,6 +299,7 @@ struct ChatView: View {
                 fetchMonopoly()
                 fetchMessages()
             }
+            .padding(0) // MFT
             .background(Color.gray.opacity(0.1))
             .navigationBarHidden(true)
             .blur(radius: mostrarMonopoly ? 3 : 0) // Aplica desenfoque si mostrarMonopoly es true
@@ -446,6 +461,13 @@ struct ChatView: View {
 
             }
         }
+    }
+
+    private func sendMessageAction() {
+        let newId = (messages.last?.id ?? 0) + 1
+        messages.append(Message(id: newId, sender: myUserName, text: newMessageText))
+        sendMessage()
+        newMessageText = ""
     }
 
     // MARK: - Función para obtener Mply
@@ -679,11 +701,56 @@ struct ChatView: View {
         }.resume()
     }
     
+    // MARK: - TRABAJANDO AQUI MFR
+    func sendMessage() {
+        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/messages/send") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
     
+        // Crear el diccionario con los datos del mensaje
+        let messageData: [String: Any] = [
+            "interaction_id": m_id, // Asumiendo que tienes un ID de chat
+            "sender": myUserName,
+            "text": newMessageText
+        ]
+//        "timestamp": Date().timeIntervalSince1970, MFI
+    
+        // Serializar los datos a JSON
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: messageData, options: []) else {
+            print("Error al serializar los datos del mensaje")
+            return
+        }
+    
+        request.httpBody = httpBody
+    
+        // Crear y ejecutar la tarea de red
+        let session = URLSession.shared
+        session.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error al enviar el mensaje: \(error)")
+                return
+            }
+    
+            guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                print("Error en la respuesta del servidor al enviar el mensaje")
+                return
+            }
+    
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    print("Respuesta del servidor: \(json)")
+                    // Aquí puedes manejar la respuesta del servidor
+                }
+            } catch {
+                print("Error al decodificar la respuesta JSON")
+            }
+        }.resume()
+    }
 }
 
 struct ChatsView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ChatView(m_id: 15, m_buyerName: "p", m_sellerName: "j")
     }
 }
