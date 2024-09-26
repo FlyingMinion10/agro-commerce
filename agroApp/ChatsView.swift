@@ -31,7 +31,7 @@ struct ChatsView: View {
     @State private var activeChats: [Chat] = []
     @State private var archivedChats: [Chat] = []
 
-    private let myUserName: String = ProfileView.userName
+    private let myEmail: String = ProfileView.email
     private let myAccountType: String = ProfileView.accountType
     
     var body: some View {
@@ -80,11 +80,11 @@ struct ChatsView: View {
             return
         }
         
-        print("User:", myUserName)
+        print("User:", myEmail)
         // Construir la URL con el parámetro de consulta
         var urlComponents = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false)!
         urlComponents.queryItems = [
-            URLQueryItem(name: "userName", value: myUserName),
+            URLQueryItem(name: "email", value: myEmail),
             URLQueryItem(name: "archived", value: "0")
         ]
         
@@ -184,7 +184,7 @@ struct Monopoly: Identifiable, Decodable {
 struct ChatView: View {
     @Environment(\.dismiss) var dismiss
     let screenWidth = UIScreen.main.bounds.width
-    private let myUserName: String = ProfileView.userName
+    private let myEmail: String = ProfileView.email
 
     @State private var monopoly: [Monopoly] = []
     @State private var messages: [Message] = []
@@ -198,7 +198,9 @@ struct ChatView: View {
     @State private var price: String = ""
     @State private var transport: String = ""
     @State private var percentages: String = ""
+    
     @State private var justEdited: Bool = false
+    @State private var showSteps: Bool = false
 
     // Mensajes
     @State private var newMessageText: String = ""
@@ -223,13 +225,13 @@ struct ChatView: View {
                     Text(ProfileView.accountType == "Bodeguero" ? m_sellerName : m_buyerName)
                         .font(.headline)
                     Spacer()
-                    Button(action: {
-                        // Acción al presionar el botón
-                    }) {
-                        Image(systemName: "phone.fill")
+                    NavigationLink (destination: StepsView()) {
+                        Image(systemName: "arrowshape.right.circle")
                             .foregroundColor(.green)
-                            .font(.system(size: 20))
+                            .font(.system(size: 30))
+                            .opacity(monopoly.first?.accepted == false ? 0 : 1)
                     }
+                    .disabled(monopoly.first?.accepted == false)
                 }
                 .padding()
                 .background(Color.white)
@@ -248,7 +250,7 @@ struct ChatView: View {
                     List {
                         ForEach(messages) { message in
                             HStack {
-                                if message.sender == myUserName {
+                                if message.sender == myEmail {
                                     Spacer()
                                     Text(message.text)
                                         .padding()
@@ -335,7 +337,7 @@ struct ChatView: View {
                                     .foregroundStyle(Color.gray)
                                     .padding(.vertical, 20)
                             }
-                        } else if let firstMonopoly = monopoly.first, myUserName != firstMonopoly.last_mod {
+                        } else if let firstMonopoly = monopoly.first, myEmail != firstMonopoly.last_mod {
                             Button(action: {
                                 acceptDeal()
                                 mostrarMonopoly = false
@@ -368,7 +370,7 @@ struct ChatView: View {
                         Text("Cantidad:")
                         HStack {
                             if let firstMonopoly = monopoly.first {
-                                if myUserName != firstMonopoly.last_mod {
+                                if myEmail != firstMonopoly.last_mod && !firstMonopoly.accepted {
                                     TextField("Cantidad", text: $tons)
                                         .onChange(of: tons) { _ in
                                             justEdited = true
@@ -382,7 +384,7 @@ struct ChatView: View {
                         Text("Precio:")
                         HStack {
                             if let firstMonopoly = monopoly.first {
-                                if myUserName != firstMonopoly.last_mod {
+                                if myEmail != firstMonopoly.last_mod && !firstMonopoly.accepted{
                                     TextField("Precio", text: $price)
                                         .onChange(of: price) { _ in
                                             justEdited = true
@@ -396,7 +398,7 @@ struct ChatView: View {
                         Text("Transporte:")
                         HStack {
                             if let firstMonopoly = monopoly.first {
-                                if myUserName != firstMonopoly.last_mod {
+                                if myEmail != firstMonopoly.last_mod && !firstMonopoly.accepted {
                                     TextField("Transporte", text: $transport)
                                         .onChange(of: transport) { _ in
                                             justEdited = true
@@ -410,7 +412,7 @@ struct ChatView: View {
                         if let firstMonopoly = monopoly.first, firstMonopoly.transport == "A cargo de AFFIN" {
                             Text("Porcentajes:")
                             HStack {
-                                if myUserName != firstMonopoly.last_mod {
+                                if myEmail != firstMonopoly.last_mod && !firstMonopoly.accepted {
                                     TextField("Porcentajes", text: $percentages)
                                         .onChange(of: percentages) { _ in
                                             justEdited = true
@@ -429,7 +431,7 @@ struct ChatView: View {
                         Text("Interlocutor")
                         Divider()
 
-                        if let firstMonopoly = monopoly.first, myUserName != firstMonopoly.last_mod {
+                        if let firstMonopoly = monopoly.first, myEmail != firstMonopoly.last_mod {
                             Button(action: {
                                 // Acción para aceptar la propuesta
                                 mostrarMonopoly = false
@@ -466,12 +468,12 @@ struct ChatView: View {
 
     private func sendMessageAction() {
         let newId = (messages.last?.id ?? 0) + 1
-        messages.append(Message(id: newId, sender: myUserName, text: newMessageText))
+        messages.append(Message(id: newId, sender: myEmail, text: newMessageText))
         sendMessage()
         newMessageText = ""
     }
 
-    // MARK: - Función para obtener Mply
+    // MARK: - Func Get Mply
     func fetchMonopoly() {
         guard let baseUrl = URL(string: "https://my-backend-production.up.railway.app/api/monopoly/get") else {
             print("URL no válida")
@@ -543,7 +545,7 @@ struct ChatView: View {
         }.resume()
     }
 
-    // MARK: - Función para obtener Msj
+    // MARK: - Func Get Msj
     func fetchMessages() {
         guard let baseUrl = URL(string: "https://my-backend-production.up.railway.app/api/messages/get") else {
             print("URL no válida")
@@ -609,7 +611,7 @@ struct ChatView: View {
         }.resume()
     }
     
-    // MARK: - Función para aceptar el trato
+    // MARK: - Func Accept Deal
     func acceptDeal() {
         guard let url = URL(string: "https://my-backend-production.up.railway.app/api/monopoly/accept") else { return }
         var request = URLRequest(url: url)
@@ -643,17 +645,19 @@ struct ChatView: View {
             }
 
             do {
-                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                    print("Respuesta del servidor: \(json)")
-                    // Aquí puedes manejar la respuesta del servidor
-                }
+//                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+//                    print("Respuesta del servidor: \(json)")
+//                    // Aquí puedes manejar la respuesta del servidor
+//                }
+                self.fetchMonopoly()
+                self.showSteps = true
             } catch {
                 print("Error al decodificar la respuesta JSON")
             }
         }.resume()
     }
 
-    // MARK: - Función para editar Mply
+    // MARK: - Func Edit Mply
     func editMonopoly() {
         guard let url = URL(string: "https://my-backend-production.up.railway.app/api/monopoly/edit") else { return }
         var request = URLRequest(url: url)
@@ -667,7 +671,7 @@ struct ChatView: View {
             "quantity": tons,
             "transport": transport,
             "percentages": percentages,
-            "last_mod": myUserName
+            "last_mod": myEmail
         ]
 
         // Serializar los datos a JSON
@@ -708,7 +712,7 @@ struct ChatView: View {
         }.resume()
     }
     
-    // MARK: - TRABAJANDO AQUI MFR
+    // MARK: - Func Send Msj
     func sendMessage() {
         guard let url = URL(string: "https://my-backend-production.up.railway.app/api/messages/send") else { return }
         var request = URLRequest(url: url)
@@ -718,7 +722,7 @@ struct ChatView: View {
         // Crear el diccionario con los datos del mensaje
         let messageData: [String: Any] = [
             "interaction_id": m_id, // Asumiendo que tienes un ID de chat
-            "sender": myUserName,
+            "sender": myEmail,
             "text": newMessageText
         ]
 //        "timestamp": Date().timeIntervalSince1970, MFI

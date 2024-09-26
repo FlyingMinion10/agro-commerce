@@ -38,7 +38,7 @@ struct PublicationCreatorView: View {
     // MARK: - State Variables
     let publisherName: String = ProfileView.profileName
     let publisherType: String = ProfileView.accountType
-    let publisherUserName: String = ProfileView.userName
+    let publisherEmail: String = ProfileView.email
     // let publisherScore: Int = ProfileView.reputationScore
     // let publisherPhoto: Image = ProfileView.profileImage
 
@@ -375,7 +375,7 @@ struct PublicationCreatorView: View {
         let productData: [String: Any] = [
             "publisherName": publisherName,
             "publisherType": publisherType,
-            "publisherUserName": publisherUserName,
+            "publisherEmail": publisherEmail,
             "selectedProduct": selectedProduct,
             "selectedVariety": selectedVariety,
             "productDescription": productDescription,

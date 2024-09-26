@@ -64,7 +64,7 @@ struct RegisterView: View {
         }
 
         let userData: [String: Any] = [
-            "userName": email,
+            "email": email,
             "password": password,
             "phoneNumber": phone,
             "name": name,

@@ -12,7 +12,7 @@ struct Publication: Identifiable, Codable {
     var id: Int?
     var cPublisherName: String
     var cPublisherType: String
-    var cPublisherUserName: String // Added for test
+    var cPublisherEmail: String // Added for test
     var cSelectedProduct: String
     var cSelectedVariety: String
     var cProductDescription: String
@@ -188,7 +188,7 @@ struct DetailView: View {
     let screenHeight = UIScreen.main.bounds.height
     
     var publication: Publication // Assume you have a `Publication` model
-    let buyerUserName: String = ProfileView.userName
+    let buyerEmail: String = ProfileView.email
     let buyerProfileName: String = ProfileView.profileName
 
    
@@ -398,18 +398,18 @@ struct DetailView: View {
         }
         let item = publication.cSelectedProduct + " " + publication.cSelectedVariety
         
-        print("buyerUserName", buyerUserName)
+        print("buyerEmail", buyerEmail)
         // Crear el diccionario con los datos formateados
         let interactionInitData: [String: Any] = [
-            "buyer": buyerUserName,
-            "seller": publication.cPublisherUserName,
+            "buyer": buyerEmail,
+            "seller": publication.cPublisherEmail,
             "buyer_name": buyerProfileName,
             "seller_name": publication.cPublisherName,
             "price": dOffertedPrice,
             "quantity": dRequestedQuantity,
             "transport": dSelectedTransport,
             "percentages": dTransportPercentages,
-            "last_mod": buyerUserName,
+            "last_mod": buyerEmail,
             "accepted": false,
             "item": item
         ]

@@ -1,6 +1,7 @@
 // Productos.swift
 
 import Foundation
+import SwiftUICore
 
 public struct Stock {
     // static let productos: [String] = ["Seleccionar", "Aguacate", "Cebolla", "Jitomate", "Lechuga", "Limón", "Maíz", "Manzana"]
@@ -71,6 +72,8 @@ public struct Stock {
     ]
 
     static let transporte: [String] = ["A cargo del bodeguero", "A cargo de AFFIN"]
+
+    static let colores: [Color] = [Color.red, Color.orange, Color.yellow, Color.green, Color.blue, Color.purple, Color.cyan, Color.mint]
 }
 
 // OtroArchivo.swift

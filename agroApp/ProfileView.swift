@@ -4,7 +4,7 @@ import SwiftUI
 //    var id: Int?
 //    var cPublisherName: String
 //    var cPublisherType: String
-//    var cPublisherUserName: String // Added for test
+//    var cPublisherEmail: String // Added for test
 //    var cSelectedProduct: String
 //    var cSelectedVariety: String
 //    var cProductDescription: String
@@ -18,10 +18,10 @@ struct ProfileView: View {
     let screenWidth = UIScreen.main.bounds.width // Obtiene el ancho de la pantalla
     static let profileName: String = UserDefaults.standard.string(forKey: "profileName") ?? ""
     static let accountType: String = UserDefaults.standard.string(forKey: "accountType") ?? ""
-    static let userName: String = UserDefaults.standard.string(forKey: "userName") ?? ""
+    static let email: String = UserDefaults.standard.string(forKey: "email") ?? ""
     
     static let profileImage: Image = Image("TuLogo")
-    static let reputationScore: Int = 94
+    static let reputationScore: Int = 100
     let profileBio: String = "Biografía del perfil"
     let followersCount: Int = 1200
     let postsCount: Int = 7
@@ -55,14 +55,18 @@ struct ProfileView: View {
                             .overlay(Circle().stroke(ProfileView.reputationScore < 70 ? Color.red : (ProfileView.reputationScore < 85 ? Color.yellow : ProfileView.reputationScore < 100 ? Color.green : Color.blue), lineWidth: 3))
                             .padding(.trailing, 16)
                         
-                        VStack(alignment: .leading) {
+                        VStack() {
                             Text(ProfileView.profileName)
                                 .font(.headline)
                                 .fontWeight(.bold)
-                            
-                            Text(profileBio)
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
+                            HStack {
+                                ForEach(1...5, id: \.self) { index in
+                                    Image(systemName: index <= ProfileView.reputationScore/20 ? "star.fill" : "star")
+                                        .foregroundColor(index <= ProfileView.reputationScore/20 ? .yellow : .gray)
+                                        .padding(-5)
+                                }
+                            }
+                            .frame(width: 50)
                         }
                         .padding(.trailing, 16)
                     }
@@ -103,47 +107,25 @@ struct ProfileView: View {
                     .padding(.vertical, 20)
                     .padding(.horizontal, 40)
                     
-                    // Botones de acción
-                    HStack {
-                        Button(action: {
-                            // Acción al presionar el botón "Seguir"
-                        }) {
-                            Text("Seguir")
-                                .font(.headline)
-                                .fontWeight(.bold)
-                                .foregroundColor(.white)
-                                .frame(width: 120)
-                                .padding(.vertical, 10)
-                                .background(Color.accentColor)
-                                .cornerRadius(10)
-                        }
-                        Spacer()
-                        Button(action: {
-                            // Acción al presionar el botón "Mensaje"
-                        }) {
-                            Text("Mensaje")
-                                .font(.headline)
-                                .fontWeight(.bold)
-                                .foregroundColor(.white)
-                                .frame(width: 120)
-                                .padding(.vertical, 10)
-                                .background(Color.accentColor)
-                                .cornerRadius(10)
-                        }
-                        Spacer()
-                        Button(action: {
-                            // Acción al presionar el botón "Correo electrónico"
-                        }) {
-                            Image(systemName: "envelope")
-                                .font(.system(size: 35))
-                                .foregroundColor(.black)
-                        }
-                    }
-                    .padding(.bottom, 20)
-                    .padding(.horizontal, 40)
                     
                     // MARK: - Mis Publicaciones
                     VStack {
+                        if myPublications.isEmpty {
+                            VStack (spacing: 20) {
+                                Text("No tienes publicaciones")
+                                    .font(.system(size: 30))
+                                    .foregroundColor(.gray)
+                                Text("Publica tus productos para que otros usuarios puedan verlos.")
+                                    .font(.system(size: 20))
+                                    .foregroundColor(.gray)
+                                Image(systemName: "photo.badge.exclamationmark.fill")
+                                    .font(.system(size: 100))
+                                    .foregroundColor(.gray)
+                            }
+                            .padding()
+                            .background(Color.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        }
                         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
                             ForEach(myPublications) { publication in
                                 NavigationLink(destination: DetailView(publication: publication)) {
@@ -208,8 +190,8 @@ struct ProfileView: View {
         // Construir la URL con el parámetro de consulta
         var urlComponents = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false)!
         urlComponents.queryItems = [
-            URLQueryItem(name: "filterType", value: "publisherUserName"),
-            URLQueryItem(name: "primaryFilter", value: ProfileView.userName)
+            URLQueryItem(name: "filterType", value: "publisherEmail"),
+            URLQueryItem(name: "primaryFilter", value: ProfileView.email)
         ]
         
         guard let url = urlComponents.url else {
