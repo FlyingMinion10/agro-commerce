@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -75,6 +75,10 @@
 		06FFC4672C837BC2005432AE /* ChatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsView.swift; sourceTree = "<group>"; };
 		06FFC4692C837FAB005432AE /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		D0C34F542CAB480500DE094E /* Steps */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Steps; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		06FFC4332C837A5D005432AE /* Frameworks */ = {
@@ -151,6 +155,7 @@
 				06B4F2202CA355F500CCAE34 /* StepsView.swift */,
 				061E5FC22C8956A800D35C88 /* StockArrays.swift */,
 				06F466092C9B2AD900C428CB /* GoogleService-Info.plist */,
+				D0C34F542CAB480500DE094E /* Steps */,
 				065600092C9A565A0010E560 /* AuthSystem */,
 				06FFC43D2C837A60005432AE /* Assets.xcassets */,
 				06FFC43F2C837A60005432AE /* Preview Content */,
@@ -197,6 +202,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				D0C34F542CAB480500DE094E /* Steps */,
 			);
 			name = affinApp;
 			productName = agroApp;

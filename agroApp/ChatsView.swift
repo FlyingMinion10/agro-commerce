@@ -42,7 +42,7 @@ struct ChatsView: View {
                 // Sección de chats activos
                 Section(header: Text("Activos")) {
                     ForEach(chats) { chat in
-                        NavigationLink(destination: ChatView(m_id: chat.id!, m_buyerName: chat.buyer_name, m_sellerName: chat.seller_name)) {
+                        NavigationLink(destination: ChatView(chat:chat, m_id: chat.id!, m_buyerName: chat.buyer_name, m_sellerName: chat.seller_name)) {
                             ChatRow(chat: chat, myAccountType: myAccountType)
                         }
                         .swipeActions {
@@ -185,6 +185,7 @@ struct ChatView: View {
     @Environment(\.dismiss) var dismiss
     let screenWidth = UIScreen.main.bounds.width
     private let myEmail: String = ProfileView.email
+    var chat: Chat
 
     @State private var monopoly: [Monopoly] = []
     @State private var messages: [Message] = []
@@ -761,6 +762,6 @@ struct ChatView: View {
 
 struct ChatsView_Previews: PreviewProvider {
     static var previews: some View {
-        ChatView(m_id: 15, m_buyerName: "p", m_sellerName: "j")
+        ContentView()
     }
 }
