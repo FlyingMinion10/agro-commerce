@@ -22,14 +22,15 @@ struct Chat: Identifiable, Decodable {
     var buyer_name: String
     var seller_name: String
     var item_preview: String
-    var archived: Archived // Usar la estructura auxiliar
+    var publication_id: Int
+    var archived: Archived
 }
 
 // MARK: - Vista principal de chats
 struct ChatsView: View {
     @State private var chats: [Chat] = []
-    @State private var activeChats: [Chat] = []
-    @State private var archivedChats: [Chat] = []
+//    @State private var activeChats: [Chat] = []
+//    @State private var archivedChats: [Chat] = []
 
     private let myEmail: String = ProfileView.email
     private let myAccountType: String = ProfileView.accountType
@@ -42,7 +43,7 @@ struct ChatsView: View {
                 // Sección de chats activos
                 Section(header: Text("Activos")) {
                     ForEach(chats) { chat in
-                        NavigationLink(destination: ChatView(chat:chat, m_id: chat.id!, m_buyerName: chat.buyer_name, m_sellerName: chat.seller_name)) {
+                        NavigationLink(destination: ChatView(chat:chat, m_id: chat.id ?? 0)) {
                             ChatRow(chat: chat, myAccountType: myAccountType)
                         }
                         .swipeActions {
@@ -110,9 +111,9 @@ struct ChatsView: View {
             }
 
             // Imprimir los datos recibidos en formato JSON
-//            if let jsonString = String(data: data, encoding: .utf8) {
-//                print("Datos recibidos del servidor fetchChats: \(jsonString)") // PRINT FOR DEBUG
-//            }
+            if let jsonString = String(data: data, encoding: .utf8) {
+                print("Datos recibidos del servidor fetchChats: \(jsonString)") // PRINT FOR DEBUG
+            }
 
             do {
                 let decodedChats = try JSONDecoder().decode([Chat].self, from: data)
@@ -190,8 +191,6 @@ struct ChatView: View {
     @State private var monopoly: [Monopoly] = []
     @State private var messages: [Message] = []
     var m_id: Int // Assume you have a `Publication` model
-    var m_buyerName: String
-    var m_sellerName: String
 
     // Negociación Monopoly
     @State private var mostrarMonopoly = false
@@ -223,7 +222,7 @@ struct ChatView: View {
                     Image(systemName: "person.circle.fill")
                         .foregroundColor(.gray)
                         .font(.system(size: 20))
-                    Text(ProfileView.accountType == "Bodeguero" ? m_sellerName : m_buyerName)
+                    Text(ProfileView.accountType == "Bodeguero" ? chat.seller_name : chat.buyer_name)
                         .font(.headline)
                     Spacer()
                     NavigationLink (destination: StepsView()) {

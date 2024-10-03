@@ -405,13 +405,14 @@ struct DetailView: View {
             "seller": publication.cPublisherEmail,
             "buyer_name": buyerProfileName,
             "seller_name": publication.cPublisherName,
+            "item": item,
+            "publication_id": publication.id as Any,
             "price": dOffertedPrice,
             "quantity": dRequestedQuantity,
             "transport": dSelectedTransport,
             "percentages": dTransportPercentages,
             "last_mod": buyerEmail,
-            "accepted": false,
-            "item": item
+            "accepted": false
         ]
 
         // Serializar los datos a JSON
