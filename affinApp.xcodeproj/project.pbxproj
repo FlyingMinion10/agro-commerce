@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		061E5FC32C8956A800D35C88 /* StockArrays.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061E5FC22C8956A800D35C88 /* StockArrays.swift */; };
 		0628A3D62C95E994007E41CD /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0628A3D52C95E993007E41CD /* UserData.swift */; };
+		0669B4EF2CA6F0DF0097F496 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 0669B4EE2CA6F0C80097F496 /* Config.xcconfig */; };
 		0690EACC2C9120A700848E5C /* CanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0690EACB2C9120A700848E5C /* CanvasView.swift */; };
 		06B4F2212CA3560300CCAE34 /* StepsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B4F2202CA355F500CCAE34 /* StepsView.swift */; };
 		06E5B7AF2C931E34000B6C70 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E5B7AE2C931E34000B6C70 /* LoginView.swift */; };
@@ -54,6 +55,7 @@
 /* Begin PBXFileReference section */
 		061E5FC22C8956A800D35C88 /* StockArrays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockArrays.swift; sourceTree = "<group>"; };
 		0628A3D52C95E993007E41CD /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
+		0669B4EE2CA6F0C80097F496 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		0690EACB2C9120A700848E5C /* CanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasView.swift; sourceTree = "<group>"; };
 		06B4F2202CA355F500CCAE34 /* StepsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsView.swift; sourceTree = "<group>"; };
 		06E5B7AE2C931E34000B6C70 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -145,6 +147,7 @@
 		06FFC4382C837A5D005432AE /* agroApp */ = {
 			isa = PBXGroup;
 			children = (
+				0669B4EE2CA6F0C80097F496 /* Config.xcconfig */,
 				06FFC4392C837A5D005432AE /* agroAppApp.swift */,
 				06FFC43B2C837A5D005432AE /* ContentView.swift */,
 				06FFC4632C837B04005432AE /* HomeView.swift */,
@@ -298,6 +301,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0669B4EF2CA6F0DF0097F496 /* Config.xcconfig in Resources */,
 				06FFC4412C837A60005432AE /* Preview Assets.xcassets in Resources */,
 				06FFC43E2C837A60005432AE /* Assets.xcassets in Resources */,
 				06F4660A2C9B2AD900C428CB /* GoogleService-Info.plist in Resources */,
