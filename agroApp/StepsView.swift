@@ -43,17 +43,17 @@ struct StepsView: View {
                 
                 ScrollView {
                     if myAccountType == "Bodeguero" {
-                        // MARK: - Steps del Bodeguero
+                        // MARK: - STEPS DEL BODEGUERO
                         VStack(spacing: 20) {
                             HStack {
                                 Image(systemName: "lock")
-                                Text("Rancho")
+                                Text("Ubicación Rancho")
                             }
                             .lockedStepStyle()
                         
-                            NavigationLink(destination: Paso2View()) {
+                            NavigationLink(destination: BodegaStep(interaction_id: interaction_id)) {
                                 HStack {
-                                    Text("Contrato bodeguero")
+                                    Text("Ubicación bodega")
                                 }
                             }
                             .activeStepStyle(color: .blue)
@@ -66,7 +66,7 @@ struct StepsView: View {
                             
                             NavigationLink(destination: Paso4View()) {
                                 HStack {
-                                    Text("Paso 4")
+                                    Text("Contrato bodeguero")
                                 }
                             }
                             .activeStepStyle(color: .yellow)
@@ -88,20 +88,18 @@ struct StepsView: View {
                         .padding(.top, 20)
                         .frame(width: screenWidth, height: .infinity)
                     } else {
-                        // MARK: - Steps del Agricultor
+                        // MARK: - // MARK: - STEPS DEL AGRICULTOR
                         VStack(spacing: 20) {
-                            NavigationLink(destination: RanchoView(interaction_id: interaction_id, publication_id: publication_id, buyer: buyer, seller: seller)) {
+                            NavigationLink(destination: RanchoStep(interaction_id: interaction_id)) {
                                 HStack {
-                                    Text("Rancho")
+                                    Text("Ubicación Rancho")
                                 }
                             }
                             .activeStepStyle(color: .red)
                             
-                            NavigationLink(destination: Paso2View()) {
-                                HStack {
+                            HStack {
                                     Image(systemName: "lock")
-                                    Text("Contrato bodeguero")
-                                }
+                                    Text("Ubicación bodega")
                             }
                             .lockedStepStyle()
                             
@@ -112,11 +110,9 @@ struct StepsView: View {
                             }
                             .activeStepStyle(color: .green)
                             
-                            NavigationLink(destination: Paso4View()) {
-                                HStack {
+                            HStack {
                                     Image(systemName: "lock")
-                                    Text("Paso 4")
-                                }
+                                    Text("Contrato bodeguero")
                             }
                             .lockedStepStyle()
                             

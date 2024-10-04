@@ -20,7 +20,7 @@ struct JustifiedText: UIViewRepresentable {
     }
 }
 
-struct RanchoView: View {
+struct RanchoStep: View {
     let screenWidth = UIScreen.main.bounds.width
     
     // MARK: - State Variables
@@ -30,9 +30,6 @@ struct RanchoView: View {
 
     // Condiciones importadas de CHATVIEW
     var interaction_id: Int
-    var publication_id: Int
-    var buyer: String
-    var seller: String
     
     // Valores a recopilar para crear la orden de transporte
     @State private var origen: String = ""
@@ -174,7 +171,7 @@ struct RanchoView: View {
     }
 
     func saveToDatabase() {
-        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/formulario/prod/post") else { return }
+        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/step-one/post") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -224,8 +221,8 @@ struct RanchoView: View {
     }
 }
 
-struct RanchoView_Previews: PreviewProvider {
+struct RanchoStep_Previews: PreviewProvider {
     static var previews: some View {
-        RanchoView(interaction_id: 1, publication_id: 30, buyer: "p", seller: "j")
+        RanchoStep(interaction_id: 1)
     }
 }

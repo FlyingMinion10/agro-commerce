@@ -81,7 +81,7 @@ struct ChatsView: View {
             return
         }
         
-        print("User:", myEmail)
+//         print("User:", myEmail)
         // Construir la URL con el parámetro de consulta
         var urlComponents = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false)!
         urlComponents.queryItems = [
@@ -111,9 +111,9 @@ struct ChatsView: View {
             }
 
             // Imprimir los datos recibidos en formato JSON
-            if let jsonString = String(data: data, encoding: .utf8) {
-                print("Datos recibidos del servidor fetchChats: \(jsonString)") // PRINT FOR DEBUG
-            }
+            // if let jsonString = String(data: data, encoding: .utf8) {
+            //     print("Datos recibidos del servidor fetchChats: \(jsonString)") // PRINT FOR DEBUG
+            // }
 
             do {
                 let decodedChats = try JSONDecoder().decode([Chat].self, from: data)
@@ -583,9 +583,9 @@ struct ChatView: View {
             }
 
             // Imprimir los datos recibidos en formato JSON
-            if let jsonString = String(data: data, encoding: .utf8) {
-                print("Datos recibidos del servidor Messages: \(jsonString)") // PRINT FOR DEBUG
-            }
+            // if let jsonString = String(data: data, encoding: .utf8) {
+            //     print("Datos recibidos del servidor Messages: \(jsonString)") // PRINT FOR DEBUG
+            // }
 
             do {
                 let decodedMessages = try JSONDecoder().decode([Message].self, from: data)
