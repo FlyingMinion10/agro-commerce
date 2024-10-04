@@ -118,7 +118,7 @@ struct StepsView: View {
                                     Text("Paso 4")
                                 }
                             }
-                            .activeStepStyle(color: .yellow)
+                            .lockedStepStyle()
                             
                             NavigationLink(destination: Paso5View()) {
                                 HStack {
