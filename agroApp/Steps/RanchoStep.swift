@@ -33,6 +33,7 @@ struct RanchoStep: View {
     
     // Valores a recopilar para crear la orden de transporte
     @State private var origen: String = ""
+    @State private var instrucciones_rancho: String = ""
     @State private var fecha_de_corte: String = ""
     @State private var coste_flete: String = ""
     @State private var tipo_de_camion: String = ""
@@ -102,6 +103,22 @@ struct RanchoStep: View {
                                         let limit = 140
                                         if newValue.count > limit {
                                             origen = String(newValue.prefix(limit))
+                                        }
+                                    }
+                            }
+                            // MARK: - Intrucciones
+                            VStack {
+                                Text("Ingrese instrucciones para el transportista")
+                                TextEditor(text: $instrucciones_rancho)
+                                    .frame(height: 100)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                                    )
+                                    .onChange(of: instrucciones_rancho) { oldValue, newValue in
+                                        let limit = 140
+                                        if newValue.count > limit {
+                                            instrucciones_rancho = String(newValue.prefix(limit))
                                         }
                                     }
                             }
