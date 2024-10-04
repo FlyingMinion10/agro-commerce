@@ -43,7 +43,7 @@ struct ChatsView: View {
                 // Sección de chats activos
                 Section(header: Text("Activos")) {
                     ForEach(chats) { chat in
-                        NavigationLink(destination: ChatView(chat:chat, m_id: chat.id ?? 0)) {
+                        NavigationLink(destination: ChatView(chat:chat, interaction_id: chat.id ?? 0, publication_id: chat.publication_id)) {
                             ChatRow(chat: chat, myAccountType: myAccountType)
                         }
                         .swipeActions {
@@ -185,12 +185,14 @@ struct Monopoly: Identifiable, Decodable {
 struct ChatView: View {
     @Environment(\.dismiss) var dismiss
     let screenWidth = UIScreen.main.bounds.width
+    
     private let myEmail: String = ProfileView.email
     var chat: Chat
 
     @State private var monopoly: [Monopoly] = []
     @State private var messages: [Message] = []
-    var m_id: Int // Assume you have a `Publication` model
+    var interaction_id: Int // Id de chat & interaction
+    var publication_id: Int // Id de la publicacion del producto
 
     // Negociación Monopoly
     @State private var mostrarMonopoly = false
@@ -225,7 +227,7 @@ struct ChatView: View {
                     Text(ProfileView.accountType == "Bodeguero" ? chat.seller_name : chat.buyer_name)
                         .font(.headline)
                     Spacer()
-                    NavigationLink (destination: StepsView()) {
+                    NavigationLink (destination: StepsView(interaction_id: interaction_id, publication_id: publication_id, buyer: chat.buyer, seller: chat.seller)) {
                         Image(systemName: "arrowshape.right.circle")
                             .foregroundColor(.green)
                             .font(.system(size: 30))
@@ -234,6 +236,7 @@ struct ChatView: View {
                     .disabled(monopoly.first?.accepted == false)
                 }
                 .padding()
+                .frame(width: screenWidth, height: 60)
                 .background(Color.white)
                 VStack {
                     // Botón para mostrar el Monopoly
@@ -483,7 +486,7 @@ struct ChatView: View {
         // Construir la URL con el parámetro de consulta
         var urlComponents = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false)!
         urlComponents.queryItems = [
-            URLQueryItem(name: "interaction_id", value: String(m_id)), // Convertir Int? a String?
+            URLQueryItem(name: "interaction_id", value: String(interaction_id)), // Convertir Int? a String?
         ]
 
         guard let url = urlComponents.url else {
@@ -555,7 +558,7 @@ struct ChatView: View {
         // Construir la URL con el parámetro de consulta
         var urlComponents = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false)!
         urlComponents.queryItems = [
-            URLQueryItem(name: "interaction_id", value: String(m_id)), // Convertir Int? a String?
+            URLQueryItem(name: "interaction_id", value: String(interaction_id)), // Convertir Int? a String?
         ]
 
         guard let url = urlComponents.url else {
@@ -620,7 +623,7 @@ struct ChatView: View {
 
         // Crear el diccionario con los datos formateados
         let idToAcceptDeal: [String: Any] = [
-            "interaction_id": m_id
+            "interaction_id": interaction_id
         ]
 
         // Serializar los datos a JSON
@@ -666,7 +669,7 @@ struct ChatView: View {
 
         // Crear el diccionario con los datos actualizados
         let monopolyData: [String: Any] = [
-            "interaction_id": m_id,
+            "interaction_id": interaction_id,
             "price": price,
             "quantity": tons,
             "transport": transport,
@@ -721,7 +724,7 @@ struct ChatView: View {
     
         // Crear el diccionario con los datos del mensaje
         let messageData: [String: Any] = [
-            "interaction_id": m_id, // Asumiendo que tienes un ID de chat
+            "interaction_id": interaction_id, // Asumiendo que tienes un ID de chat
             "sender": myEmail,
             "text": newMessageText
         ]

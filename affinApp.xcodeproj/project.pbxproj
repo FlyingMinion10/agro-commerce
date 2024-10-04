@@ -151,8 +151,8 @@
 				0690EACB2C9120A700848E5C /* CanvasView.swift */,
 				06FFC4652C837BA2005432AE /* PublicationCreatorView.swift */,
 				06FFC4672C837BC2005432AE /* ChatsView.swift */,
-				06FFC4692C837FAB005432AE /* ProfileView.swift */,
 				06B4F2202CA355F500CCAE34 /* StepsView.swift */,
+				06FFC4692C837FAB005432AE /* ProfileView.swift */,
 				061E5FC22C8956A800D35C88 /* StockArrays.swift */,
 				06F466092C9B2AD900C428CB /* GoogleService-Info.plist */,
 				D0C34F542CAB480500DE094E /* Steps */,
@@ -502,7 +502,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"agroApp/Preview Content\"";
-				DEVELOPMENT_TEAM = 88X2SWBZJ8;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
@@ -533,7 +533,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"agroApp/Preview Content\"";
-				DEVELOPMENT_TEAM = 88X2SWBZJ8;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
