@@ -10,17 +10,6 @@ public struct Stock {
     "Zanahoria", "Lechuga", "Espinaca", "Col", "Brócoli", "Coliflor", "Calabacita", "Pepino", "Nopal", "Espárragos", "Apio", "Cilantro", 
     "Berenjena", "Papa", "Camote", "Yuca", "Jícama", "Betabel", "Café", "Cacao"]
 
-    
-    // static let variedades: [String: [String]] = [
-    //     "Aguacate": ["Seleccionar", "Hass", "Fuerte", "Bacon", "Reed"],
-    //     "Cebolla": ["Seleccionar", "Amarilla", "Roja", "Blanca", "Dulce"],
-    //     "Jitomate": ["Seleccionar", "Saladette (Roma)", "Bola", "Cherry", "Tomate de árbol"],
-    //     "Lechuga": ["Seleccionar", "Romana", "Iceberg", "Mantequilla (Boston)", "Escarola"],
-    //     "Limón": ["Seleccionar", "Limón mexicano", "Limón persa", "Limón Meyer", "Limón Eureka"],
-    //     "Maíz": ["Seleccionar", "Maíz amarillo", "Maíz blanco", "Maíz dulce", "Maíz morado"],
-    //     "Manzana": ["Seleccionar", "Golden Delicious", "Red Delicious", "Gala", "Fuji"]
-    // ]
-
     static let variedades: [String: [String]] = [
     // Frutas
     "Aguacate": ["Seleccionar", "Hass", "Fuerte", "Bacon", "Reed"],
@@ -70,6 +59,11 @@ public struct Stock {
     "Café": ["Seleccionar", "Arábica", "Robusta"],
     "Cacao": ["Seleccionar", "Criollo", "Forastero", "Trinitario"]
     ]
+
+    // MARK: - TAGS
+    static let estados: [String] = ["Todas", "Colima", "Jalisco", "Michoacán", "Nayarit"]
+
+    static let calidades: [String] = ["Calidad", "Primera", "Segunda", "Tercera"]
 
     static let transporte: [String] = ["A cargo del bodeguero", "A cargo de AFFIN"]
 
