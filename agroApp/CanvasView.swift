@@ -113,11 +113,7 @@ struct CanvasView: View {
                                                 Spacer()
                                             }
                                             Divider()
-                                        Text("$\(publication.cPriceRatio[0]) /kg")
-                                        Text("$\(publication.cPriceRatio[0]) /kg")
-                                        
                                             Text("$\(publication.cPriceRatio[0]) /kg")
-                                        
                                             Divider()
                                             Text("\(publication.cProductQuantity) Toneladas")
                                         }
@@ -228,8 +224,8 @@ struct CanvasView: View {
         }
     }
     
-    // Función para obtener todas las publicaciones
-    func fetchPublications() {
+    // MARK: - Fetch Publications
+    func fetchPublications(with additionalFilters: [String: String] = [:]) {
         guard let baseUrl = URL(string: "https://my-backend-production.up.railway.app/api/publications/get") else {
             print("URL no válida")
             return
@@ -241,11 +237,18 @@ struct CanvasView: View {
             URLQueryItem(name: "primaryFilter", value: selectedDisplayView == .buy ? "Productor" : "Bodeguero")
         ]
         
+        // Añadir filtros adicionales
+        for (key, value) in additionalFilters {
+            queryItems.append(URLQueryItem(name: key, value: value))
+        }
+        
+        urlComponents.queryItems = queryItems
+        
         guard let url = urlComponents.url else {
             print("URL no válida")
             return
         }
-
+    
         var request = URLRequest(url: url)
         request.cachePolicy = .reloadIgnoringLocalCacheData
     
@@ -270,23 +273,45 @@ struct CanvasView: View {
                     self.publications = decodedPublications
                 }
             } catch {
-                print("Error al decodificar las publicaciones: \(error)")
-                if let decodingError = error as? DecodingError {
-                    switch decodingError {
-                    case .typeMismatch(let key, let context):
-                        print("Tipo no coincide para la clave \(key), \(context.debugDescription)")
-                    case .valueNotFound(let key, let context):
-                        print("Valor no encontrado para la clave \(key), \(context.debugDescription)")
-                    case .keyNotFound(let key, let context):
-                        print("Clave no encontrada \(key), \(context.debugDescription)")
-                    case .dataCorrupted(let context):
-                        print("Datos corruptos: \(context.debugDescription)")
-                    @unknown default:
-                        print("Error desconocido de decodificación")
-                    }
-                }
+                print("Error decoding publications: \(error.localizedDescription)")
             }
         }.resume()
+    }
+    
+    // Llamar a la función fetchPublications con los filtros seleccionados
+    func applyFilters() {
+        var additionalFilters = [String: String]()
+        
+        if filterProduct != "Seleccionar" {
+            additionalFilters["product"] = filterProduct
+        }
+        
+        if filterVariety != "Seleccionar" {
+            additionalFilters["variety"] = filterVariety
+        }
+        
+        if selectedRegion != "Todas" {
+            additionalFilters["region"] = selectedRegion
+        }
+        
+        fetchPublications(with: additionalFilters)
+    }
+    
+    func handleDecodingError(_ error: Error) {
+        if let decodingError = error as? DecodingError {
+            switch decodingError {
+            case .typeMismatch(let key, let context):
+                print("Tipo no coincide para la clave \(key), \(context.debugDescription)")
+            case .valueNotFound(let key, let context):
+                print("Valor no encontrado para la clave \(key), \(context.debugDescription)")
+            case .keyNotFound(let key, let context):
+                print("Clave no encontrada \(key), \(context.debugDescription)")
+            case .dataCorrupted(let context):
+                print("Datos corruptos: \(context.debugDescription)")
+            @unknown default:
+                print("Error desconocido de decodificación")
+            }
+        }
     }
 }
 
