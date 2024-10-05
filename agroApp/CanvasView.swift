@@ -21,6 +21,88 @@ struct Publication: Identifiable, Codable {
     var cTags: [Tag]
 }
 
+struct PublicationBuyView: View {
+    var publication: Publication
+    var body: some View {
+        VStack {
+            Image(publication.cSelectedProduct)
+                .resizable()
+                .scaledToFit()
+            Text(publication.cSelectedProduct + " " + publication.cSelectedVariety)
+                .font(.headline)
+            Divider()
+            HStack {
+                Image("TuLogo")
+                    .resizable()
+                    .frame(width: 50, height: 50)
+                Spacer()
+                VStack {
+                    HStack {
+                        ForEach(1...5, id: \.self) { index in
+                            Image(systemName: index <= 4 ? "star.fill" : "star")
+                                .foregroundColor(index <= 4 ? .yellow : .gray)
+                                .padding(-5)
+                        }
+                    }
+                    .frame(width: 50)
+                    Text(publication.cPublisherName)
+                }
+                Spacer()
+            }
+            Divider()
+            Text("$\(publication.cPriceRatio[0]) /kg")
+            Divider()
+            Text("\(publication.cProductQuantity) Toneladas")
+        }
+        .foregroundColor(.black)
+        .frame(width: 140, height: 250)
+        .padding()
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+}
+
+struct PublicationSellView: View {
+    var publication: Publication
+    var body: some View {
+        HStack {
+            Image(publication.cSelectedProduct)
+                .resizable()
+                .scaledToFit()
+            Text(publication.cSelectedProduct + " " + publication.cSelectedVariety)
+                .font(.headline)
+            Divider()
+            HStack {
+                Image("TuLogo")
+                    .resizable()
+                    .frame(width: 50, height: 50)
+                Spacer()
+                VStack {
+                    HStack {
+                        ForEach(1...5, id: \.self) { index in
+                            Image(systemName: index <= 4 ? "star.fill" : "star")
+                                .foregroundColor(index <= 4 ? .yellow : .gray)
+                                .padding(-5)
+                        }
+                    }
+                    .frame(width: 50)
+                    Text(publication.cPublisherName)
+                }
+                Spacer()
+            }
+            Divider()
+            Text("$\(publication.cPriceRatio[0]) /kg")
+            Divider()
+            Text("\(publication.cProductQuantity) Toneladas")
+        }
+        .foregroundColor(.black)
+        .frame(width: 360, height: 100)
+        .padding()
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+}
+
 // MARK: - CanvasView
 struct CanvasView: View {
     @State private var publications: [Publication] = []
@@ -84,48 +166,25 @@ struct CanvasView: View {
                         Spacer()
                     } else {
                         ScrollView {
-                            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
-                                ForEach(publications) { publication in
-                                    NavigationLink(destination: DetailView(publication: publication)) {
-                                        VStack {
-                                            Image(publication.cSelectedProduct)
-                                                .resizable()
-                                                .scaledToFit()
-                                            Text(publication.cSelectedProduct + " " + publication.cSelectedVariety)
-                                                .font(.headline)
-                                            Divider()
-                                            HStack {
-                                                Image("TuLogo")
-                                                    .resizable()
-                                                    .frame(width: 50, height: 50)
-                                                Spacer()
-                                                VStack {
-                                                    HStack {
-                                                        ForEach(1...5, id: \.self) { index in
-                                                            Image(systemName: index <= 4 ? "star.fill" : "star")
-                                                                .foregroundColor(index <= 4 ? .yellow : .gray)
-                                                                .padding(-5)
-                                                        }
-                                                    }
-                                                    .frame(width: 50)
-                                                    Text(publication.cPublisherName)
-                                                }
-                                                Spacer()
-                                            }
-                                            Divider()
-                                            Text("$\(publication.cPriceRatio[0]) /kg")
-                                            Divider()
-                                            Text("\(publication.cProductQuantity) Toneladas")
+                            if selectedDisplayView == .buy {
+                                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
+                                    ForEach(publications) { publication in
+                                        NavigationLink(destination: DetailView(publication: publication)) {
+                                            PublicationBuyView(publication: publication)
                                         }
-                                        .foregroundColor(.black)
-                                        .frame(width: 140, height: 250)
-                                        .padding()
-                                        .background(Color.white)
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
                                     }
                                 }
+                                .padding()
+                            } else {
+                                LazyVStack {
+                                    ForEach(publications) { publication in
+                                        NavigationLink(destination: DetailView(publication: publication)) {
+                                            PublicationSellView(publication: publication)
+                                        }
+                                    }
+                                }
+                                .padding()
                             }
-                            .padding()
                         }
                     }
                 }
