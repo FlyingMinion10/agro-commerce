@@ -75,21 +75,18 @@ struct PublicationSellView: View {
             }
             Divider()
             VStack {
+                Text(publication.cPublisherName)
+                    .font(.system(size: 18))
+                    .textCase(.uppercase)
                 HStack {
                     Image("TuLogo")
                         .resizable()
-                        .frame(width: 50, height: 50)
-                    Text(publication.cPublisherName)
-                    Spacer()
+                        .frame(width: 60, height: 60)
+                    Text("5")
+                    Image(systemName: "star.fill")
+                        .foregroundColor(.yellow)
                 }
-                HStack {
-                    ForEach(1...5, id: \.self) { index in
-                        Image(systemName: index <= 4 ? "star.fill" : "star")
-                            .foregroundColor(index <= 4 ? .yellow : .gray)
-                            .padding(.top, 5)
-                    }
-                }
-                .frame(width: 50)
+                .font(.system(size: 25))
             }
             .frame(width: 150)
             Divider()
@@ -101,7 +98,7 @@ struct PublicationSellView: View {
         }
         .foregroundColor(.black)
         .frame(width: 360, height: 100)
-        .padding()
+        .padding(10)
         .background(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: 8))
     }
