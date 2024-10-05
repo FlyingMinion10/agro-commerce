@@ -66,34 +66,38 @@ struct PublicationSellView: View {
     var publication: Publication
     var body: some View {
         HStack {
-            Image(publication.cSelectedProduct)
-                .resizable()
-                .scaledToFit()
-            Text(publication.cSelectedProduct + " " + publication.cSelectedVariety)
-                .font(.headline)
-            Divider()
-            HStack {
-                Image("TuLogo")
+            VStack {
+                Image(publication.cSelectedProduct)
                     .resizable()
-                    .frame(width: 50, height: 50)
-                Spacer()
-                VStack {
-                    HStack {
-                        ForEach(1...5, id: \.self) { index in
-                            Image(systemName: index <= 4 ? "star.fill" : "star")
-                                .foregroundColor(index <= 4 ? .yellow : .gray)
-                                .padding(-5)
-                        }
-                    }
-                    .frame(width: 50)
-                    Text(publication.cPublisherName)
-                }
-                Spacer()
+                    .scaledToFit()
+                Text(publication.cSelectedProduct + " " + publication.cSelectedVariety)
+                    .font(.headline)
             }
             Divider()
-            Text("$\(publication.cPriceRatio[0]) /kg")
+            VStack {
+                HStack {
+                    Image("TuLogo")
+                        .resizable()
+                        .frame(width: 50, height: 50)
+                    Text(publication.cPublisherName)
+                    Spacer()
+                }
+                HStack {
+                    ForEach(1...5, id: \.self) { index in
+                        Image(systemName: index <= 4 ? "star.fill" : "star")
+                            .foregroundColor(index <= 4 ? .yellow : .gray)
+                            .padding(.top, 5)
+                    }
+                }
+                .frame(width: 50)
+            }
+            .frame(width: 150)
             Divider()
-            Text("\(publication.cProductQuantity) Toneladas")
+            VStack {
+                Text("$\(publication.cPriceRatio[0]) /kg")
+                Divider()
+                Text("\(publication.cProductQuantity) Toneladas")
+            }
         }
         .foregroundColor(.black)
         .frame(width: 360, height: 100)
@@ -107,7 +111,7 @@ struct PublicationSellView: View {
 struct CanvasView: View {
     @State private var publications: [Publication] = []
     @State private var showFilterSidebar: Bool = false
-    @State private var selectedDisplayView: displayView = .buy
+    @State private var selectedDisplayView: displayView = .sell
 
     @State private var filterProduct = "Seleccionar"
     @State private var filterVariety = "Seleccionar"
