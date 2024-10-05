@@ -24,83 +24,202 @@ struct Publication: Identifiable, Codable {
 // MARK: - CanvasView
 struct CanvasView: View {
     @State private var publications: [Publication] = []
-    
+    @State private var showFilterSidebar: Bool = false
     @State private var selectedDisplayView: displayView = .buy
+
+    @State private var filterProduct = "Seleccionar"
+    @State private var filterVariety = "Seleccionar"
+    @State private var selectedRegion = "Todas"
+    
     enum displayView: String, CaseIterable {
         case sell, buy
     }
     
     var body: some View {
         NavigationView {
-            VStack {
-                Picker("Modelo de vista", selection: $selectedDisplayView) {
-                    Text("Comprar").tag(displayView.buy)
-                    Text("Vender").tag(displayView.sell)
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .padding()
-                .onChange(of: selectedDisplayView) {
-                    fetchPublications()
-                }
-                if publications.isEmpty {
-                    Text("No se encontraron publicaciones.")
-                        .padding()
-                    Spacer()
-                } else {
-                    ScrollView {
-                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
-                            ForEach(publications) { publication in
-                                NavigationLink(destination: DetailView(publication: publication)) {
-                                    VStack() {
-                                        Image(publication.cSelectedProduct)
-                                            .resizable()
-                                            .scaledToFit()
-                                        Text(publication.cSelectedProduct + " " + publication.cSelectedVariety)
-                                            .font(.headline)
-                                        Divider()
-                                        HStack {
-                                            Image("TuLogo")
-                                                .resizable()
-                                                .frame(width: 50, height: 50)
-                                            Spacer()
-                                            VStack {
-                                                HStack {
-                                                    ForEach(1...5, id: \.self) { index in
-                                                        Image(systemName: index <= 4 ? "star.fill" : "star")
-                                                            .foregroundColor(index <= 4 ? .yellow : .gray)
-                                                            .padding(-5)
-                                                    }
-                                                }
-                                                .frame(width: 50)
-                                                Text(publication.cPublisherName)
-                                            }
-                                            Spacer()
-                                        }
-                                        Divider()
-                                        
-                                        Text("$\(publication.cPriceRatio[0]) /kg")
-                                        
-                                        Divider()
-                                        Text("\(publication.cProductQuantity) Toneladas")
-                                        //                        Text(publication.cProductDescription)
-                                        //                            .lineLimit(2)
-                                        //                        Mostrar las etiquetas correctamente
-                                        //                        ForEach(publication.cTags) { tag in
-                                        //                            Text("\(tag.category): \(tag.value)")
-                                        //                        }
-                                        
-                                    }
-                                    .foregroundColor(.black)
-                                    .frame(width: 140, height: 250)
-                                    .padding()
-                                    .background(Color.white)
-                                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                                }
+            ZStack(alignment: .trailing) {  // Fijamos el alineamiento de ZStack a la derecha
+                VStack {
+                    HStack {
+                        Spacer(minLength: 100)
+                        Picker("Modelo de vista", selection: $selectedDisplayView) {
+                            Text("COMPRAR").tag(displayView.buy)
+                            Text("VENDER").tag(displayView.sell)
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                        .font(.title)
+                        .padding(.top)
+                        .onChange(of: selectedDisplayView) { newValue in
+                            fetchPublications()
+                        }
+                        Spacer(minLength: 50)
+                        
+                        // MARK: - Filter button
+                        Button(action: {
+                            withAnimation {
+                                showFilterSidebar.toggle()
                             }
+                        }) {
+                            Image(systemName: "line.horizontal.3.decrease.circle")
+                                .font(.title)
+                                .padding(.top)
+                        }
+                        .padding(.trailing, 20)
+                    }
+                    
+                    if publications.isEmpty {
+                        VStack(spacing: 20) {
+                            Text("No se encontraron publicaciones")
+                                .font(.system(size: 30))
+                                .foregroundColor(.gray)
+                            Text("Refresque la página o intente más tarde")
+                                .font(.system(size: 20))
+                                .foregroundColor(.gray)
+                            Image(systemName: "photo.badge.exclamationmark.fill")
+                                .font(.system(size: 100))
+                                .foregroundColor(.gray)
                         }
                         .padding()
+                        .background(Color.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        Spacer()
+                    } else {
+                        ScrollView {
+                            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
+                                ForEach(publications) { publication in
+                                    NavigationLink(destination: DetailView(publication: publication)) {
+                                        VStack {
+                                            Image(publication.cSelectedProduct)
+                                                .resizable()
+                                                .scaledToFit()
+                                            Text(publication.cSelectedProduct + " " + publication.cSelectedVariety)
+                                                .font(.headline)
+                                            Divider()
+                                            HStack {
+                                                Image("TuLogo")
+                                                    .resizable()
+                                                    .frame(width: 50, height: 50)
+                                                Spacer()
+                                                VStack {
+                                                    HStack {
+                                                        ForEach(1...5, id: \.self) { index in
+                                                            Image(systemName: index <= 4 ? "star.fill" : "star")
+                                                                .foregroundColor(index <= 4 ? .yellow : .gray)
+                                                                .padding(-5)
+                                                        }
+                                                    }
+                                                    .frame(width: 50)
+                                                    Text(publication.cPublisherName)
+                                                }
+                                                Spacer()
+                                            }
+                                            Divider()
+                                        Text("$\(publication.cPriceRatio[0]) /kg")
+                                        Text("$\(publication.cPriceRatio[0]) /kg")
+                                        
+                                            Text("$\(publication.cPriceRatio[0]) /kg")
+                                        
+                                            Divider()
+                                            Text("\(publication.cProductQuantity) Toneladas")
+                                        }
+                                        .foregroundColor(.black)
+                                        .frame(width: 140, height: 250)
+                                        .padding()
+                                        .background(Color.white)
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    }
+                                }
+                            }
+                            .padding()
+                        }
                     }
                 }
+                
+                if showFilterSidebar {
+                    Color.black.opacity(0.2)
+                        .edgesIgnoringSafeArea(.all)
+                        .onTapGesture {
+                            withAnimation {
+                                showFilterSidebar.toggle()  // Cerrar el filtro cuando se toque fuera de la barra
+                            }
+                        }
+                }
+                
+                // MARK: - Filter Sidebar
+                VStack {
+                    HStack {
+                        Spacer()
+                        Text("Filtros")
+                            .font(.headline)
+                            .padding()
+                        Spacer()
+                        Button(action: {
+                            withAnimation {
+                                showFilterSidebar.toggle()  // Cerrar el filtro con el botón "X"
+                            }
+                        }) {
+                            Image(systemName: "xmark")
+                                .font(.title2)
+                                .foregroundColor(.gray)
+                                .padding()
+                        }
+                    }
+                    VStack {
+                        Text("Filtrar por producto:")
+                            .padding(.trailing) // Añade un poco de espacio
+                            .bold()
+                        Picker("Productos", selection: $filterProduct) {
+                            ForEach(Stock.productos, id: \.self) { producto in
+                                Text(producto).tag(producto)
+                            }
+                        }
+                        .pickerStyle(MenuPickerStyle())
+                    }
+                    if filterProduct != "Seleccionar" {
+                        VStack {
+                            Text("Filtrar por variedad:")
+                                .padding(.trailing) // Añade un poco de espacio
+                                .bold()
+                            Picker("Variedades", selection: $filterVariety) {
+                                ForEach(Stock.variedades[filterProduct] ?? [], id: \.self) { variedad in
+                                    Text(variedad).tag(variedad)
+                                }
+                            }
+                            .pickerStyle(MenuPickerStyle())
+                        }
+                    }
+                    VStack {
+                        Text("Filtrar por región:")
+                            .padding(.trailing) // Añade un poco de espacio
+                            .bold()
+                        Picker("Regíon", selection: $selectedRegion) {
+                            ForEach(Stock.estados, id: \.self) { estado in
+                                Text(estado).tag(estado)
+                            }
+                        }
+                        .pickerStyle(MenuPickerStyle())
+                    }
+                    Button(action: {
+                        applyFilters()
+                        withAnimation {
+                            showFilterSidebar.toggle()
+                        }
+                    }) {
+                        Text("Aplicar filtros")
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                    }
+                    Spacer()
+                
+                    // Aquí añades tus opciones de filtros
+                    Spacer()
+                }
+                .frame(width: 300, height: 600)
+                .background(Color.white)
+                // .shadow(color: .black, radius: 10, x: 0, y: 5) // Agregar sombra aquí
+                .offset(x: showFilterSidebar ? 0 : 350) // Deslizar fuera del marco cuando esté oculto
+                .animation(.easeInOut, value: showFilterSidebar) // Aplicar animación al cambiar el estado
             }
             .onAppear {
                 fetchPublications()
@@ -116,9 +235,8 @@ struct CanvasView: View {
             return
         }
         
-        // Construir la URL con el parámetro de consulta
         var urlComponents = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false)!
-        urlComponents.queryItems = [
+        var queryItems = [
             URLQueryItem(name: "filterType", value: "publisherType"),
             URLQueryItem(name: "primaryFilter", value: selectedDisplayView == .buy ? "Productor" : "Bodeguero")
         ]
@@ -130,28 +248,26 @@ struct CanvasView: View {
 
         var request = URLRequest(url: url)
         request.cachePolicy = .reloadIgnoringLocalCacheData
-
+    
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 print("Error fetching publications: \(error.localizedDescription)")
                 return
             }
-
+    
             guard let data = data else {
                 print("No se recibieron datos.")
                 return
             }
-
-            // Imprimir los datos recibidos en formato JSON
-//            if let jsonString = String(data: data, encoding: .utf8) {
-//               print("Datos recibidos del servidor: \(jsonString)") PRINT FOR DEBUG
-//            }
-
+            // Imprimir la respuesta del servidor para verificar la estructura
+            if let jsonString = String(data: data, encoding: .utf8) {
+                print("Respuesta del servidor: \(jsonString)")
+            }
+    
             do {
                 let decodedPublications = try JSONDecoder().decode([Publication].self, from: data)
                 DispatchQueue.main.async {
                     self.publications = decodedPublications
-//                    print("Publicaciones decodificadas correctamente: \(decodedPublications)") PRINT FOR DEBUG
                 }
             } catch {
                 print("Error al decodificar las publicaciones: \(error)")
