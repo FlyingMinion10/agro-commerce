@@ -42,8 +42,8 @@ struct PublicationCreatorView: View {
     // let publisherScore: Int = ProfileView.reputationScore
     // let publisherPhoto: Image = ProfileView.profileImage
 
-    @State private var selectedProduct = "Seleccionar" // Valor inicial, asegúrate de que
-    @State private var selectedVariety = "Seleccionar" // Valor inicial, asegúrate
+    @State private var selectedProduct = "Seleccionar" 
+    @State private var selectedVariety = "Seleccionar"
     @State private var productDescription: String = ""
     @State private var priceTonPairs: [PriceTonPair] = []
     @State private var price: String = ""
@@ -52,8 +52,8 @@ struct PublicationCreatorView: View {
     @State private var selectedImage: UIImage?
     @State private var showImagePicker: Bool = false
     @State private var tags: [Taag] = [
-        Taag(category: "Calidad", value: ""),
-        Taag(category: "Region", value: ""),
+        Taag(category: "Calidad", value: "Calidad"),
+        Taag(category: "Region", value: "Estado"),
         Taag(category: "Tamano", value: ""),
         Taag(category: "Frescura", value: ""),
         Taag(category: "Sabor", value: ""),
@@ -262,10 +262,17 @@ struct PublicationCreatorView: View {
                         VStack(alignment: .leading, spacing: 10) {
                             Text("Tags")
                                 .font(.headline)
-                            TextField("Calidad", text: $tags[0].value)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                            TextField("Región", text: $tags[1].value)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                            Picker("Calidad", selection: $tags[0].value) {
+                                ForEach(Stock.calidades, id: \.self) { calidad in
+                                    Text(calidad).tag(calidad)
+                                }
+                            }
+                            Picker("Estado", selection: $tags[1].value) {
+                                ForEach(Stock.estados, id: \.self) { estado in
+                                    Text(estado).tag(estado)
+                                }
+                            }
+                            .pickerStyle(MenuPickerStyle())
                             TextField("Tamaño", text: $tags[2].value)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                             TextField("Frescura", text: $tags[3].value)
@@ -281,7 +288,11 @@ struct PublicationCreatorView: View {
                         
                         // MARK: - Submit Button
                         Button(action: {
-                            saveToDatabase()
+                            if isFormValid() {
+                                saveToDatabase()
+                            } else {
+                                showSuccessAlert = true
+                            }
                         }) {
                             Text("Publicar")
                                 .foregroundColor(.white)
@@ -289,20 +300,27 @@ struct PublicationCreatorView: View {
                                 .padding()
                                 .background(Color.blue)
                                 .cornerRadius(12)
-                                // Mostrar la alerta cuando `showSuccessAlert` es verdadero
                                 .alert(isPresented: $showSuccessAlert) {
-                                    Alert(
-                                        title: Text("¡Éxito!"),
-                                        message: Text("Publicación creada exitosamente."),
-                                        dismissButton: .default(Text("OK"), action: {
-                                            // Reiniciar la alerta después de que se cierre
-                                            showSuccessAlert = false
-                                        })
-                                    )
+                                    if isFormValid() {
+                                        return Alert(
+                                            title: Text("¡Éxito!"),
+                                            message: Text("Publicación creada exitosamente."),
+                                            dismissButton: .default(Text("OK"), action: {
+                                                showSuccessAlert = false
+                                            })
+                                        )
+                                    } else {
+                                        return Alert(
+                                            title: Text("Error"),
+                                            message: Text("Por favor, complete todos los campos requeridos."),
+                                            dismissButton: .default(Text("OK"), action: {
+                                                showSuccessAlert = false
+                                            })
+                                        )
+                                    }
                                 }
                         }
                         .padding(.horizontal)
-                        .disabled(!isFormValid())
                         .opacity(isFormValid() ? 1 : 0.5)
                         
                     }
@@ -330,7 +348,7 @@ struct PublicationCreatorView: View {
     
     // MARK: - Helper Functions
     func isFormValid() -> Bool {
-        return !selectedProduct.isEmpty && !productDescription.isEmpty && !priceTonPairs.isEmpty && !productQuantity.isEmpty
+        return !selectedProduct.isEmpty && !productDescription.isEmpty && !priceTonPairs.isEmpty && !productQuantity.isEmpty && tags[0].value != "Calidad" && tags[1].value != "Estado"
     }
 
     func clearForm() {
