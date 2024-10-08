@@ -119,7 +119,7 @@ struct ChatsView: View {
                 let decodedChats = try JSONDecoder().decode([Chat].self, from: data)
                 DispatchQueue.main.async {
                     self.chats = decodedChats
-                    print("Chats decodificados correctamente ") // PRINT FOR DEBUG
+                    // print("Chats decodificados correctamente ") // PRINT FOR DEBUG
                 }
             } catch {
                 print("Error al decodificar los chats: \(error)")
@@ -179,6 +179,7 @@ struct Monopoly: Identifiable, Decodable {
     var percentages: String
     var accepted: Bool
     var last_mod: String
+    var step: Int
 }
 
 // MARK: - Vista individual del chat
@@ -227,7 +228,7 @@ struct ChatView: View {
                     Text(ProfileView.accountType == "Bodeguero" ? chat.seller_name : chat.buyer_name)
                         .font(.headline)
                     Spacer()
-                    NavigationLink (destination: StepsView(interaction_id: interaction_id, publication_id: publication_id, buyer: chat.buyer, seller: chat.seller)) {
+                    NavigationLink (destination: StepsView(interaction_id: interaction_id, publication_id: publication_id, item_preview: chat.item_preview, buyer: chat.buyer, seller: chat.seller, currentStep: monopoly.first?.step ?? 0)) {
                         Image(systemName: "arrowshape.right.circle")
                             .foregroundColor(.green)
                             .font(.system(size: 30))
@@ -519,7 +520,7 @@ struct ChatView: View {
                 let decodedMonopoly = try JSONDecoder().decode([Monopoly].self, from: data)
                 DispatchQueue.main.async {
                     self.monopoly = decodedMonopoly
-                    print("Monopoly decodificado correctamente: \(decodedMonopoly)") // PRINT FOR DEBUG
+                    //print("Monopoly decodificado correctamente: \(decodedMonopoly)") // PRINT FOR DEBUG
 
                     if let firstMonopoly = decodedMonopoly.first {
                         self.tons = firstMonopoly.quantity
@@ -701,7 +702,7 @@ struct ChatView: View {
             do {
 //              Aquí puedes manejar la respuesta del servidor
                 print("Monopoly editado exitosamente")
-                // Una vez que la solicitud se complete exitosamente, llamar a fetchMonopoly() en el hilo principal
+                // Una vez que la solicitud se complete exitosamente, llamar a
                 DispatchQueue.main.async {
                     self.fetchMonopoly()
                     // Opcionalmente, restablecer el estado de justEdited si es necesario

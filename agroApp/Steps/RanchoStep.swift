@@ -124,12 +124,12 @@ struct RanchoStep: View {
                             }
                             // MARK: - Coste del flete
                             VStack {
-                                Text("El importe que estaría dispuesto a pagar por el transporte de su producto")
+                                Text("El importe total que estaría dispuesto a pagar por el transporte de su producto")
                                 HStack {
                                     TextField("Moneda nacional mexicana", text: $coste_flete)
                                         .keyboardType(.numberPad)
                                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                                    Text("$MXN /Km")
+                                    Text("$ MXN")
                                 }
                             }
                             // MARK: - Tipo de camión

@@ -3,11 +3,11 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var isAuthenticated = false
-    @State private var selectedTab = 2
+    @State private var selectedTab = 3
 
     var body: some View {
         VStack {
-            if true {
+            if isAuthenticated {
                 MainTabView(selectedTab: $selectedTab, isAuthenticated: $isAuthenticated)
             } else {
                 LoginView(isAuthenticated: $isAuthenticated)
