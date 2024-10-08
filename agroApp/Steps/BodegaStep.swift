@@ -1,5 +1,11 @@
 import SwiftUI
 
+struct BodegaResponse: Decodable {
+    let coste_flete: String
+    let tipo_de_camion: String
+    let form_completo: Bool
+}
+
 struct BodegaStep: View {
     let screenWidth = UIScreen.main.bounds.width
     
@@ -10,6 +16,7 @@ struct BodegaStep: View {
 
     // Condiciones importadas de CHATVIEW
     var interaction_id: Int
+    var step: Int
     
     // Valores a recopilar para crear la orden de transporte
     @State private var destino: String = ""
@@ -21,6 +28,7 @@ struct BodegaStep: View {
     // Valores obtenidos de RanchoStep
     @State private var coste_flete_sug: String = ""
     @State private var tipo_de_camion_sug: String = ""
+    @State private var form_completo: Bool = false
     
     // Nuevo estado para controlar la alerta
     @State private var showSuccessAlert = false
@@ -54,106 +62,125 @@ struct BodegaStep: View {
                 .background(Color.white)
                 
                 // MARK: - Field
-                ScrollView {
-                    VStack(spacing: 20) {
-                         Text("En estos campos usted debera registrar la infromación relacionada con la entrega del producto, rellenelos con cuidado.\n")
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal)
-                            .multilineTextAlignment(.leading)
-                            .overlay(
-                                Capsule()
-                                    .frame(height: 1) // Altura del borde
-                                    .foregroundColor(.gray), alignment: .bottom // Color y alineación del borde
-                            )
-                        
-                        VStack(spacing: 15) {
-                            // MARK: - Fecha de corte
-                            VStack {
-                                Text("Ingrese la fecha aproximada de llegada")
-                                TextField("dd/mm/yyyy", text: $fecha_de_llegada)
-                                    .keyboardType(.numberPad)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                            }
-                            // MARK: - Lugar de destino
-                            VStack {
-                                Text("Ingrese la ubicación exacta de la bodega")
-                                TextEditor(text: $destino)
-                                    .frame(height: 100)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                                    )
-                                    .onChange(of: destino) { oldValue, newValue in
-                                        let limit = 140
-                                        if newValue.count > limit {
-                                            destino = String(newValue.prefix(limit))
-                                        }
-                                    }
-                            }
-                            // MARK: - Intrucciones
-                            VStack {
-                                Text("Ingrese instrucciones para el transportista")
-                                TextEditor(text: $instrucciones_bodega)
-                                    .frame(height: 100)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                                    )
-                                    .onChange(of: instrucciones_bodega) { oldValue, newValue in
-                                        let limit = 140
-                                        if newValue.count > limit {
-                                            instrucciones_bodega = String(newValue.prefix(limit))
-                                        }
-                                    }
-                            }
-                            // MARK: - Coste del flete
-                            VStack {
-                                Text("El importe aproximado a pagar por el transporte del producto a comprar")
-                                HStack {
-                                    TextField("\(coste_flete_sug) (Sugerencia del agricultor)", text: $coste_flete)
+                if step == 2 {
+                    ScrollView {
+                        VStack(spacing: 20) {
+                            Text("En estos campos usted debera registrar la infromación relacionada con la entrega del producto, rellenelos con cuidado.\n")
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.horizontal)
+                                .multilineTextAlignment(.leading)
+                                .overlay(
+                                    Capsule()
+                                        .frame(height: 1) // Altura del borde
+                                        .foregroundColor(.gray), alignment: .bottom // Color y alineación del borde
+                                )
+                            
+                            VStack(spacing: 15) {
+                                // MARK: - Fecha de corte
+                                VStack {
+                                    Text("Ingrese la fecha aproximada de llegada")
+                                    TextField("dd/mm/yyyy", text: $fecha_de_llegada)
                                         .keyboardType(.numberPad)
                                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                                    Text("$MXN /Km")
+                                }
+                                // MARK: - Lugar de destino
+                                VStack {
+                                    Text("Ingrese la ubicación exacta de la bodega")
+                                    TextEditor(text: $destino)
+                                        .frame(height: 100)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                                        )
+                                        .onChange(of: destino) { oldValue, newValue in
+                                            let limit = 140
+                                            if newValue.count > limit {
+                                                destino = String(newValue.prefix(limit))
+                                            }
+                                        }
+                                }
+                                // MARK: - Intrucciones
+                                VStack {
+                                    Text("Ingrese instrucciones para el transportista")
+                                    TextEditor(text: $instrucciones_bodega)
+                                        .frame(height: 100)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                                        )
+                                        .onChange(of: instrucciones_bodega) { oldValue, newValue in
+                                            let limit = 140
+                                            if newValue.count > limit {
+                                                instrucciones_bodega = String(newValue.prefix(limit))
+                                            }
+                                        }
+                                }
+                                // MARK: - Coste del flete
+                                VStack {
+                                    Text("El importe total aproximado a pagar por el transporte del producto a comprar")
+                                    HStack {
+                                        TextField("\(coste_flete_sug) (Sugerencia del agricultor)", text: $coste_flete)
+                                            .keyboardType(.numberPad)
+                                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                                        Text("$ MXN")
+                                    }
+                                }
+                                // MARK: - Tipo de camión
+                                VStack {
+                                    Text("Ingrese el tipo de camión que solicitará")
+                                    TextField("\(tipo_de_camion_sug) (Sugerencia del agricultor)", text: $tipo_de_camion)
+                                        .keyboardType(.numberPad)
+                                        .textFieldStyle(RoundedBorderTextFieldStyle())
                                 }
                             }
-                            // MARK: - Tipo de camión
-                            VStack {
-                                Text("Ingrese el tipo de camión que solicitará")
-                                TextField("\(tipo_de_camion_sug) (Sugerencia del agricultor)", text: $tipo_de_camion)
-                                    .keyboardType(.numberPad)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                            }
-                        }
-                        // MARK: - Submit Button
-                        Button(action: {
-                            saveToDatabase()
-                        }) {
-                            Text("Publicar")
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.blue)
-                                .cornerRadius(12)
+                            // MARK: - Submit Button
+                            Button(action: {
+                                saveToDatabase()
+                            }) {
+                                Text("Publicar")
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(Color.blue)
+                                    .cornerRadius(12)
                                 // Mostrar la alerta cuando `showSuccessAlert` es verdadero
-                                .alert(isPresented: $showSuccessAlert) {
-                                    Alert(
-                                        title: Text("¡Éxito!"),
-                                        message: Text("Publicación creada exitosamente."),
-                                        dismissButton: .default(Text("OK"), action: {
-                                            // Reiniciar la alerta después de que se cierre
-                                            showSuccessAlert = false
-                                        })
-                                    )
-                                }
+                                    .alert(isPresented: $showSuccessAlert) {
+                                        Alert(
+                                            title: Text("¡Éxito!"),
+                                            message: Text("Formulario enviado exitosamente."),
+                                            dismissButton: .default(Text("OK"), action: {
+                                                // Reiniciar la alerta después de que se cierre
+                                                showSuccessAlert = false
+                                            })
+                                        )
+                                    }
+                            }
+                            .padding(.horizontal)
+                            .disabled(!isFormValid())
+                            .opacity(isFormValid() ? 1 : 0.5)
+                            
                         }
-                        .padding(.horizontal)
-                        .disabled(!isFormValid())
-                        .opacity(isFormValid() ? 1 : 0.5)
-                        
+                        .padding(30)
                     }
-                    .padding(30)
+                    .background(Color.gray.opacity(0.1))
+                } else {
+                    VStack {
+                        Text("Solicitud enviada")
+                            .font(.system(size: 40))
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 200))
+                            .foregroundStyle(.green)
+                    }
+                    Spacer()
+                    HStack {
+                        Button(action: {
+                            // Accion
+                        }) {
+                            Text("Destruir solicitud")
+                                .foregroundStyle(.red.opacity(0.2))
+                        }
+                    }
                 }
-                .background(Color.gray.opacity(0.1))
             }
             .onAppear(perform: fetchValues) // fetchValues()
         }
@@ -210,19 +237,17 @@ struct BodegaStep: View {
         //        print("Datos recibidos del servidor Monopoly: \(jsonString)") // PRINT FOR DEBUG
         //    }
 
-                       do {
-                let decodedResponse = try JSONDecoder().decode([[String: String]].self, from: data)
-                DispatchQueue.main.async {
-                    print("Respuesta decodificada correctamente: \(decodedResponse)") // PRINT FOR DEBUG
-            
-                    // Asumiendo que solo necesitamos el primer diccionario del array
-                    if let firstResponse = decodedResponse.first,
-                       let costeFlete = firstResponse["coste_flete"],
-                       let tipoDeCamion = firstResponse["tipo_de_camion"] {
-                        self.coste_flete_sug = costeFlete
-                        self.tipo_de_camion_sug = tipoDeCamion
-                    }
+            do {
+                let decodedResponse = try JSONDecoder().decode([BodegaResponse].self, from: data)
+            DispatchQueue.main.async {
+                //print("BodegaStep Datos decodificados correctamente: \(decodedResponse)") // PRINT FOR DEBUG
+        
+                if let firstResponse = decodedResponse.first {
+                    self.coste_flete_sug = firstResponse.coste_flete
+                    self.tipo_de_camion_sug = firstResponse.tipo_de_camion
+                    self.form_completo = firstResponse.form_completo
                 }
+            }
             } catch {
                 print("Error al decodificar datos de la bodega: \(error)")
                 if let decodingError = error as? DecodingError {
@@ -243,7 +268,7 @@ struct BodegaStep: View {
         }.resume()
     }
 
-     func saveToDatabase() {
+    func saveToDatabase() {
         guard let url = URL(string: "https://my-backend-production.up.railway.app/api/step-two/post") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -296,6 +321,6 @@ struct BodegaStep: View {
 
 struct BodegaStep_Previews: PreviewProvider {
     static var previews: some View {
-        BodegaStep(interaction_id: 1)
+        StepsView(interaction_id: 3, publication_id: 30, item_preview: "Aguacate", buyer: "p", seller: "j", currentStep: 4)
     }
 }
