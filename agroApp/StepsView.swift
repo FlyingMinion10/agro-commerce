@@ -8,8 +8,7 @@ struct StepsView: View {
     
     // Variables heredadas desde ChatsView para la negociación
     var interaction_id: Int
-    var publication_id: Int
-    var item_preview: String
+    var producto_completo: String
     var buyer: String
     var seller: String
     var currentStep: Int
@@ -58,7 +57,7 @@ struct StepsView: View {
                             }
                             .activeStepStyle(color: .blue, currentStep: currentStep, step: 2)
                             
-                            NavigationLink(destination: TransporteStep(interaction_id: interaction_id, publication_id: publication_id, item_preview: item_preview)) {
+                            NavigationLink(destination: TransporteStep(interaction_id: interaction_id, producto_completo: producto_completo)) {
                                 HStack {
                                     Text("Negociacion transporte")
                                 }
@@ -104,7 +103,7 @@ struct StepsView: View {
                             }
                             .lockedStepStyle(currentStep: currentStep, step: 2)
                             
-                            NavigationLink(destination: TransporteStep(interaction_id: interaction_id, publication_id: publication_id, item_preview: item_preview)) {
+                            NavigationLink(destination: TransporteStep(interaction_id: interaction_id, producto_completo: producto_completo)) {
                                 HStack {
                                     Text("Negociacion transporte")
                                 }
@@ -204,6 +203,6 @@ struct Paso6View: View {
 
 struct StepsView_Previews: PreviewProvider {
     static var previews: some View {
-        StepsView(interaction_id: 3, publication_id: 30, item_preview: "Aguacate", buyer: "p", seller: "j", currentStep: 4)
+        StepsView(interaction_id: 3, producto_completo: "Aguacate Hass", buyer: "p", seller: "j", currentStep: 4)
     }
 }

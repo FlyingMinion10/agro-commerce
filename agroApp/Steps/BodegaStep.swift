@@ -321,6 +321,6 @@ struct BodegaStep: View {
 
 struct BodegaStep_Previews: PreviewProvider {
     static var previews: some View {
-        StepsView(interaction_id: 3, publication_id: 30, item_preview: "Aguacate", buyer: "p", seller: "j", currentStep: 4)
+        StepsView(interaction_id: 3, producto_completo: "Aguacate Hass", buyer: "p", seller: "j", currentStep: 4)
     }
 }
