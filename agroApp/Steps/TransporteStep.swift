@@ -17,14 +17,17 @@ struct TransporteStep: View {
 
     // Condiciones importadas de CHATVIEW
     var interaction_id: Int
-    var publication_id: Int
-    var item_preview: String
+    var producto_completo: String
     
     // Valores a recopilar para crear la orden de transporte
     @State private var fecha_de_corte: String = "fecha_de_corte"
     @State private var fecha_de_llegada: String = "fecha_de_llegada"
     @State private var coste_flete: String = "coste_flete"
     @State private var tipo_de_camion: String = "tipo_de_camion"
+    
+    @State private var fecha_de_llegada_con: String = "fecha_de_llegada"
+    @State private var coste_flete_con: String = "coste_flete"
+    @State private var transportEnterprise: String = "Grupo castores"
     
     
     // Nuevo estado para controlar la alerta
@@ -57,28 +60,84 @@ struct TransporteStep: View {
                 .padding()
                 .frame(width: screenWidth, height: 60)
                 .background(Color.white)
+                .overlay(
+                    Capsule()
+                        .frame(height: 1) // Altura del borde
+                        .foregroundColor(.accentColor), alignment: .bottom // Color
+                )
                 
-                // MARK: - Field
-                ScrollView {
-                    VStack {
-                        Image("Aguacate") // Remplazar por la imagen del producto real
+                // MARK: - Datos iniciales
+                VStack (alignment: .leading) {
+                    HStack {
+                        Image(producto_completo.components(separatedBy: " ").first ?? "Manzana") // Remplazar por la imagen del producto real
                             .resizable()
-                            .scaledToFit()
-                        Text("Aguacate Hass")
-                            .font(.headline)
+                            .frame(width: 100, height: 100)
+                        Text(producto_completo)
+                            .font(.system(size: 25))
+                    }
+                    HStack {
+                        VStack (alignment: .leading) {
+                            Text("Fecha de corte:")
+                            Text("Fecha de llegada:")
+                            Text("Coste de flete:")
+                            Text("Tipo de camión:")
+                        }
+                        Spacer()
+                        VStack (alignment: .leading) {
+                            Text(fecha_de_corte)
+                            Text(fecha_de_llegada)
+                            Text(coste_flete)
+                            Text(tipo_de_camion)
+                        }
+                        .bold()
+                        Spacer(minLength: 50)
+                    }
+                }
+                .padding()
+                .frame(width: screenWidth-40)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .overlay(
+                    Capsule()
+                        .frame(height: 1) // Altura del borde
+                        .foregroundColor(.accentColor), alignment: .bottom // Color
+                )
+                
+                // MARK: - Ofertas
+                ScrollView {
+                    HStack {
+                        VStack {
+                            Text(transportEnterprise)
+                                .font(.system(size: 18))
+                                .textCase(.uppercase)
+                            HStack {
+                                Image("TuLogo")
+                                    .resizable()
+                                    .frame(width: 60, height: 60)
+                                Text("5")
+                                Image(systemName: "star.fill")
+                                    .foregroundColor(.yellow)
+                            }
+                            .font(.system(size: 25))
+                        }
+                        .frame(width: 200)
                         Divider()
-                        Text(fecha_de_corte)
-                        Text(fecha_de_llegada)
-                        Text(coste_flete)
-                        Text(tipo_de_camion)
-//                        Text("\(publication.cProductQuantity) Toneladas")
+                        VStack {
+                            Text("$ \(coste_flete) MXN")
+                            Divider()
+                            Text("Fecha: \(fecha_de_llegada)")
+                        }
                     }
                     .foregroundColor(.black)
-                    .frame(width: 300)
-                    .padding()
+                    .frame(width: 340, height: 100)
+                    .padding(10)
                     .background(Color.white)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color.gray, lineWidth: 1)
+                    )
                 }
+                .padding(.top, 20)
             }
             .onAppear(perform: fetchStartingValues) // fetchValues()
         }
@@ -161,6 +220,6 @@ struct TransporteStep: View {
 
 struct TransporteStep_Previews: PreviewProvider {
     static var previews: some View {
-        TransporteStep(interaction_id: 3, publication_id: 37, item_preview: "Aguacate")
+        TransporteStep(interaction_id: 3, producto_completo: "Aguacate Haas")
     }
 }
