@@ -42,34 +42,35 @@ struct StepsView: View {
                 .background(Color.white)
                 ScrollView {
                     if myAccountType == "Bodeguero" {
-                        // MARK: - STEPS DEL BODEGUERO
+                        // MARK: - STEPS DEL BODEGUERO // STEPS DEL BODEGUERO
+                        // STEPS DEL BODEGUERO // STEPS DEL BODEGUERO // STEPS DEL BODEGUERO
                         VStack(spacing: 20) {
+                            NavigationLink(destination: Paso4View()) {
+                                HStack {
+                                    Text("Contrato C-V")
+                                }
+                            }
+                            .activeStepStyle(color: .yellow, currentStep: currentStep, step: 1)
+                            
                             HStack {
                                 Image(systemName: "lock")
-                                Text("Ubicación Rancho")
+                                Text("Form Agro")
                             }
-                            .lockedStepStyle(currentStep: currentStep, step: 1)
+                            .lockedStepStyle(currentStep: currentStep, step: 2)
                         
                             NavigationLink(destination: BodegaStep(interaction_id: interaction_id, step: currentStep)) {
                                 HStack {
-                                    Text("Ubicación bodega")
+                                    Text("Form Bodeguero")
                                 }
                             }
-                            .activeStepStyle(color: .blue, currentStep: currentStep, step: 2)
+                            .activeStepStyle(color: .blue, currentStep: currentStep, step: 3)
                             
                             NavigationLink(destination: TransporteStep(interaction_id: interaction_id, producto_completo: producto_completo)) {
                                 HStack {
                                     Text("Negociacion transporte")
                                 }
                             }
-                            .activeStepStyle(color: .green, currentStep: currentStep, step: 3)
-                            
-                            NavigationLink(destination: Paso4View()) {
-                                HStack {
-                                    Text("Contrato bodeguero")
-                                }
-                            }
-                            .activeStepStyle(color: .yellow, currentStep: currentStep, step: 4)
+                            .activeStepStyle(color: .green, currentStep: currentStep, step: 4)
                             
                             NavigationLink(destination: Paso5View()) {
                                 HStack {
@@ -88,33 +89,34 @@ struct StepsView: View {
                         .padding(.top, 20)
                         .frame(width: screenWidth, height: .infinity)
                     } else {
-                        // MARK: - STEPS DEL AGRICULTOR
+                        // MARK: - STEPS DEL AGRICULTOR // STEPS DEL AGRICULTOR
+                        // STEPS DEL AGRICULTOR // STEPS DEL AGRICULTOR // STEPS DEL AGRICULTOR
                         VStack(spacing: 20) {
+                            HStack {
+                                    Image(systemName: "lock")
+                                    Text("Contrato C-V")
+                            }
+                            .activeStepStyle(color: .yellow, currentStep: currentStep, step: 1)
+
                             NavigationLink(destination: RanchoStep(interaction_id: interaction_id)) {
                                 HStack {
-                                    Text("Ubicación Rancho")
+                                    Text("Form Agro")
                                 }
                             }
-                            .activeStepStyle(color: .red, currentStep: currentStep, step: 1)
+                            .activeStepStyle(color: .red, currentStep: currentStep, step: 2)
                             
                             HStack {
                                     Image(systemName: "lock")
-                                    Text("Ubicación bodega")
+                                    Text("Form Bodeguero")
                             }
-                            .lockedStepStyle(currentStep: currentStep, step: 2)
+                            .lockedStepStyle(currentStep: currentStep, step: 3)
                             
                             NavigationLink(destination: TransporteStep(interaction_id: interaction_id, producto_completo: producto_completo)) {
                                 HStack {
                                     Text("Negociacion transporte")
                                 }
                             }
-                            .activeStepStyle(color: .green, currentStep: currentStep, step: 3)
-                            
-                            HStack {
-                                    Image(systemName: "lock")
-                                    Text("Contrato bodeguero")
-                            }
-                            .lockedStepStyle(currentStep: currentStep, step: 4)
+                            .activeStepStyle(color: .green, currentStep: currentStep, step: 4)
                             
                             NavigationLink(destination: Paso5View()) {
                                 HStack {
