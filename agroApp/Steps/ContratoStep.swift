@@ -1,7 +1,8 @@
 import SwiftUI
 
-struct ContratoStepView: View {
+struct ContratoStep: View {
     @State private var isAccepted: Bool = false
+    var interaction_id: Int
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -37,6 +38,52 @@ struct ContratoStepView: View {
         }
         .padding()
     }
+
+    func saveToDatabase() {
+        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/step-four/post") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+
+        // Crear el diccionario con los datos formateados
+        let productData: [String: Any] = [
+            "interaction_id": interaction_id
+        ]
+
+        // Serializar los datos a JSON
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: productData, options: []) else {
+            print("Error al guardar contrato")
+            return
+        }
+
+        request.httpBody = httpBody
+
+        // Crear y ejecutar la tarea de red
+        let session = URLSession.shared
+        session.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error al guardar contrato: \(error)")
+                return
+            }
+
+            guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                print("Error al guardar contrato")
+                return
+            }
+
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    print("Respuesta del servidor: \(json)")
+                    // Aquí puedes manejar la respuesta del servidor
+                    showSuccessAlert = true
+                    clearForm()
+                }
+            } catch {
+                print("Error al decodificar la respuesta JSON")
+            }
+        }.resume()
+    }
 }
 
 struct CheckBoxView: View {
@@ -53,8 +100,8 @@ struct CheckBoxView: View {
     }
 }
 
-struct ContratoStepView_Previews: PreviewProvider {
+struct ContratoStep_Previews: PreviewProvider {
     static var previews: some View {
-        ContratoStepView()
+        ContratoStep()
     }
 }
