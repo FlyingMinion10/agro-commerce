@@ -6,7 +6,7 @@ struct BodegaResponse: Decodable {
     let form_completo: Bool
 }
 
-struct BodegaStep: View {
+struct FormBodega: View {
     let screenWidth = UIScreen.main.bounds.width
     
     // MARK: - State Variables
@@ -25,7 +25,7 @@ struct BodegaStep: View {
     @State private var coste_flete: String = ""
     @State private var tipo_de_camion: String = ""
     
-    // Valores obtenidos de RanchoStep
+    // Valores obtenidos de FormAgr
     @State private var coste_flete_sug: String = ""
     @State private var tipo_de_camion_sug: String = ""
     @State private var form_completo: Bool = false
@@ -200,7 +200,7 @@ struct BodegaStep: View {
     }
 
     func fetchValues() {
-        guard let baseUrl = URL(string: "https://my-backend-production.up.railway.app/api/step-two/get") else {
+        guard let baseUrl = URL(string: "https://my-backend-production.up.railway.app/api/step-three/get") else {
             print("URL no válida")
             return
         }
@@ -240,7 +240,7 @@ struct BodegaStep: View {
             do {
                 let decodedResponse = try JSONDecoder().decode([BodegaResponse].self, from: data)
             DispatchQueue.main.async {
-                //print("BodegaStep Datos decodificados correctamente: \(decodedResponse)") // PRINT FOR DEBUG
+                //print("FormBodega Datos decodificados correctamente: \(decodedResponse)") // PRINT FOR DEBUG
         
                 if let firstResponse = decodedResponse.first {
                     self.coste_flete_sug = firstResponse.coste_flete
@@ -269,7 +269,7 @@ struct BodegaStep: View {
     }
 
     func saveToDatabase() {
-        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/step-two/post") else { return }
+        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/step-three/post") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -319,7 +319,7 @@ struct BodegaStep: View {
     }
 }
 
-struct BodegaStep_Previews: PreviewProvider {
+struct FormBodega_Previews: PreviewProvider {
     static var previews: some View {
         StepsView(interaction_id: 3, producto_completo: "Aguacate Hass", buyer: "p", seller: "j", currentStep: 4)
     }

@@ -147,7 +147,7 @@ struct TransporteStep: View {
     // MARK: - Helper Functions
 
     func fetchStartingValues() {
-        guard let baseUrl = URL(string: "https://my-backend-production.up.railway.app/api/step-three/get") else {
+        guard let baseUrl = URL(string: "https://my-backend-production.up.railway.app/api/step-four/get") else {
             print("URL no válida")
             return
         }
@@ -187,7 +187,7 @@ struct TransporteStep: View {
             do {
                 let decodedResponse = try JSONDecoder().decode([DetailTransport].self, from: data)
             DispatchQueue.main.async {
-                print("BodegaStep Datos decodificados correctamente: \(decodedResponse)") // PRINT FOR DEBUG
+                print("FormBodega Datos decodificados correctamente: \(decodedResponse)") // PRINT FOR DEBUG
         
                 if let firstResponse = decodedResponse.first {
                     self.fecha_de_corte = firstResponse.fecha_de_corte

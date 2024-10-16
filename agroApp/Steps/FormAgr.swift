@@ -20,7 +20,7 @@ struct JustifiedText: UIViewRepresentable {
     }
 }
 
-struct RanchoStep: View {
+struct FormAgr: View {
     let screenWidth = UIScreen.main.bounds.width
     
     // MARK: - State Variables
@@ -188,7 +188,7 @@ struct RanchoStep: View {
     }
 
     func saveToDatabase() {
-        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/step-one/post") else { return }
+        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/step-two/post") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -238,8 +238,8 @@ struct RanchoStep: View {
     }
 }
 
-struct RanchoStep_Previews: PreviewProvider {
+struct FormAgr_Previews: PreviewProvider {
     static var previews: some View {
-        RanchoStep(interaction_id: 1)
+        FormAgr(interaction_id: 1)
     }
 }

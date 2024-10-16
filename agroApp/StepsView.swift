@@ -45,7 +45,7 @@ struct StepsView: View {
                         // MARK: - STEPS DEL BODEGUERO // STEPS DEL BODEGUERO
                         // STEPS DEL BODEGUERO // STEPS DEL BODEGUERO // STEPS DEL BODEGUERO
                         VStack(spacing: 20) {
-                            NavigationLink(destination: Paso4View()) {
+                            NavigationLink(destination: ContratoStep(interaction_id: interaction_id)) {
                                 HStack {
                                     Text("Contrato C-V")
                                 }
@@ -58,7 +58,7 @@ struct StepsView: View {
                             }
                             .lockedStepStyle(currentStep: currentStep, step: 2)
                         
-                            NavigationLink(destination: BodegaStep(interaction_id: interaction_id, step: currentStep)) {
+                            NavigationLink(destination: FormBodega(interaction_id: interaction_id, step: currentStep)) {
                                 HStack {
                                     Text("Form Bodeguero")
                                 }
@@ -92,13 +92,14 @@ struct StepsView: View {
                         // MARK: - STEPS DEL AGRICULTOR // STEPS DEL AGRICULTOR
                         // STEPS DEL AGRICULTOR // STEPS DEL AGRICULTOR // STEPS DEL AGRICULTOR
                         VStack(spacing: 20) {
-                            HStack {
-                                    Image(systemName: "lock")
+                            NavigationLink(destination: ContratoStep(interaction_id: interaction_id)) {
+                                HStack {
                                     Text("Contrato C-V")
+                                }
                             }
                             .activeStepStyle(color: .yellow, currentStep: currentStep, step: 1)
 
-                            NavigationLink(destination: RanchoStep(interaction_id: interaction_id)) {
+                            NavigationLink(destination: FormAgr(interaction_id: interaction_id)) {
                                 HStack {
                                     Text("Form Agro")
                                 }
