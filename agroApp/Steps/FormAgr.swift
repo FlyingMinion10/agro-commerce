@@ -30,6 +30,7 @@ struct FormAgr: View {
 
     // Condiciones importadas de CHATVIEW
     var interaction_id: Int
+    var step: Int
     
     // Valores a recopilar para crear la orden de transporte
     @State private var origen: String = ""
@@ -70,106 +71,125 @@ struct FormAgr: View {
                 .background(Color.white)
                 
                 // MARK: - Field
-                ScrollView {
-                    VStack(spacing: 20) {
-                         Text("En estos campos usted debera registrar la infromación relacionada con la recolección de su producto, rellenelos con cuidado.\n")
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal)
-                            .multilineTextAlignment(.leading) 
-                            .overlay(
-                                Capsule()
-                                    .frame(height: 1) // Altura del borde
-                                    .foregroundColor(.gray), alignment: .bottom // Color y alineación del borde
-                            )
-                        
-                        VStack(spacing: 15) {
-                            // MARK: - Fecha de corte
-                            VStack {
-                                Text("Ingrese la fecha aproximada de corte")
-                                TextField("dd/mm/yyyy", text: $fecha_de_corte)
-                                    .keyboardType(.numberPad)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                            }
-                            // MARK: - Lugar de origen
-                            VStack {
-                                Text("Ingrese la ubicación exacta del lugar de recolección")
-                                TextEditor(text: $origen)
-                                    .frame(height: 100)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                                    )
-                                    .onChange(of: origen) { oldValue, newValue in
-                                        let limit = 140
-                                        if newValue.count > limit {
-                                            origen = String(newValue.prefix(limit))
-                                        }
-                                    }
-                            }
-                            // MARK: - Intrucciones
-                            VStack {
-                                Text("Ingrese instrucciones para el transportista")
-                                TextEditor(text: $instrucciones_rancho)
-                                    .frame(height: 100)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                                    )
-                                    .onChange(of: instrucciones_rancho) { oldValue, newValue in
-                                        let limit = 140
-                                        if newValue.count > limit {
-                                            instrucciones_rancho = String(newValue.prefix(limit))
-                                        }
-                                    }
-                            }
-                            // MARK: - Coste del flete
-                            VStack {
-                                Text("El importe total que estaría dispuesto a pagar por el transporte de su producto")
-                                HStack {
-                                    TextField("Moneda nacional mexicana", text: $coste_flete)
+                if step == 2 {
+                    ScrollView {
+                        VStack(spacing: 20) {
+                            Text("En estos campos usted debera registrar la infromación relacionada con la recolección de su producto, rellenelos con cuidado.\n")
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.horizontal)
+                                .multilineTextAlignment(.leading) 
+                                .overlay(
+                                    Capsule()
+                                        .frame(height: 1) // Altura del borde
+                                        .foregroundColor(.gray), alignment: .bottom // Color y alineación del borde
+                                )
+                            
+                            VStack(spacing: 15) {
+                                // MARK: - Fecha de corte
+                                VStack {
+                                    Text("Ingrese la fecha aproximada de corte")
+                                    TextField("dd/mm/yyyy", text: $fecha_de_corte)
                                         .keyboardType(.numberPad)
                                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                                    Text("$ MXN")
+                                }
+                                // MARK: - Lugar de origen
+                                VStack {
+                                    Text("Ingrese la ubicación exacta del lugar de recolección")
+                                    TextEditor(text: $origen)
+                                        .frame(height: 100)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                                        )
+                                        .onChange(of: origen) { oldValue, newValue in
+                                            let limit = 140
+                                            if newValue.count > limit {
+                                                origen = String(newValue.prefix(limit))
+                                            }
+                                        }
+                                }
+                                // MARK: - Intrucciones
+                                VStack {
+                                    Text("Ingrese instrucciones para el transportista")
+                                    TextEditor(text: $instrucciones_rancho)
+                                        .frame(height: 100)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                                        )
+                                        .onChange(of: instrucciones_rancho) { oldValue, newValue in
+                                            let limit = 140
+                                            if newValue.count > limit {
+                                                instrucciones_rancho = String(newValue.prefix(limit))
+                                            }
+                                        }
+                                }
+                                // MARK: - Coste del flete
+                                VStack {
+                                    Text("El importe total que estaría dispuesto a pagar por el transporte de su producto")
+                                    HStack {
+                                        TextField("Moneda nacional mexicana", text: $coste_flete)
+                                            .keyboardType(.numberPad)
+                                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                                        Text("$ MXN")
+                                    }
+                                }
+                                // MARK: - Tipo de camión
+                                VStack {
+                                    Text("Qué tipo de contenedor sugiere usar?")
+                                    TextField("Tipo de contenedor", text: $tipo_de_camion)
+                                        .keyboardType(.numberPad)
+                                        .textFieldStyle(RoundedBorderTextFieldStyle())
                                 }
                             }
-                            // MARK: - Tipo de camión
-                            VStack {
-                                Text("Qué tipo de contenedor sugiere usar?")
-                                TextField("Tipo de contenedor", text: $tipo_de_camion)
-                                    .keyboardType(.numberPad)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                            // MARK: - Submit Button
+                            Button(action: {
+                                saveToDatabase()
+                            }) {
+                                Text("Publicar")
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(Color.blue)
+                                    .cornerRadius(12)
+                                    // Mostrar la alerta cuando `showSuccessAlert` es verdadero
+                                    .alert(isPresented: $showSuccessAlert) {
+                                        Alert(
+                                            title: Text("¡Éxito!"),
+                                            message: Text("Publicación creada exitosamente."),
+                                            dismissButton: .default(Text("OK"), action: {
+                                                // Reiniciar la alerta después de que se cierre
+                                                showSuccessAlert = false
+                                            })
+                                        )
+                                    }
                             }
+                            .padding(.horizontal)
+                            .disabled(!isFormValid())
+                            .opacity(isFormValid() ? 1 : 0.5)
+                            
                         }
-                        // MARK: - Submit Button
-                        Button(action: {
-                            saveToDatabase()
-                        }) {
-                            Text("Publicar")
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.blue)
-                                .cornerRadius(12)
-                                // Mostrar la alerta cuando `showSuccessAlert` es verdadero
-                                .alert(isPresented: $showSuccessAlert) {
-                                    Alert(
-                                        title: Text("¡Éxito!"),
-                                        message: Text("Publicación creada exitosamente."),
-                                        dismissButton: .default(Text("OK"), action: {
-                                            // Reiniciar la alerta después de que se cierre
-                                            showSuccessAlert = false
-                                        })
-                                    )
-                                }
-                        }
-                        .padding(.horizontal)
-                        .disabled(!isFormValid())
-                        .opacity(isFormValid() ? 1 : 0.5)
-                        
+                        .padding(30)
                     }
-                    .padding(30)
+                    .background(Color.gray.opacity(0.1))
+                } else {
+                    VStack {
+                        Text("Solicitud enviada")
+                            .font(.system(size: 40))
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 200))
+                            .foregroundStyle(.green)
+                    }
+                    Spacer()
+                    HStack {
+                        Button(action: {
+                            // Accion
+                        }) {
+                            Text("Destruir solicitud")
+                                .foregroundStyle(.red.opacity(0.2))
+                        }
+                    }
                 }
-                .background(Color.gray.opacity(0.1))
             }
         }
         .navigationBarBackButtonHidden(true)
@@ -240,6 +260,6 @@ struct FormAgr: View {
 
 struct FormAgr_Previews: PreviewProvider {
     static var previews: some View {
-        FormAgr(interaction_id: 1)
+        StepsView(interaction_id: 3, producto_completo: "Aguacate Hass", buyer: "p", seller: "j", currentStep: 4)
     }
 }
