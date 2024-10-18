@@ -3,6 +3,7 @@ import SwiftUI
 struct ContratoStep: View {
     @State private var isAccepted: Bool = false
     var interaction_id: Int
+    var step: Int
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -18,23 +19,32 @@ struct ContratoStep: View {
             }
             .frame(height: 300)
             .border(Color.gray, width: 1)
-            
-            HStack {
-                CheckBoxView(isChecked: $isAccepted)
-                Text("Acepto los términos y condiciones")
-            }
-            
-            Button(action: {
-                // Acción al enviar
-            }) {
-                Text("Enviar")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(isAccepted ? Color.blue : Color.gray)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-            }
-            .disabled(!isAccepted)
+            if step == 1 {
+                HStack {
+                    CheckBoxView(isChecked: $isAccepted)
+                    Text("Acepto los términos y condiciones")
+                }
+                
+                Button(action: {
+                    // Acción al enviar
+                }) {
+                    Text("Enviar")
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(isAccepted ? Color.blue : Color.gray)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                .disabled(!isAccepted)
+            } else {
+                    HStack {
+                        Text("Terminos y condiciones aceptados")
+                            .font(.system(size: 20))
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 50))
+                            .foregroundStyle(.green)
+                    }
+                }
         }
         .padding()
     }
@@ -76,8 +86,6 @@ struct ContratoStep: View {
                 if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
                     print("Respuesta del servidor: \(json)")
                     // Aquí puedes manejar la respuesta del servidor
-                    showSuccessAlert = true
-                    clearForm()
                 }
             } catch {
                 print("Error al decodificar la respuesta JSON")
@@ -102,6 +110,6 @@ struct CheckBoxView: View {
 
 struct ContratoStep_Previews: PreviewProvider {
     static var previews: some View {
-        ContratoStep()
+        ContratoStep(interaction_id: 1, step: 1)
     }
 }
