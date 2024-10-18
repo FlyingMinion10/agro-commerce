@@ -45,7 +45,7 @@ struct StepsView: View {
                         // MARK: - STEPS DEL BODEGUERO // STEPS DEL BODEGUERO
                         // STEPS DEL BODEGUERO // STEPS DEL BODEGUERO // STEPS DEL BODEGUERO
                         VStack(spacing: 20) {
-                            NavigationLink(destination: ContratoStep(interaction_id: interaction_id)) {
+                            NavigationLink(destination: ContratoStep(interaction_id: interaction_id, step: currentStep)) {
                                 HStack {
                                     Text("Contrato C-V")
                                 }
@@ -85,6 +85,84 @@ struct StepsView: View {
                                 }
                             }
                             .activeStepStyle(color: .orange, currentStep: currentStep, step: 6)
+
+                            NavigationLink(destination: Paso7View()) {
+                                HStack {
+                                    Text("Transportista 1 (1,2,3)")
+                                }
+                            }
+                            .activeStepStyle(color: .pink, currentStep: currentStep, step: 7)
+
+                            NavigationLink(destination: Paso8View()) {
+                                HStack {
+                                    Text("Pago STP")
+                                }
+                            }
+                            .activeStepStyle(color: .cyan, currentStep: currentStep, step: 8)
+
+                            NavigationLink(destination: Paso9View()) {
+                                HStack {
+                                    Text("Transportista 2 (4,5,6,7)")
+                                }
+                            }
+                            .activeStepStyle(color: .gray, currentStep: currentStep, step: 9)
+
+                            NavigationLink(destination: Paso10View()) {
+                                HStack {
+                                    Text("Inspeccion")
+                                }
+                            }
+                            .activeStepStyle(color: .yellow, currentStep: currentStep, step: 10)
+
+                            NavigationLink(destination: Paso11View()) {
+                                HStack {
+                                    Text("Corrección")
+                                }
+                            }
+                            .activeStepStyle(color: .blue, currentStep: currentStep, step: 11)
+
+                            NavigationLink(destination: Paso12View()) {
+                                HStack {
+                                    Text("Contrato C-V (modificado)opcional")
+                                }
+                            }
+                            .activeStepStyle(color: .green, currentStep: currentStep, step: 12)
+
+                            NavigationLink(destination: Paso13View()) {
+                                HStack {
+                                    Text("Transportista 3 (8,9,10, 11, 12)")
+                                }
+                            }
+                            .activeStepStyle(color: .purple, currentStep: currentStep, step: 13)
+
+                            NavigationLink(destination: Paso14View()) {
+                                HStack {
+                                    Text("Liberar Pago")
+                                }
+                            }
+                            .activeStepStyle(color: .orange, currentStep: currentStep, step: 14)
+
+                            NavigationLink(destination: Paso15View()) {
+                                HStack {
+                                    Text("Rating")
+                                }
+                            }
+                            .activeStepStyle(color: .pink, currentStep: currentStep, step: 15)
+
+                            NavigationLink(destination: Paso16View()) {
+                                HStack {
+                                    Text("Factura")
+                                }
+                            }
+                            .activeStepStyle(color: .cyan, currentStep: currentStep, step: 16)
+
+                            NavigationLink(destination: Paso17View()) {
+                                HStack {
+                                    Text("Finalizar Transacción")
+                                }
+                            }
+                            .activeStepStyle(color: .gray, currentStep: currentStep, step: 17)
+
                         }
                         .padding(.top, 20)
                         .frame(width: screenWidth, height: .infinity)
@@ -92,14 +170,14 @@ struct StepsView: View {
                         // MARK: - STEPS DEL AGRICULTOR // STEPS DEL AGRICULTOR
                         // STEPS DEL AGRICULTOR // STEPS DEL AGRICULTOR // STEPS DEL AGRICULTOR
                         VStack(spacing: 20) {
-                            NavigationLink(destination: ContratoStep(interaction_id: interaction_id)) {
+                            NavigationLink(destination: ContratoStep(interaction_id: interaction_id, step: currentStep)) {
                                 HStack {
                                     Text("Contrato C-V")
                                 }
                             }
                             .activeStepStyle(color: .yellow, currentStep: currentStep, step: 1)
 
-                            NavigationLink(destination: FormAgr(interaction_id: interaction_id)) {
+                            NavigationLink(destination: FormAgr(interaction_id: interaction_id, step: currentStep)) {
                                 HStack {
                                     Text("Form Agro")
                                 }
@@ -204,8 +282,74 @@ struct Paso6View: View {
     }
 }
 
+struct Paso7View: View {
+    var body: some View {
+        Text("Paso siete insption")
+    }
+}
+
+struct Paso8View: View {
+    var body: some View {
+        Text("Paso ocho insption")
+    }
+}
+
+struct Paso9View: View {
+    var body: some View {
+        Text("Paso nueve insption")
+    }
+}
+
+struct Paso10View: View {
+    var body: some View {
+        Text("Paso diez insption")
+    }
+}
+
+struct Paso11View: View {
+    var body: some View {
+        Text("Paso once insption")
+    }
+}
+
+struct Paso12View: View {
+    var body: some View {
+        Text("Paso doce insption")
+    }
+}
+
+struct Paso13View: View {
+    var body: some View {
+        Text("Transportista 3")
+    }
+}
+
+struct Paso14View: View {
+    var body: some View {
+        Text("Liberar Pago")
+    }
+}
+
+struct Paso15View: View {
+    var body: some View {
+        Text("Rating")
+    }
+}
+
+struct Paso16View: View {
+    var body: some View {
+        Text("Factura")
+    }
+}
+
+struct Paso17View: View {
+    var body: some View {
+        Text("Finalizar Transacción")
+    }
+}
+
 struct StepsView_Previews: PreviewProvider {
     static var previews: some View {
-        StepsView(interaction_id: 3, producto_completo: "Aguacate Hass", buyer: "p", seller: "j", currentStep: 4)
+        StepsView(interaction_id: 3, producto_completo: "Aguacate Hass", buyer: "p", seller: "j", currentStep: 15)
     }
 }
