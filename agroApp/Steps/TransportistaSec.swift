@@ -50,7 +50,7 @@ struct RecoleccionDeEmpaqueView: View {
         VStack {
             // Instrucciones
             Text("El transportista realiza la recolección de los empaques (ya sean cajas, costales etc) antes de pesar el flete y manda una evidencia de la recolección de los empaques.")
-            Spacer()
+            
             // Video de YouTube
             VStack {
                 Text("Instrucciones en Video")
@@ -64,7 +64,7 @@ struct RecoleccionDeEmpaqueView: View {
                 }
                 .padding()
             }
-            // Botones
+            // Boton
             Button(action: {
                 showConfirmation = true
             }) {
@@ -117,9 +117,23 @@ struct Bascula1View: View {
             Button("Tomar Foto") {
                 // Acción para tomar foto
             }
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+            .shadow(color: .gray, radius: 5, x: 0, y: 5)
+            
             Button("Importar Foto") {
                 // Acción para importar foto
             }
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+            .shadow(color: .gray, radius: 5, x: 0, y: 5)
+            
             TextField("Inserte Peso (Incluye foto del camión)", text: .constant(""))
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
@@ -134,9 +148,23 @@ struct EvidenciaInspeccionView: View {
             Button("Tomar Foto") {
                 // Acción para tomar foto
             }
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+            .shadow(color: .gray, radius: 5, x: 0, y: 5)
+            
             Button("Importar Foto") {
                 // Acción para importar foto
             }
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+            .shadow(color: .gray, radius: 5, x: 0, y: 5)
+            
             TextField("Insertar descripción o estado de producto inspeccionado", text: .constant(""))
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
@@ -151,9 +179,23 @@ struct Bascula2View: View {
             Button("Tomar Foto") {
                 // Acción para tomar foto
             }
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+            .shadow(color: .gray, radius: 5, x: 0, y: 5)
+            
             Button("Importar Foto") {
                 // Acción para importar foto
             }
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+            .shadow(color: .gray, radius: 5, x: 0, y: 5)
+            
             TextField("Inserte Peso (Incluye foto del camión)", text: .constant(""))
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
