@@ -62,7 +62,7 @@ struct FormBodega: View {
                 .background(Color.white)
                 
                 // MARK: - Field
-                if step == 2 {
+                if step == 3 {
                     ScrollView {
                         VStack(spacing: 20) {
                             Text("En estos campos usted debera registrar la infromación relacionada con la entrega del producto, rellenelos con cuidado.\n")
