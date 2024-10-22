@@ -1,9 +1,3 @@
-//
-//  TransportistaSec.swift
-//  affinApp
-//
-//  Created by Juan Felipe Zepeda on 22/10/24.
-//
 import SwiftUI
 
 struct TransportistaSec : View {
@@ -50,13 +44,26 @@ struct TransportistaSec : View {
 
 struct RecoleccionDeEmpaqueView: View {
     @State private var showConfirmation = false
+    @State private var termsAccepted = false
     
     var body: some View {
         VStack {
             // Instrucciones
-            Text("El transportista reliza la recolección de los empaques (ya sean cajas, costales etc) antes de pesar el flete y manda una evidencia de la recolección de los empaques.")
-                .italic()
+            Text("El transportista realiza la recolección de los empaques (ya sean cajas, costales etc) antes de pesar el flete y manda una evidencia de la recolección de los empaques.")
             Spacer()
+            // Video de YouTube
+            VStack {
+                Text("Instrucciones en Video")
+                    .font(.headline)
+                    .padding(.bottom, 10)
+                VStack {
+                    WebView(url: URL(string: "https://www.youtube.com/watch?v=nwC9jzTYty4")!)
+                        .frame(height: 200)
+                        .cornerRadius(10)
+                        .shadow(radius: 5)
+                }
+                .padding()
+            }
             // Botones
             Button(action: {
                 showConfirmation = true
@@ -71,10 +78,11 @@ struct RecoleccionDeEmpaqueView: View {
                 }
                 .padding()
                 .frame(maxWidth: .infinity)
-                .background(Color.green)
+                .background(termsAccepted ? Color.green : Color.gray)
                 .cornerRadius(10)
                 .shadow(color: .gray, radius: 5, x: 0, y: 5)
             }
+            .disabled(!termsAccepted)
             .alert(isPresented: $showConfirmation) {
                 Alert(
                     title: Text("¿Seguro que quieres confirmar?"),
@@ -83,10 +91,21 @@ struct RecoleccionDeEmpaqueView: View {
                 )
             }
             .padding()
-            Spacer()
             // Disclaimer
-            Text("El transportista reliza la recolección de los empaques (ya sean cajas, costales etc) antes de pesar el flete y manda una evidencia de la recolección de los empaques.")
-                
+            Text("El transportista realiza la recolección de los empaques (ya sean cajas, costales etc) antes de pesar el flete y manda una evidencia de la recolección de los empaques.")
+                .italic()
+                .foregroundStyle(Color.red)
+            HStack {
+                Button(action: {
+                    termsAccepted.toggle()
+                }) {
+                    Image(systemName: termsAccepted ? "checkmark.square.fill" : "square")
+                        .foregroundColor(.blue)
+                }
+                Text("Acepto los términos y condiciones")
+                    .font(.system(size: 20))
+            }
+            .padding()
         }
         .navigationTitle("Recolección de Empaque")
     }
