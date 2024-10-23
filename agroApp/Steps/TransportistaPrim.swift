@@ -15,14 +15,14 @@ struct TransportistaPrim : View {
                 VStack(spacing: 20) {
                     NavigationLink(destination: ContratoServicioFleteView()) {
                         HStack {
-                            Text("Recolección de Empaque")
+                            Text("Contrato transportista")
                         }
                     }
                     .activeStepStyle(color: .orange, currentStep: currentStep, step: 1)
                     
                     NavigationLink(destination: PagoSTPStep()) {
                         HStack {
-                            Text("Báscula 1")
+                            Text("Pago 15% STP")
                         }
                     }
                     .activeStepStyle(color: .red, currentStep: currentStep, step: 2)
@@ -39,16 +39,14 @@ struct ContratoServicioFleteView: View {
     @State private var termsAccepted = false
     
     var body: some View {
+        Text("Contrato de flete")
+            .font(.largeTitle)
+//            .fontWeight(.bold)
+            .padding(.bottom, 10)
+        Divider()
+        
         ScrollView {
             VStack(spacing: 20) {
-                Text("Contrato de servicio de flete")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .padding(.bottom, 10)
-
-                Divider()
-                    .padding(.horizontal)
-
                 // Información Importante
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Firma de Contrato mediante Mifiel")
@@ -56,8 +54,8 @@ struct ContratoServicioFleteView: View {
                         .padding(.top, 10)
 
                     Text("MiFiel es una plataforma que facilita la firma electrónica de contratos y documentos de manera segura y legal, utilizando la Firma Electrónica Avanzada (FIEL) proporcionada por el SAT. La FIEL tiene la misma validez legal que una firma autógrafa en México.")
-                        .padding()
-                        .background(Color.gray.opacity(0.2))
+//                        .padding()
+//                        .background(Color.gray.opacity(0.2))
                         .cornerRadius(8)
                 }
                 .padding(.horizontal)
@@ -65,8 +63,8 @@ struct ContratoServicioFleteView: View {
                 Divider()
                 
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Firma de Contrato mediante Mifiel")
-                        .font(.headline)
+                    Text("Instrucciones")
+                        .font(.title)
                         .padding(.top, 10)
 
                     VStack(alignment: .leading, spacing: 15) {
@@ -78,25 +76,22 @@ struct ContratoServicioFleteView: View {
                         StepView(number: 6, text: "Contrato completo", description: "Una vez que ambas partes hayan firmado, el contrato estará completo y podrás descargarlo.")
                     }
                     .padding()
-                    .background(Color.gray.opacity(0.2))
                     .cornerRadius(8)
                 }
                 .padding(.horizontal)
 
-                // Disclaimer
+                // Aceptar terminos
                 HStack {
                     Button(action: {
                         termsAccepted.toggle()
                     }) {
                         Image(systemName: termsAccepted ? "checkmark.square.fill" : "square")
                             .foregroundColor(.blue)
+                            .font(.title2)
                     }
                     Text("Acepto los términos y condiciones")
                         .font(.system(size: 20))
                 }
-                .padding()
-
-                Spacer()
 
                 // Botón para firmar
                 Button(action: {
@@ -107,12 +102,13 @@ struct ContratoServicioFleteView: View {
                         .font(.headline)
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(Color.blue)
+                        .background(termsAccepted ? Color.blue : Color.gray)
                         .cornerRadius(10)
                         .shadow(color: .gray, radius: 5, x: 0, y: 5)
                 }
-                .padding(.horizontal)
-                .padding(.bottom, 20)
+                .padding(10)
+                .frame(maxWidth: 330)
+                .disabled(!termsAccepted)
             }
             .frame(maxWidth: .infinity)
             .background(Color.white)
@@ -151,16 +147,14 @@ struct PagoSTPFleteView: View {
     @State private var termsAccepted = false
     
     var body: some View {
+        Text("Pago STP de flete")
+            .font(.largeTitle)
+//            .fontWeight(.bold)
+            .padding(.bottom, 10)
+        Divider()
+        
         ScrollView {
             VStack(spacing: 20) {
-                Text("Pago STP de flete")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .padding(.bottom, 10)
-
-                Divider()
-                    .padding(.horizontal)
-
                 // Información Importante
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Pago mediante STP")
@@ -168,8 +162,6 @@ struct PagoSTPFleteView: View {
                         .padding(.top, 10)
 
                     Text("STP es una plataforma que permite realizar pagos electrónicos de manera rápida y segura, utilizando transferencias interbancarias en tiempo real.")
-                        .padding()
-                        .background(Color.gray.opacity(0.2))
                         .cornerRadius(8)
                 }
                 .padding(.horizontal)
@@ -178,7 +170,7 @@ struct PagoSTPFleteView: View {
                 
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Pasos para realizar el pago mediante STP")
-                        .font(.headline)
+                        .font(.title)
                         .padding(.top, 10)
 
                     VStack(alignment: .leading, spacing: 15) {
@@ -189,41 +181,39 @@ struct PagoSTPFleteView: View {
                         StepView(number: 5, text: "Pago completado", description: "Una vez completado el proceso, recibirás la confirmación de que el pago ha sido realizado exitosamente.")
                     }
                     .padding()
-                    .background(Color.gray.opacity(0.2))
                     .cornerRadius(8)
                 }
                 .padding(.horizontal)
 
-                // Disclaimer
+                // Aceptar terminos
                 HStack {
                     Button(action: {
                         termsAccepted.toggle()
                     }) {
                         Image(systemName: termsAccepted ? "checkmark.square.fill" : "square")
                             .foregroundColor(.blue)
+                            .font(.title2)
                     }
                     Text("Acepto los términos y condiciones")
                         .font(.system(size: 20))
                 }
-                .padding()
 
-                Spacer()
-
-                // Botón para realizar el pago
+                // Botón para firmar
                 Button(action: {
-                    // Acción para ir al sitio externo de STP (por implementar)
+                    // Acción para ir al sitio externo de Mifiel (por implementar)
                 }) {
-                    Text("Ir a realizar mi pago en STP")
+                    Text("Ir a firmar mi contrato en Mifiel")
                         .foregroundColor(.white)
                         .font(.headline)
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(Color.blue)
+                        .background(termsAccepted ? Color.blue : Color.gray)
                         .cornerRadius(10)
                         .shadow(color: .gray, radius: 5, x: 0, y: 5)
                 }
-                .padding(.horizontal)
-                .padding(.bottom, 20)
+                .padding(10)
+                .frame(maxWidth: 330)
+                .disabled(!termsAccepted)
             }
             .frame(maxWidth: .infinity)
             .background(Color.white)
@@ -234,6 +224,6 @@ struct PagoSTPFleteView: View {
 
 struct TransportistaPrim_Previews: PreviewProvider {
     static var previews: some View {
-        TransportistaSec(currentStep: 4)
+        TransportistaPrim(currentStep: 4)
     }
 }

@@ -71,83 +71,76 @@ struct StepsView: View {
                                 }
                             }
                             .activeStepStyle(color: .green, currentStep: currentStep, step: 4)
-
-                            NavigationLink(destination: TransportistaSec( currentStep: 4)) { // MFM
+                            
+                            NavigationLink(destination: TransportistaPrim(currentStep: 4)) { // MFM
                                 HStack {
-                                    Text("Transportista 1 (1,2,3)")
+                                    Text("Transportista 1 (1-3)")
                                 }
                             }
-                            .activeStepStyle(color: .pink, currentStep: currentStep, step: 7)
-
-                            NavigationLink(destination: Paso8View()) {
+                            .activeStepStyle(color: .cyan, currentStep: currentStep, step: 5)
+                            
+                            NavigationLink(destination: PagoSTPStep()) { // MFM
                                 HStack {
                                     Text("Pago STP")
                                 }
                             }
-                            .activeStepStyle(color: .cyan, currentStep: currentStep, step: 8)
+                            .activeStepStyle(color: .pink, currentStep: currentStep, step: 6)
+
+                            NavigationLink(destination: TransportistaSec( currentStep: 4)) { // MFM
+                                HStack {
+                                    Text("Transportista 2 (4-7)")
+                                }
+                            }
+                            .activeStepStyle(color: .purple, currentStep: currentStep, step: 7)
+                            
+                            NavigationLink(destination: Paso11View()) {
+                                HStack {
+                                    Text("Inspeción Corrección")
+                                }
+                            }
+                            .activeStepStyle(color: .blue, currentStep: currentStep, step: 8)
 
                             NavigationLink(destination: Paso9View()) {
                                 HStack {
-                                    Text("Transportista 2 (4,5,6,7)")
+                                    Text("Contrato Modificado")
                                 }
                             }
                             .activeStepStyle(color: .gray, currentStep: currentStep, step: 9)
 
                             NavigationLink(destination: Paso10View()) {
                                 HStack {
-                                    Text("Inspeccion")
+                                    Text("Transportista 3 (8-13)")
                                 }
                             }
                             .activeStepStyle(color: .yellow, currentStep: currentStep, step: 10)
-
-                            NavigationLink(destination: Paso11View()) {
-                                HStack {
-                                    Text("Corrección")
-                                }
-                            }
-                            .activeStepStyle(color: .blue, currentStep: currentStep, step: 11)
-
-                            NavigationLink(destination: Paso12View()) {
-                                HStack {
-                                    Text("Contrato C-V (modificado)opcional")
-                                }
-                            }
-                            .activeStepStyle(color: .green, currentStep: currentStep, step: 12)
-
-                            NavigationLink(destination: Paso13View()) {
-                                HStack {
-                                    Text("Transportista 3 (8,9,10, 11, 12)")
-                                }
-                            }
-                            .activeStepStyle(color: .purple, currentStep: currentStep, step: 13)
 
                             NavigationLink(destination: Paso14View()) {
                                 HStack {
                                     Text("Liberar Pago")
                                 }
                             }
-                            .activeStepStyle(color: .orange, currentStep: currentStep, step: 14)
+                            .activeStepStyle(color: .orange, currentStep: currentStep, step: 11)
 
                             NavigationLink(destination: Paso15View()) {
                                 HStack {
                                     Text("Rating")
                                 }
                             }
-                            .activeStepStyle(color: .pink, currentStep: currentStep, step: 15)
+                            .activeStepStyle(color: .pink, currentStep: currentStep, step: 12)
 
                             NavigationLink(destination: Paso16View()) {
                                 HStack {
                                     Text("Factura")
                                 }
                             }
-                            .activeStepStyle(color: .cyan, currentStep: currentStep, step: 16)
+                            .activeStepStyle(color: .cyan, currentStep: currentStep, step: 13)
 
                             NavigationLink(destination: Paso17View()) {
                                 HStack {
                                     Text("Finalizar Transacción")
                                 }
                             }
-                            .activeStepStyle(color: .gray, currentStep: currentStep, step: 17)
+                            .activeStepStyle(color: .gray, currentStep: currentStep, step: 14)
 
                         }
                         .padding(.top, 20)
