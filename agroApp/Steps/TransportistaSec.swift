@@ -14,21 +14,27 @@ struct TransportistaSec : View {
                     }
                     .activeStepStyle(color: .mint, currentStep: currentStep, step: 1)
                     
-                    NavigationLink(destination: Bascula1View()) {
+                    NavigationLink(destination: BasculaGenericView(
+                        instructionText: "Tome o importe una foto y registre el peso del camión en la báscula 1.", 
+                        navigationTitle: "Báscula 1")) {
                         HStack {
                             Text("Báscula 1")
                         }
                     }
                     .activeStepStyle(color: .cyan, currentStep: currentStep, step: 2)
                     
-                    NavigationLink(destination: EvidenciaInspeccionView()) {
+                    NavigationLink(destination: BasculaGenericView(
+                        instructionText: "Tome o importe una foto y registre la evidencia de inspección del producto.", 
+                        navigationTitle: "Evidencia para Inspección")) {
                         HStack {
                             Text("Evidencia para Inspección")
                         }
                     }
                     .activeStepStyle(color: .blue, currentStep: currentStep, step: 3)
                     
-                    NavigationLink(destination: Bascula2View()) {
+                    NavigationLink(destination: BasculaGenericView(
+                        instructionText: "Tome o importe una foto y registre el peso del camión en la báscula 2.", 
+                        navigationTitle: "Báscula 2")) {
                         HStack {
                             Text("Báscula 2")
                         }
@@ -51,6 +57,7 @@ struct RecoleccionDeEmpaqueView: View {
             // Instrucciones
             Text("El transportista realiza la recolección de los empaques (ya sean cajas, costales etc) antes de pesar el flete y manda una evidencia de la recolección de los empaques.")
             
+            Spacer()
             // Video de YouTube
             VStack {
                 Text("Instrucciones en Video")
@@ -91,10 +98,11 @@ struct RecoleccionDeEmpaqueView: View {
                 )
             }
             .padding()
-            // Disclaimer
-            Text("El transportista realiza la recolección de los empaques (ya sean cajas, costales etc) antes de pesar el flete y manda una evidencia de la recolección de los empaques.")
-                .italic()
+            // Disclaimer            
+            Text("Descargo de responsabilidad: Este documento es solo para fines informativos y no constituye asesoramiento legal. No nos hacemos responsables de ninguna acción tomada en base a la información proporcionada en este documento. Se recomienda encarecidamente buscar asesoramiento legal profesional antes de tomar cualquier decisión o acción relacionada con el contenido de este documento.")
+                .font(.footnote)
                 .foregroundStyle(Color.red)
+                .italic()
             HStack {
                 Button(action: {
                     termsAccepted.toggle()
@@ -111,96 +119,101 @@ struct RecoleccionDeEmpaqueView: View {
     }
 }
 
-struct Bascula1View: View {
+struct BasculaGenericView: View {
+    let instructionText: String
+    let navigationTitle: String
+    @State private var termsAccepted = false
+    
     var body: some View {
         VStack {
-            Button("Tomar Foto") {
-                // Acción para tomar foto
-            }
-            .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .cornerRadius(10)
-            .shadow(color: .gray, radius: 5, x: 0, y: 5)
+            // Instrucciones
+            Text(instructionText)
+                .padding()
             
-            Button("Importar Foto") {
-                // Acción para importar foto
+            Spacer()
+            Button(action: {
+                if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                    let picker = UIImagePickerController()
+                    picker.sourceType = .camera
+                    UIApplication.shared.windows.first?.rootViewController?.present(picker, animated: true, completion: nil)
+                }
+            }) {
+                HStack {
+                    Image(systemName: "camera.fill")
+                        .font(.title)
+                    Text("Tomar Foto")
+                        .font(.headline)
+                }
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+                .shadow(color: .gray, radius: 5, x: 0, y: 5)
             }
             .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .cornerRadius(10)
-            .shadow(color: .gray, radius: 5, x: 0, y: 5)
+            
+            Button(action: {
+                if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+                    let picker = UIImagePickerController()
+                    picker.sourceType = .photoLibrary
+                    UIApplication.shared.windows.first?.rootViewController?.present(picker, animated: true, completion: nil)
+                }
+            }) {
+                HStack {
+                    Image(systemName: "photo.fill.on.rectangle.fill")
+                        .font(.title)
+                    Text("Importar Foto")
+                        .font(.headline)
+                }
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+                .shadow(color: .gray, radius: 5, x: 0, y: 5)
+            }
+            .padding()
             
             TextField("Inserte Peso (Incluye foto del camión)", text: .constant(""))
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
-        }
-        .navigationTitle("Báscula 1")
-    }
-}
-
-struct EvidenciaInspeccionView: View {
-    var body: some View {
-        VStack {
-            Button("Tomar Foto") {
-                // Acción para tomar foto
-            }
-            .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .cornerRadius(10)
-            .shadow(color: .gray, radius: 5, x: 0, y: 5)
-            
-            Button("Importar Foto") {
-                // Acción para importar foto
-            }
-            .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .cornerRadius(10)
-            .shadow(color: .gray, radius: 5, x: 0, y: 5)
-            
-            TextField("Insertar descripción o estado de producto inspeccionado", text: .constant(""))
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+            Button(action: {
+                // Code to handle button tap
+            }) {
+                HStack {
+                    Image(systemName: "paperplane.fill")
+                        .font(.title)
+                        .foregroundColor(.white)
+                    Text("Enviar")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                }
                 .padding()
-        }
-        .navigationTitle("Evidencia para Inspección")
-    }
-}
-
-struct Bascula2View: View {
-    var body: some View {
-        VStack {
-            Button("Tomar Foto") {
-                // Acción para tomar foto
+                .frame(width: 300)
+                .background(Color.green)
+                .cornerRadius(10)
+                .shadow(color: .gray, radius: 5, x: 0, y: 5)
+            }
+            Spacer()
+            // Disclaimer        
+            Text("Descargo de responsabilidad: Este documento es solo para fines informativos y no constituye asesoramiento legal. No nos hacemos responsables de ninguna acción tomada en base a la información proporcionada en este documento. Se recomienda encarecidamente buscar asesoramiento legal profesional antes de tomar cualquier decisión o acción relacionada con el contenido de este documento.")
+                .font(.footnote)
+                .foregroundStyle(Color.red)
+                .italic()
+            HStack {
+                Button(action: {
+                    termsAccepted.toggle()
+                }) {
+                    Image(systemName: termsAccepted ? "checkmark.square.fill" : "square")
+                        .foregroundColor(.blue)
+                }
+                Text("Acepto los términos y condiciones")
+                    .font(.system(size: 20))
             }
             .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .cornerRadius(10)
-            .shadow(color: .gray, radius: 5, x: 0, y: 5)
-            
-            Button("Importar Foto") {
-                // Acción para importar foto
-            }
-            .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .cornerRadius(10)
-            .shadow(color: .gray, radius: 5, x: 0, y: 5)
-            
-            TextField("Inserte Peso (Incluye foto del camión)", text: .constant(""))
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
         }
-        .navigationTitle("Báscula 2")
+        .navigationTitle(navigationTitle)
     }
 }
 

@@ -71,22 +71,8 @@ struct StepsView: View {
                                 }
                             }
                             .activeStepStyle(color: .green, currentStep: currentStep, step: 4)
-                            
-                            NavigationLink(destination: Paso5View()) {
-                                HStack {
-                                    Text("Paso 5")
-                                }
-                            }
-                            .activeStepStyle(color: .purple, currentStep: currentStep, step: 5)
-                            
-                            NavigationLink(destination: Paso6View()) {
-                                HStack {
-                                    Text("Paso 6")
-                                }
-                            }
-                            .activeStepStyle(color: .orange, currentStep: currentStep, step: 6)
 
-                            NavigationLink(destination: Paso7View()) {
+                            NavigationLink(destination: TransportistaSec( currentStep: 4)) { // MFM
                                 HStack {
                                     Text("Transportista 1 (1,2,3)")
                                 }
@@ -196,20 +182,6 @@ struct StepsView: View {
                                 }
                             }
                             .activeStepStyle(color: .green, currentStep: currentStep, step: 4)
-                            
-                            NavigationLink(destination: Paso5View()) {
-                                HStack {
-                                    Text("Paso 5")
-                                }
-                            }
-                            .activeStepStyle(color: .purple, currentStep: currentStep, step: 5)
-                            
-                            NavigationLink(destination: Paso6View()) {
-                                HStack {
-                                    Text("Paso 6")
-                                }
-                            }
-                            .activeStepStyle(color: .orange, currentStep: currentStep, step: 6)
                         }
                         .padding(.top, 20)
                         .frame(width: screenWidth, height: .infinity)
