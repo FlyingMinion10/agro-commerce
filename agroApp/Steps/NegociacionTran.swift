@@ -17,7 +17,7 @@ struct TransportOffer: Identifiable, Codable {
     let accepted: Bool
 }
 
-struct TransporteStep: View {
+struct NegociacionTran: View {
     let screenWidth = UIScreen.main.bounds.width
     
     // MARK: - State Variables
@@ -590,8 +590,8 @@ struct DetailOffer: View {
     }
 }
 
-struct TransporteStep_Previews: PreviewProvider {
+struct NegociacionTran_Previews: PreviewProvider {
     static var previews: some View {
-        TransporteStep(interaction_id: 3, producto_completo: "Aguacate Haas")
+        NegociacionTran(interaction_id: 3, producto_completo: "Aguacate Haas")
     }
 }

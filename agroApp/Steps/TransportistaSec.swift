@@ -131,49 +131,51 @@ struct BasculaGenericView: View {
                 .padding()
             
             Spacer()
-            Button(action: {
-                if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                    let picker = UIImagePickerController()
-                    picker.sourceType = .camera
-                    UIApplication.shared.windows.first?.rootViewController?.present(picker, animated: true, completion: nil)
-                }
-            }) {
-                HStack {
-                    Image(systemName: "camera.fill")
-                        .font(.title)
-                    Text("Tomar Foto")
-                        .font(.headline)
-                }
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .cornerRadius(10)
-                .shadow(color: .gray, radius: 5, x: 0, y: 5)
-            }
-            .padding()
-            
-            Button(action: {
-                if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-                    let picker = UIImagePickerController()
-                    picker.sourceType = .photoLibrary
-                    UIApplication.shared.windows.first?.rootViewController?.present(picker, animated: true, completion: nil)
-                }
-            }) {
-                HStack {
-                    Image(systemName: "photo.fill.on.rectangle.fill")
-                        .font(.title)
-                    Text("Importar Foto")
-                        .font(.headline)
+            HStack {
+                Button(action: {
+                    if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                        let picker = UIImagePickerController()
+                        picker.sourceType = .camera
+                        UIApplication.shared.windows.first?.rootViewController?.present(picker, animated: true, completion: nil)
+                    }
+                }) {
+                    HStack {
+                        Image(systemName: "camera.fill")
+                            .font(.title)
+                        Text("Tomar Foto")
+                            .font(.title)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+                    .shadow(color: .gray, radius: 5, x: 0, y: 5)
                 }
                 .padding()
-                .frame(maxWidth: .infinity)
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .cornerRadius(10)
-                .shadow(color: .gray, radius: 5, x: 0, y: 5)
+                
+                Button(action: {
+                    if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+                        let picker = UIImagePickerController()
+                        picker.sourceType = .photoLibrary
+                        UIApplication.shared.windows.first?.rootViewController?.present(picker, animated: true, completion: nil)
+                    }
+                }) {
+                    HStack {
+                        Image(systemName: "photo.fill.on.rectangle.fill")
+                            .font(.title)
+                        Text("Importar Foto")
+                            .font(.title)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+                    .shadow(color: .gray, radius: 5, x: 0, y: 5)
+                }
+                .padding()
             }
-            .padding()
             
             TextField("Inserte Peso (Incluye foto del camión)", text: .constant(""))
                 .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -190,8 +192,8 @@ struct BasculaGenericView: View {
                         .foregroundColor(.white)
                 }
                 .padding()
-                .frame(width: 300)
-                .background(Color.green)
+                .frame(width: 330)
+                .background(termsAccepted ? Color.green : Color.gray)
                 .cornerRadius(10)
                 .shadow(color: .gray, radius: 5, x: 0, y: 5)
             }

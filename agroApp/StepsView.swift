@@ -65,7 +65,7 @@ struct StepsView: View {
                             }
                             .activeStepStyle(color: .blue, currentStep: currentStep, step: 3)
                             
-                            NavigationLink(destination: TransporteStep(interaction_id: interaction_id, producto_completo: producto_completo)) {
+                            NavigationLink(destination: NegociacionTran(interaction_id: interaction_id, producto_completo: producto_completo)) {
                                 HStack {
                                     Text("Negociacion transporte")
                                 }
@@ -176,7 +176,7 @@ struct StepsView: View {
                             }
                             .lockedStepStyle(currentStep: currentStep, step: 3)
                             
-                            NavigationLink(destination: TransporteStep(interaction_id: interaction_id, producto_completo: producto_completo)) {
+                            NavigationLink(destination: NegociacionTran(interaction_id: interaction_id, producto_completo: producto_completo)) {
                                 HStack {
                                     Text("Negociacion transporte")
                                 }
