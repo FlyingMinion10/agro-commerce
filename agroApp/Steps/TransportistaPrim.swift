@@ -7,7 +7,7 @@
 import SwiftUI
 
 struct TransportistaPrim : View {
-    var currentStep: Int
+    var tranPrimStep: Int
     
     var body: some View {
         NavigationView {
@@ -18,14 +18,14 @@ struct TransportistaPrim : View {
                             Text("Contrato transportista")
                         }
                     }
-                    .activeStepStyle(color: .orange, currentStep: currentStep, step: 1)
+                    .activeStepStyle(color: .orange, currentStep: tranPrimStep, step: 1)
                     
                     NavigationLink(destination: PagoSTPStep()) {
                         HStack {
                             Text("Pago 15% STP")
                         }
                     }
-                    .activeStepStyle(color: .red, currentStep: currentStep, step: 2)
+                    .activeStepStyle(color: .red, currentStep: tranPrimStep, step: 2)
                     
                 }
                 .frame(width: 360)
@@ -224,6 +224,6 @@ struct PagoSTPFleteView: View {
 
 struct TransportistaPrim_Previews: PreviewProvider {
     static var previews: some View {
-        TransportistaPrim(currentStep: 4)
+        TransportistaPrim(tranPrimStep: 4)
     }
 }
