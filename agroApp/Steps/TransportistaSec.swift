@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct TransportistaSec : View {
-    var currentStep: Int
+    var tranSecStep: Int
     
     var body: some View {
         NavigationView {
@@ -12,7 +12,7 @@ struct TransportistaSec : View {
                             Text("Recolección de Empaque")
                         }
                     }
-                    .activeStepStyle(color: .mint, currentStep: currentStep, step: 1)
+                    .activeStepStyle(color: .mint, currentStep: tranSecStep, step: 1)
                     
                     NavigationLink(destination: BasculaGenericView(
                         instructionText: "Tome o importe una foto y registre el peso del camión en la báscula 1.", 
@@ -21,7 +21,7 @@ struct TransportistaSec : View {
                             Text("Báscula 1")
                         }
                     }
-                    .activeStepStyle(color: .cyan, currentStep: currentStep, step: 2)
+                    .activeStepStyle(color: .cyan, currentStep: tranSecStep, step: 2)
                     
                     NavigationLink(destination: BasculaGenericView(
                         instructionText: "Tome o importe una foto y registre la evidencia de inspección del producto.", 
@@ -30,7 +30,7 @@ struct TransportistaSec : View {
                             Text("Evidencia para Inspección")
                         }
                     }
-                    .activeStepStyle(color: .blue, currentStep: currentStep, step: 3)
+                    .activeStepStyle(color: .blue, currentStep: tranSecStep, step: 3)
                     
                     NavigationLink(destination: BasculaGenericView(
                         instructionText: "Tome o importe una foto y registre el peso del camión en la báscula 2.", 
@@ -39,7 +39,7 @@ struct TransportistaSec : View {
                             Text("Báscula 2")
                         }
                     }
-                    .activeStepStyle(color: .indigo, currentStep: currentStep, step: 4)
+                    .activeStepStyle(color: .indigo, currentStep: tranSecStep, step: 4)
                 }
                 .frame(width: 360)
             }
@@ -221,6 +221,6 @@ struct BasculaGenericView: View {
 
 struct TransportistaSec_Previews: PreviewProvider {
     static var previews: some View {
-        TransportistaSec(currentStep: 4)
+        TransportistaSec(tranSecStep: 4)
     }
 }
