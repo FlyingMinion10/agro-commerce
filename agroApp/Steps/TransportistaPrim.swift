@@ -7,44 +7,66 @@
 import SwiftUI
 
 struct TransportistaPrim : View {
+    let screenWidth = UIScreen.main.bounds.width
     var tranPrimStep: Int
-    
+    @Environment(\.dismiss) var dismiss
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(spacing: 20) {
-                    NavigationLink(destination: ContratoServicioFleteView()) {
-                        HStack {
-                            Text("Contrato transportista")
-                        }
+            VStack {
+                HStack{
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "chevron.backward")
+                            .font(.system(size: 24))
                     }
-                    .activeStepStyle(color: .orange, currentStep: tranPrimStep, step: 1)
-                    
-                    NavigationLink(destination: PagoSTPStep()) {
-                        HStack {
-                            Text("Pago 15% STP")
-                        }
+                    Spacer()
+                    Text("Transportista 1-3")
+                        .font(.system(size: 30))
+                        .foregroundStyle(Color.black.opacity(0.9))
+                        .padding(.vertical, 20)
+                    Spacer()
+                    Button(action: {
+                    }) {
+                        Image(systemName: "ellipsis")
+                            .font(.system(size: 24))
                     }
-                    .activeStepStyle(color: .red, currentStep: tranPrimStep, step: 2)
-                    
                 }
-                .frame(width: 360)
+                .padding()
+                .frame(width: screenWidth, height: 60)
+                .background(Color.white)
+                ScrollView {
+                    VStack(spacing: 20) {
+                        NavigationLink(destination: ContratoServicioFleteView()) {
+                            HStack {
+                                Text("Contrato transportista")
+                            }
+                        }
+                        .activeStepStyle(color: .orange, currentStep: tranPrimStep, step: 1)
+                        
+                        NavigationLink(destination: PagoSTPFleteView()) {
+                            HStack {
+                                Text("Pago 15% STP")
+                            }
+                        }
+                        .activeStepStyle(color: .red, currentStep: tranPrimStep, step: 2)
+                        
+                    }
+                    .frame(width: 360)
+                    .padding()
+                }
             }
-            .navigationTitle("Opciones")
         }
+        .navigationBarBackButtonHidden(true)
     }
 }
 
+// MARK: - Paso secundario 1
 struct ContratoServicioFleteView: View {
     @State private var termsAccepted = false
     
     var body: some View {
-        Text("Contrato de flete")
-            .font(.largeTitle)
-//            .fontWeight(.bold)
-            .padding(.bottom, 10)
-        Divider()
-        
+        dismiss_header(title: "Contrato de Servicio de Flete")
         ScrollView {
             VStack(spacing: 20) {
                 // Información Importante
@@ -68,12 +90,12 @@ struct ContratoServicioFleteView: View {
                         .padding(.top, 10)
 
                     VStack(alignment: .leading, spacing: 15) {
-                        StepView(number: 1, text: "Negocia los términos", description: "Primero, tú y la otra parte acuerdan los detalles del contrato directamente en nuestra plataforma.")
-                        StepView(number: 2, text: "Generación automática", description: "Una vez que ambos estén de acuerdo, el contrato se genera automáticamente con los términos que negociaron.")
-                        StepView(number: 3, text: "Revisión en MiFiel", description: "El contrato se enviará directamente a tu cuenta de MiFiel. Ahí podrás revisarlo antes de firmar.")
-                        StepView(number: 4, text: "Firma el contrato", description: "Desde MiFiel, podrás firmar el contrato con tu Firma Electrónica (FIEL) de manera segura.")
-                        StepView(number: 5, text: "Espera la firma de la otra parte", description: "La otra parte también firmará el contrato desde su cuenta de MiFiel.")
-                        StepView(number: 6, text: "Contrato completo", description: "Una vez que ambas partes hayan firmado, el contrato estará completo y podrás descargarlo.")
+                        InfoTutoRec(number: 1, text: "Negocia los términos", description: "Primero, tú y la otra parte acuerdan los detalles del contrato directamente en nuestra plataforma.")
+                        InfoTutoRec(number: 2, text: "Generación automática", description: "Una vez que ambos estén de acuerdo, el contrato se genera automáticamente con los términos que negociaron.")
+                        InfoTutoRec(number: 3, text: "Revisión en MiFiel", description: "El contrato se enviará directamente a tu cuenta de MiFiel. Ahí podrás revisarlo antes de firmar.")
+                        InfoTutoRec(number: 4, text: "Firma el contrato", description: "Desde MiFiel, podrás firmar el contrato con tu Firma Electrónica (FIEL) de manera segura.")
+                        InfoTutoRec(number: 5, text: "Espera la firma de la otra parte", description: "La otra parte también firmará el contrato desde su cuenta de MiFiel.")
+                        InfoTutoRec(number: 6, text: "Contrato completo", description: "Una vez que ambas partes hayan firmado, el contrato estará completo y podrás descargarlo.")
                     }
                     .padding()
                     .cornerRadius(8)
@@ -114,45 +136,16 @@ struct ContratoServicioFleteView: View {
             .background(Color.white)
         }
         .ignoresSafeArea(edges: .bottom)
+        .navigationBarBackButtonHidden(true)
     }
 }
 
-struct StepView: View {
-    let number: Int
-    let text: String
-    let description: String
-    
-    var body: some View {
-        HStack(alignment: .top) {
-            Text("\(number)")
-                .font(.system(size: 24, weight: .bold))
-                .frame(width: 30, height: 30)
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .cornerRadius(15)
-                .padding(.top, 5)
-            
-            VStack(alignment: .leading, spacing: 5) {
-                Text(text)
-                    .font(.headline)
-                Text(description)
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
-            }
-        }
-    }
-}
-
+// MARK: - Paso secundario 2
 struct PagoSTPFleteView: View {
     @State private var termsAccepted = false
     
     var body: some View {
-        Text("Pago STP de flete")
-            .font(.largeTitle)
-//            .fontWeight(.bold)
-            .padding(.bottom, 10)
-        Divider()
-        
+        dismiss_header(title: "Pago STP de flete")
         ScrollView {
             VStack(spacing: 20) {
                 // Información Importante
@@ -174,11 +167,11 @@ struct PagoSTPFleteView: View {
                         .padding(.top, 10)
 
                     VStack(alignment: .leading, spacing: 15) {
-                        StepView(number: 1, text: "Registra tu cuenta", description: "Ingresa a la plataforma y registra tu cuenta bancaria para poder realizar pagos.")
-                        StepView(number: 2, text: "Genera la orden de pago", description: "Crea una orden de pago con los detalles del flete que deseas pagar.")
-                        StepView(number: 3, text: "Confirma el pago", description: "Revisa los detalles de la orden y confirma el pago a través de la plataforma STP.")
-                        StepView(number: 4, text: "Verificación", description: "STP realizará la verificación de la transferencia de manera rápida y segura.")
-                        StepView(number: 5, text: "Pago completado", description: "Una vez completado el proceso, recibirás la confirmación de que el pago ha sido realizado exitosamente.")
+                        InfoTutoRec(number: 1, text: "Registra tu cuenta", description: "Ingresa a la plataforma y registra tu cuenta bancaria para poder realizar pagos.")
+                        InfoTutoRec(number: 2, text: "Genera la orden de pago", description: "Crea una orden de pago con los detalles del flete que deseas pagar.")
+                        InfoTutoRec(number: 3, text: "Confirma el pago", description: "Revisa los detalles de la orden y confirma el pago a través de la plataforma STP.")
+                        InfoTutoRec(number: 4, text: "Verificación", description: "STP realizará la verificación de la transferencia de manera rápida y segura.")
+                        InfoTutoRec(number: 5, text: "Pago completado", description: "Una vez completado el proceso, recibirás la confirmación de que el pago ha sido realizado exitosamente.")
                     }
                     .padding()
                     .cornerRadius(8)
@@ -219,6 +212,7 @@ struct PagoSTPFleteView: View {
             .background(Color.white)
         }
         .ignoresSafeArea(edges: .bottom)
+        .navigationBarBackButtonHidden(true)
     }
 }
 
