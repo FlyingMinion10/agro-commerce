@@ -2,49 +2,74 @@ import SwiftUI
 
 struct TransportistaSec : View {
     var tranSecStep: Int
-    
+    let screenWidth = UIScreen.main.bounds.width
+    @Environment(\.dismiss) var dismiss
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(spacing: 20) {
-                    NavigationLink(destination: RecoleccionDeEmpaqueView()) {
-                        HStack {
-                            Text("Recolección de Empaque")
-                        }
+            VStack {
+                HStack{
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "chevron.backward")
+                            .font(.system(size: 24))
                     }
-                    .activeStepStyle(color: .mint, currentStep: tranSecStep, step: 1)
-                    
-                    NavigationLink(destination: BasculaGenericView(
-                        instructionText: "Tome o importe una foto y registre el peso del camión en la báscula 1.", 
-                        navigationTitle: "Báscula 1")) {
-                        HStack {
-                            Text("Báscula 1")
-                        }
+                    Spacer()
+                    Text("Transportista 4-7")
+                        .font(.system(size: 30))
+                        .foregroundStyle(Color.black.opacity(0.9))
+                        .padding(.vertical, 20)
+                    Spacer()
+                    Button(action: {
+                    }) {
+                        Image(systemName: "ellipsis")
+                            .font(.system(size: 24))
                     }
-                    .activeStepStyle(color: .cyan, currentStep: tranSecStep, step: 2)
-                    
-                    NavigationLink(destination: BasculaGenericView(
-                        instructionText: "Tome o importe una foto y registre la evidencia de inspección del producto.", 
-                        navigationTitle: "Evidencia para Inspección")) {
-                        HStack {
-                            Text("Evidencia para Inspección")
-                        }
-                    }
-                    .activeStepStyle(color: .blue, currentStep: tranSecStep, step: 3)
-                    
-                    NavigationLink(destination: BasculaGenericView(
-                        instructionText: "Tome o importe una foto y registre el peso del camión en la báscula 2.", 
-                        navigationTitle: "Báscula 2")) {
-                        HStack {
-                            Text("Báscula 2")
-                        }
-                    }
-                    .activeStepStyle(color: .indigo, currentStep: tranSecStep, step: 4)
                 }
-                .frame(width: 360)
+                .padding()
+                .frame(width: screenWidth, height: 60)
+                ScrollView {
+                    VStack(spacing: 20) {
+                        NavigationLink(destination: RecoleccionDeEmpaqueView()) {
+                            HStack {
+                                Text("Recolección de Empaque")
+                            }
+                        }
+                        .activeStepStyle(color: .mint, currentStep: tranSecStep, step: 1)
+                        
+                        NavigationLink(destination: BasculaGenericView(
+                            instructionText: "Tome o importe una foto y registre el peso del camión en la báscula 1.", 
+                            navigationTitle: "Báscula 1")) {
+                            HStack {
+                                Text("Báscula 1")
+                            }
+                        }
+                        .activeStepStyle(color: .cyan, currentStep: tranSecStep, step: 2)
+                        
+                        NavigationLink(destination: BasculaGenericView(
+                            instructionText: "Tome o importe una foto y registre la evidencia de inspección del producto.", 
+                            navigationTitle: "Evidencia para Inspección")) {
+                            HStack {
+                                Text("Evidencia para Inspección")
+                            }
+                        }
+                        .activeStepStyle(color: .blue, currentStep: tranSecStep, step: 3)
+                        
+                        NavigationLink(destination: BasculaGenericView(
+                            instructionText: "Tome o importe una foto y registre el peso del camión en la báscula 2.", 
+                            navigationTitle: "Báscula 2")) {
+                            HStack {
+                                Text("Báscula 2")
+                            }
+                        }
+                        .activeStepStyle(color: .indigo, currentStep: tranSecStep, step: 4)
+                    }
+                    .frame(width: 360)
+                    .padding()
+                }
             }
-            .navigationTitle("Opciones")
         }
+        .navigationBarBackButtonHidden(true)
     }
 }
 
@@ -54,6 +79,7 @@ struct RecoleccionDeEmpaqueView: View {
     
     var body: some View {
         VStack {
+            dismiss_header(title: "Recolección de empaque")
             // Instrucciones
             Text("El transportista realiza la recolección de los empaques (ya sean cajas, costales etc) antes de pesar el flete y manda una evidencia de la recolección de los empaques.")
             
@@ -115,7 +141,7 @@ struct RecoleccionDeEmpaqueView: View {
             }
             .padding()
         }
-        .navigationTitle("Recolección de Empaque")
+        .navigationBarBackButtonHidden(true)
     }
 }
 
@@ -126,11 +152,25 @@ struct BasculaGenericView: View {
     
     var body: some View {
         VStack {
+            dismiss_header(title: navigationTitle)
             // Instrucciones
             Text(instructionText)
                 .padding()
             
             Spacer()
+            // Video de YouTube
+            VStack {
+                Text("Instrucciones en Video")
+                    .font(.headline)
+                    .padding(.bottom, 10)
+                VStack {
+                    WebView(url: URL(string: "https://www.youtube.com/watch?v=nwC9jzTYty4")!)
+                        .frame(height: 200)
+                        .cornerRadius(10)
+                        .shadow(radius: 5)
+                }
+                .padding()
+            }
             HStack {
                 Button(action: {
                     if UIImagePickerController.isSourceTypeAvailable(.camera) {
@@ -141,11 +181,9 @@ struct BasculaGenericView: View {
                 }) {
                     HStack {
                         Image(systemName: "camera.fill")
-                            .font(.title)
                         Text("Tomar Foto")
-                            .font(.title)
                     }
-                    .padding()
+                    .padding(.vertical, 15)
                     .frame(maxWidth: .infinity)
                     .background(Color.blue)
                     .foregroundColor(.white)
@@ -163,11 +201,9 @@ struct BasculaGenericView: View {
                 }) {
                     HStack {
                         Image(systemName: "photo.fill.on.rectangle.fill")
-                            .font(.title)
-                        Text("Importar Foto")
-                            .font(.title)
+                        Text("Subir Foto")  
                     }
-                    .padding()
+                    .padding(.vertical, 15)
                     .frame(maxWidth: .infinity)
                     .background(Color.blue)
                     .foregroundColor(.white)
@@ -192,7 +228,7 @@ struct BasculaGenericView: View {
                         .foregroundColor(.white)
                 }
                 .padding()
-                .frame(width: 330)
+                .frame(maxWidth: .infinity)
                 .background(termsAccepted ? Color.green : Color.gray)
                 .cornerRadius(10)
                 .shadow(color: .gray, radius: 5, x: 0, y: 5)
@@ -203,6 +239,7 @@ struct BasculaGenericView: View {
                 .font(.footnote)
                 .foregroundStyle(Color.red)
                 .italic()
+                .padding()
             HStack {
                 Button(action: {
                     termsAccepted.toggle()
@@ -215,7 +252,7 @@ struct BasculaGenericView: View {
             }
             .padding()
         }
-        .navigationTitle(navigationTitle)
+        .navigationBarBackButtonHidden(true)
     }
 }
 
