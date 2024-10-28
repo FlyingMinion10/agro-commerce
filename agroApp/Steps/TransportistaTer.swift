@@ -8,50 +8,75 @@ import SwiftUI
 
 struct TransportistaTer : View {
     var tranTerStep: Int
-    
+    let screenWidth = UIScreen.main.bounds.width
+    @Environment(\.dismiss) var dismiss
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(spacing: 20) {
-                    NavigationLink(destination: ConfirmacionLlegadaCamionTran()) {
-                        HStack {
-                            Text("Confirmar llegada de camión")
-                        }
+            VStack {
+                HStack{
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "chevron.backward")
+                            .font(.system(size: 24))
                     }
-                    .activeStepStyle(color: .green, currentStep: tranTerStep, step: 1)
-                    
-                    NavigationLink(destination: LiberarPagoTran()) {
-                        HStack {
-                            Text("Liberar pago")
-                        }
+                    Spacer()
+                    Text("Transportista 8-13")
+                        .font(.system(size: 30))
+                        .foregroundStyle(Color.black.opacity(0.9))
+                        .padding(.vertical, 20)
+                    Spacer()
+                    Button(action: {
+                    }) {
+                        Image(systemName: "ellipsis")
+                            .font(.system(size: 24))
                     }
-                    .activeStepStyle(color: .teal, currentStep: tranTerStep, step: 2)
-                    
-                    NavigationLink(destination: RatingPageTran()) {
-                        HStack {
-                            Text("Rating")
-                        }
-                    }
-                    .activeStepStyle(color: .green, currentStep: tranTerStep, step: 3)
-                    
-                    NavigationLink(destination: FacturaTran()) {
-                        HStack {
-                            Text("Factura")
-                        }
-                    }
-                    .activeStepStyle(color: .teal, currentStep: tranTerStep, step: 4)
-                    
-                    NavigationLink(destination: FinalizarTransaccionTran()) {
-                        HStack {
-                            Text("Finalizar")
-                        }
-                    }
-                    .activeStepStyle(color: .green, currentStep: tranTerStep, step: 5)
                 }
-                .frame(width: 360)
+                .padding()
+                .frame(width: screenWidth, height: 60)
+                ScrollView {
+                    VStack(spacing: 20) {
+                        NavigationLink(destination: ConfirmacionLlegadaCamionTran()) {
+                            HStack {
+                                Text("Confirmar llegada de camión")
+                            }
+                        }
+                        .activeStepStyle(color: .green, currentStep: tranTerStep, step: 1)
+                        
+                        NavigationLink(destination: LiberarPagoTran()) {
+                            HStack {
+                                Text("Liberar pago")
+                            }
+                        }
+                        .activeStepStyle(color: .teal, currentStep: tranTerStep, step: 2)
+                        
+                        NavigationLink(destination: RatingPageTran()) {
+                            HStack {
+                                Text("Rating")
+                            }
+                        }
+                        .activeStepStyle(color: .green, currentStep: tranTerStep, step: 3)
+                        
+                        NavigationLink(destination: FacturaTran()) {
+                            HStack {
+                                Text("Factura")
+                            }
+                        }
+                        .activeStepStyle(color: .teal, currentStep: tranTerStep, step: 4)
+                        
+                        NavigationLink(destination: FinalizarTransaccionTran()) {
+                            HStack {
+                                Text("Finalizar")
+                            }
+                        }
+                        .activeStepStyle(color: .green, currentStep: tranTerStep, step: 5)
+                    }
+                    .frame(width: 360)
+                    .padding()
+                }
             }
-            .navigationTitle("Opciones")
         }
+        .navigationBarBackButtonHidden(true)
     }
 }
 
@@ -60,15 +85,8 @@ struct ConfirmacionLlegadaCamionTran: View {
     @State private var confirmArrival: Bool = false
     
     var body: some View {
-
-            VStack(spacing: 20) {
-                Text("Confirmación de Llegada del Producto")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .padding(.bottom, 10)
-
-                Divider()
-                    .padding(.horizontal)
+        VStack(spacing: 20) {
+            dismiss_header(title: "Confirmación de Llegada de Camión")
             ScrollView {
                 // Información de la transacción
                 VStack(alignment: .leading, spacing: 20) {
@@ -146,6 +164,7 @@ struct ConfirmacionLlegadaCamionTran: View {
             .background(Color.white)
         }
         .ignoresSafeArea(edges: .bottom)
+        .navigationBarBackButtonHidden(true)
     }
 }
 
@@ -153,13 +172,7 @@ struct LiberarPagoTran: View {
     var body: some View {
             VStack(spacing: 20) {
 
-                Text("Liberar Pago")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .padding(.bottom, 10)
-
-                Divider()
-                    .padding(.horizontal)
+            dismiss_header(title: "Liberación de Pago")
             ScrollView {
                 // Participantes de la transacción
                 VStack(alignment: .leading, spacing: 10) {
@@ -254,6 +267,7 @@ struct LiberarPagoTran: View {
             .background(Color.white)
         }
         .ignoresSafeArea(edges: .bottom)
+        .navigationBarBackButtonHidden(true)
     }
 }
 
@@ -266,13 +280,7 @@ struct RatingPageTran: View {
     var body: some View {
         VStack(spacing: 20) {
             
-            Text("Rating")
-                .font(.title)
-                .fontWeight(.bold)
-                .padding(.bottom, 10)
-
-            Divider()
-                .padding(.horizontal)
+            dismiss_header(title: "Rating transportista")
 
             // Sección de calidad de la negociación
             VStack(alignment: .leading, spacing: 20) {
@@ -346,6 +354,7 @@ TextField("¿Qué podría mejorar?", text: .constant(""))
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.white)
         .ignoresSafeArea(edges: .bottom)
+        .navigationBarBackButtonHidden(true)
     }
 }
 
@@ -356,13 +365,7 @@ struct FacturaTran: View {
     var body: some View {
  
             VStack(spacing: 20) {
-                Text("Generación de Factura de Movimiento de Compra-Venta")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .padding(.bottom, 10)
-
-                Divider()
-                    .padding(.horizontal)
+                dismiss_header(title: "Factura transportista")
             ScrollView {
                 // Información del movimiento
                 VStack(alignment: .leading, spacing: 20) {
@@ -416,10 +419,10 @@ struct FacturaTran: View {
                     Text("Pasos para Obtener la Factura")
                         .font(.headline)
                         .padding(.bottom, 5)
-                    StepView(number: 1, text: "Revisión de Datos", description: "Verifica la información del movimiento de compra-venta para asegurarte de que sea correcta.")
-                    StepView(number: 2, text: "Solicitud de Factura", description: "Solicita la factura a través de nuestra plataforma proporcionando los detalles requeridos.")
-                    StepView(number: 3, text: "Confirmación de la Solicitud", description: "Confirma la solicitud de factura para que podamos procesarla.")
-                    StepView(number: 4, text: "Recepción de la Factura", description: "Una vez procesada, recibirás la factura en tu correo electrónico registrado.")
+                    InfoTutoRec(number: 1, text: "Revisión de Datos", description: "Verifica la información del movimiento de compra-venta para asegurarte de que sea correcta.")
+                    InfoTutoRec(number: 2, text: "Solicitud de Factura", description: "Solicita la factura a través de nuestra plataforma proporcionando los detalles requeridos.")
+                    InfoTutoRec(number: 3, text: "Confirmación de la Solicitud", description: "Confirma la solicitud de factura para que podamos procesarla.")
+                    InfoTutoRec(number: 4, text: "Recepción de la Factura", description: "Una vez procesada, recibirás la factura en tu correo electrónico registrado.")
                 }
                 .padding()
                 .background(Color.gray.opacity(0.2))
@@ -459,6 +462,7 @@ struct FacturaTran: View {
             .background(Color.white)
         }
         .ignoresSafeArea(edges: .bottom)
+        .navigationBarBackButtonHidden(true)
     }
 }
 
@@ -555,6 +559,7 @@ Spacer(minLength: 30)
             .background(Color.white)
         }
         .ignoresSafeArea(edges: .bottom)
+        .navigationBarBackButtonHidden(true)
     }
 }
 
