@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,6 +11,20 @@
 		0628A3D62C95E994007E41CD /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0628A3D52C95E993007E41CD /* UserData.swift */; };
 		0690EACC2C9120A700848E5C /* CanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0690EACB2C9120A700848E5C /* CanvasView.swift */; };
 		06B4F2212CA3560300CCAE34 /* StepsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B4F2202CA355F500CCAE34 /* StepsView.swift */; };
+		06D97A512CCFF6B900F30079 /* ContratoModStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D97A422CCFF6B900F30079 /* ContratoModStep.swift */; };
+		06D97A522CCFF6B900F30079 /* ContratoStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D97A432CCFF6B900F30079 /* ContratoStep.swift */; };
+		06D97A532CCFF6B900F30079 /* FacturaCompraVenta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D97A442CCFF6B900F30079 /* FacturaCompraVenta.swift */; };
+		06D97A542CCFF6B900F30079 /* FinalizarTransaccion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D97A452CCFF6B900F30079 /* FinalizarTransaccion.swift */; };
+		06D97A552CCFF6B900F30079 /* FormAgr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D97A462CCFF6B900F30079 /* FormAgr.swift */; };
+		06D97A562CCFF6B900F30079 /* FormBodega.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D97A472CCFF6B900F30079 /* FormBodega.swift */; };
+		06D97A572CCFF6B900F30079 /* InspeccionCorreccion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D97A482CCFF6B900F30079 /* InspeccionCorreccion.swift */; };
+		06D97A582CCFF6B900F30079 /* LiberarPago.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D97A492CCFF6B900F30079 /* LiberarPago.swift */; };
+		06D97A592CCFF6B900F30079 /* NegociacionTran.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D97A4A2CCFF6B900F30079 /* NegociacionTran.swift */; };
+		06D97A5A2CCFF6B900F30079 /* PagoSTPStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D97A4B2CCFF6B900F30079 /* PagoSTPStep.swift */; };
+		06D97A5B2CCFF6B900F30079 /* RatingPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D97A4C2CCFF6B900F30079 /* RatingPageView.swift */; };
+		06D97A5C2CCFF6B900F30079 /* TransportistaPrim.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D97A4D2CCFF6B900F30079 /* TransportistaPrim.swift */; };
+		06D97A5D2CCFF6B900F30079 /* TransportistaSec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D97A4E2CCFF6B900F30079 /* TransportistaSec.swift */; };
+		06D97A5E2CCFF6B900F30079 /* TransportistaTer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D97A4F2CCFF6B900F30079 /* TransportistaTer.swift */; };
 		06E5B7AF2C931E34000B6C70 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E5B7AE2C931E34000B6C70 /* LoginView.swift */; };
 		06E5B7B12C931E51000B6C70 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E5B7B02C931E51000B6C70 /* RegisterView.swift */; };
 		06E5B7B32C932520000B6C70 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E5B7B22C932520000B6C70 /* Keychain.swift */; };
@@ -56,6 +70,20 @@
 		0628A3D52C95E993007E41CD /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
 		0690EACB2C9120A700848E5C /* CanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasView.swift; sourceTree = "<group>"; };
 		06B4F2202CA355F500CCAE34 /* StepsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsView.swift; sourceTree = "<group>"; };
+		06D97A422CCFF6B900F30079 /* ContratoModStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContratoModStep.swift; sourceTree = "<group>"; };
+		06D97A432CCFF6B900F30079 /* ContratoStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContratoStep.swift; sourceTree = "<group>"; };
+		06D97A442CCFF6B900F30079 /* FacturaCompraVenta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacturaCompraVenta.swift; sourceTree = "<group>"; };
+		06D97A452CCFF6B900F30079 /* FinalizarTransaccion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalizarTransaccion.swift; sourceTree = "<group>"; };
+		06D97A462CCFF6B900F30079 /* FormAgr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormAgr.swift; sourceTree = "<group>"; };
+		06D97A472CCFF6B900F30079 /* FormBodega.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormBodega.swift; sourceTree = "<group>"; };
+		06D97A482CCFF6B900F30079 /* InspeccionCorreccion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspeccionCorreccion.swift; sourceTree = "<group>"; };
+		06D97A492CCFF6B900F30079 /* LiberarPago.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiberarPago.swift; sourceTree = "<group>"; };
+		06D97A4A2CCFF6B900F30079 /* NegociacionTran.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NegociacionTran.swift; sourceTree = "<group>"; };
+		06D97A4B2CCFF6B900F30079 /* PagoSTPStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagoSTPStep.swift; sourceTree = "<group>"; };
+		06D97A4C2CCFF6B900F30079 /* RatingPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingPageView.swift; sourceTree = "<group>"; };
+		06D97A4D2CCFF6B900F30079 /* TransportistaPrim.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransportistaPrim.swift; sourceTree = "<group>"; };
+		06D97A4E2CCFF6B900F30079 /* TransportistaSec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransportistaSec.swift; sourceTree = "<group>"; };
+		06D97A4F2CCFF6B900F30079 /* TransportistaTer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransportistaTer.swift; sourceTree = "<group>"; };
 		06E5B7AE2C931E34000B6C70 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		06E5B7B02C931E51000B6C70 /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
 		06E5B7B22C932520000B6C70 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
@@ -75,10 +103,6 @@
 		06FFC4672C837BC2005432AE /* ChatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsView.swift; sourceTree = "<group>"; };
 		06FFC4692C837FAB005432AE /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		D0C34F542CAB480500DE094E /* Steps */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Steps; sourceTree = "<group>"; };
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		06FFC4332C837A5D005432AE /* Frameworks */ = {
@@ -122,6 +146,27 @@
 			path = AuthSystem;
 			sourceTree = "<group>";
 		};
+		06D97A502CCFF6B900F30079 /* Steps */ = {
+			isa = PBXGroup;
+			children = (
+				06D97A432CCFF6B900F30079 /* ContratoStep.swift */,
+				06D97A462CCFF6B900F30079 /* FormAgr.swift */,
+				06D97A472CCFF6B900F30079 /* FormBodega.swift */,
+				06D97A4A2CCFF6B900F30079 /* NegociacionTran.swift */,
+				06D97A4D2CCFF6B900F30079 /* TransportistaPrim.swift */,
+				06D97A4B2CCFF6B900F30079 /* PagoSTPStep.swift */,
+				06D97A4E2CCFF6B900F30079 /* TransportistaSec.swift */,
+				06D97A482CCFF6B900F30079 /* InspeccionCorreccion.swift */,
+				06D97A422CCFF6B900F30079 /* ContratoModStep.swift */,
+				06D97A4F2CCFF6B900F30079 /* TransportistaTer.swift */,
+				06D97A492CCFF6B900F30079 /* LiberarPago.swift */,
+				06D97A4C2CCFF6B900F30079 /* RatingPageView.swift */,
+				06D97A442CCFF6B900F30079 /* FacturaCompraVenta.swift */,
+				06D97A452CCFF6B900F30079 /* FinalizarTransaccion.swift */,
+			);
+			path = Steps;
+			sourceTree = "<group>";
+		};
 		06FFC42D2C837A5D005432AE = {
 			isa = PBXGroup;
 			children = (
@@ -155,7 +200,7 @@
 				06FFC4692C837FAB005432AE /* ProfileView.swift */,
 				061E5FC22C8956A800D35C88 /* StockArrays.swift */,
 				06F466092C9B2AD900C428CB /* GoogleService-Info.plist */,
-				D0C34F542CAB480500DE094E /* Steps */,
+				06D97A502CCFF6B900F30079 /* Steps */,
 				065600092C9A565A0010E560 /* AuthSystem */,
 				06FFC43D2C837A60005432AE /* Assets.xcassets */,
 				06FFC43F2C837A60005432AE /* Preview Content */,
@@ -202,9 +247,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				D0C34F542CAB480500DE094E /* Steps */,
 			);
 			name = affinApp;
 			productName = agroApp;
@@ -337,6 +379,20 @@
 				06FFC4662C837BA2005432AE /* PublicationCreatorView.swift in Sources */,
 				06B4F2212CA3560300CCAE34 /* StepsView.swift in Sources */,
 				06FFC46A2C837FAB005432AE /* ProfileView.swift in Sources */,
+				06D97A512CCFF6B900F30079 /* ContratoModStep.swift in Sources */,
+				06D97A522CCFF6B900F30079 /* ContratoStep.swift in Sources */,
+				06D97A532CCFF6B900F30079 /* FacturaCompraVenta.swift in Sources */,
+				06D97A542CCFF6B900F30079 /* FinalizarTransaccion.swift in Sources */,
+				06D97A552CCFF6B900F30079 /* FormAgr.swift in Sources */,
+				06D97A562CCFF6B900F30079 /* FormBodega.swift in Sources */,
+				06D97A572CCFF6B900F30079 /* InspeccionCorreccion.swift in Sources */,
+				06D97A582CCFF6B900F30079 /* LiberarPago.swift in Sources */,
+				06D97A592CCFF6B900F30079 /* NegociacionTran.swift in Sources */,
+				06D97A5A2CCFF6B900F30079 /* PagoSTPStep.swift in Sources */,
+				06D97A5B2CCFF6B900F30079 /* RatingPageView.swift in Sources */,
+				06D97A5C2CCFF6B900F30079 /* TransportistaPrim.swift in Sources */,
+				06D97A5D2CCFF6B900F30079 /* TransportistaSec.swift in Sources */,
+				06D97A5E2CCFF6B900F30079 /* TransportistaTer.swift in Sources */,
 				06FFC43A2C837A5D005432AE /* agroAppApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -36,40 +36,78 @@ struct TransportistaTer : View {
                 .frame(width: screenWidth, height: 60)
                 ScrollView {
                     VStack(spacing: 20) {
+                        HStack {
+                                Text("Contrato transportista")
+                                Image(systemName: "checkmark.circle")
+                                    
+                        }
+                        .lockedStepStyle(currentStep: tranTerStep, step: 1)
+                        
+                        HStack {
+                                Text("Pago 15% STP")
+                                Image(systemName: "checkmark.circle")
+                                    
+                        }
+                        .lockedStepStyle(currentStep: tranTerStep, step: 2)
+                        
+                        HStack {
+                            Text("Recolección de Empaque")
+                            Image(systemName: "checkmark.circle")
+                        }
+                        .lockedStepStyle(currentStep: tranTerStep, step: 3)
+                        
+                        HStack {
+                            Text("Báscula 1")
+                            Image(systemName: "checkmark.circle")
+                        }
+                        .lockedStepStyle(currentStep: tranTerStep, step: 4)
+                        
+                        HStack {
+                            Text("Evidencia para Inspección")
+                            Image(systemName: "checkmark.circle")
+                        }
+                        .lockedStepStyle(currentStep: tranTerStep, step: 5)
+                        
+                        HStack {
+                            Text("Báscula 2")
+                            Image(systemName: "checkmark.circle")
+                        }
+                        .lockedStepStyle(currentStep: tranTerStep, step: 6)
+                        //////////////////// DIV //////////////////// DIV //////////////////// DIV //////////////////// DIV
                         NavigationLink(destination: ConfirmacionLlegadaCamionTran()) {
                             HStack {
                                 Text("Confirmar llegada de camión")
                             }
                         }
-                        .activeStepStyle(color: .green, currentStep: tranTerStep, step: 1)
+                        .activeStepStyle(color: .orange, currentStep: tranTerStep, step: 7)
                         
                         NavigationLink(destination: LiberarPagoTran()) {
                             HStack {
                                 Text("Liberar pago")
                             }
                         }
-                        .activeStepStyle(color: .teal, currentStep: tranTerStep, step: 2)
+                        .activeStepStyle(color: .yellow, currentStep: tranTerStep, step: 8)
                         
                         NavigationLink(destination: RatingPageTran()) {
                             HStack {
                                 Text("Rating")
                             }
                         }
-                        .activeStepStyle(color: .green, currentStep: tranTerStep, step: 3)
+                        .activeStepStyle(color: .orange, currentStep: tranTerStep, step: 9)
                         
                         NavigationLink(destination: FacturaTran()) {
                             HStack {
                                 Text("Factura")
                             }
                         }
-                        .activeStepStyle(color: .teal, currentStep: tranTerStep, step: 4)
+                        .activeStepStyle(color: .yellow, currentStep: tranTerStep, step: 10)
                         
                         NavigationLink(destination: FinalizarTransaccionTran()) {
                             HStack {
                                 Text("Finalizar")
                             }
                         }
-                        .activeStepStyle(color: .green, currentStep: tranTerStep, step: 5)
+                        .activeStepStyle(color: .orange, currentStep: tranTerStep, step: 11)
                     }
                     .frame(width: 360)
                     .padding()
@@ -310,14 +348,14 @@ struct RatingPageTran: View {
             Divider()
 
             // Calificación de su experiencia en general
-Text("Calificación de su experiencia en general")
-    .font(.headline)
-    .padding(.top, 10)
+            Text("Calificación de su experiencia en general")
+                .font(.headline)
+                .padding(.top, 10)
 
-// Campo de texto para comentarios
-TextField("¿Qué podría mejorar?", text: .constant(""))
-    .textFieldStyle(RoundedBorderTextFieldStyle())
-    .padding(.horizontal)
+            // Campo de texto para comentarios
+            TextField("¿Qué podría mejorar?", text: .constant(""))
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.horizontal)
 
 // Rating general con estrellas
             VStack(spacing: 10) {
@@ -469,16 +507,9 @@ struct FacturaTran: View {
 struct FinalizarTransaccionTran: View {
     var body: some View {
 
-            VStack(spacing: 20) {
+        VStack(spacing: 20) {
  
-                Text("Finalizar Transacción")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .padding(.bottom, 10)
-
-                Divider()
-
-                    .padding(.horizontal)
+            dismiss_header(title: "Finalizar Transacción")
             ScrollView {
                 // Participantes de la transacción
                 VStack(alignment: .leading, spacing: 10) {
@@ -539,21 +570,21 @@ struct FinalizarTransaccionTran: View {
                 Divider()
 
                 // Botón para finalizar transacción
-Button(action: {
-    // Acción para finalizar la transacción (por implementar)
-}) {
-    Text("Finalizar Transacción")
-        .foregroundColor(.white)
-        .font(.headline)
-        .padding()
-        .frame(maxWidth: .infinity)
-        .background(Color.blue)
-        .cornerRadius(10)
-}
-.padding(.horizontal)
-.padding(.bottom, 5)
+                Button(action: {
+                    // Acción para finalizar la transacción (por implementar)
+                }) {
+                    Text("Finalizar Transacción")
+                        .foregroundColor(.white)
+                        .font(.headline)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue)
+                        .cornerRadius(10)
+                }
+                .padding(.horizontal)
+                .padding(.bottom, 5)
 
-Spacer(minLength: 30)
+                Spacer(minLength: 30)
             }
             .frame(maxWidth: .infinity)
             .background(Color.white)
@@ -566,6 +597,6 @@ Spacer(minLength: 30)
 
 struct TransportistaTer_Previews: PreviewProvider {
     static var previews: some View {
-        TransportistaTer(tranTerStep: 5)
+        TransportistaTer(tranTerStep: 11)
     }
 }

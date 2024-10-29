@@ -15,7 +15,7 @@ struct TransportistaSec : View {
                             .font(.system(size: 24))
                     }
                     Spacer()
-                    Text("Transportista 4-7")
+                    Text("Transportista 3-7")
                         .font(.system(size: 30))
                         .foregroundStyle(Color.black.opacity(0.9))
                         .padding(.vertical, 20)
@@ -30,39 +30,67 @@ struct TransportistaSec : View {
                 .frame(width: screenWidth, height: 60)
                 ScrollView {
                     VStack(spacing: 20) {
-                        NavigationLink(destination: RecoleccionDeEmpaqueView()) {
+                        HStack {
+                                Text("Contrato transportista")
+                                Image(systemName: "checkmark.circle")
+                                    
+                        }
+                        .lockedStepStyle(currentStep: tranSecStep, step: 1)
+                        
+                        HStack {
+                                Text("Pago 15% STP")
+                                Image(systemName: "checkmark.circle")
+                                    
+                        }
+                        .lockedStepStyle(currentStep: tranSecStep, step: 2)
+
+                        NavigationLink(destination: RecoleccionDeEmpaqueTS(
+                            videoURL: Stock.videos["Recolección de Empaque"]!)) {
                             HStack {
                                 Text("Recolección de Empaque")
                             }
                         }
-                        .activeStepStyle(color: .mint, currentStep: tranSecStep, step: 1)
+                        .activeStepStyle(color: .red, currentStep: tranSecStep, step: 3)
                         
-                        NavigationLink(destination: BasculaGenericView(
+                        NavigationLink(destination: BasculaGenericTS(
                             instructionText: "Tome o importe una foto y registre el peso del camión en la báscula 1.", 
-                            navigationTitle: "Báscula 1")) {
+                            navigationTitle: "Báscula 1",
+                            videoURL: Stock.videos["Báscula 1"]!)) {
                             HStack {
                                 Text("Báscula 1")
                             }
                         }
-                        .activeStepStyle(color: .cyan, currentStep: tranSecStep, step: 2)
+                        .activeStepStyle(color: .yellow, currentStep: tranSecStep, step: 4)
                         
-                        NavigationLink(destination: BasculaGenericView(
+                        NavigationLink(destination: BasculaGenericTS(
                             instructionText: "Tome o importe una foto y registre la evidencia de inspección del producto.", 
-                            navigationTitle: "Evidencia para Inspección")) {
+                            navigationTitle: "Evidencia para Inspección",
+                            videoURL: Stock.videos["Evidencia para Inspección"]!)) {
                             HStack {
                                 Text("Evidencia para Inspección")
                             }
                         }
-                        .activeStepStyle(color: .blue, currentStep: tranSecStep, step: 3)
+                        .activeStepStyle(color: .red, currentStep: tranSecStep, step: 5)
                         
-                        NavigationLink(destination: BasculaGenericView(
+                        NavigationLink(destination: BasculaGenericTS(
                             instructionText: "Tome o importe una foto y registre el peso del camión en la báscula 2.", 
-                            navigationTitle: "Báscula 2")) {
+                            navigationTitle: "Báscula 2",
+                            videoURL: Stock.videos["Báscula 2"]!)) {
                             HStack {
                                 Text("Báscula 2")
                             }
                         }
-                        .activeStepStyle(color: .indigo, currentStep: tranSecStep, step: 4)
+                        .activeStepStyle(color: .yellow, currentStep: tranSecStep, step: 6)
+                        
+                        NavigationLink(destination: BasculaGenericTS(
+                            instructionText: "Tome o importe una foto y registre el peso del camión en la báscula 3.", 
+                            navigationTitle: "Báscula 3",
+                            videoURL: Stock.videos["Báscula 3"]!)) {
+                            HStack {
+                                Text("Báscula 3")
+                            }
+                        }
+                        .activeStepStyle(color: .red, currentStep: tranSecStep, step: 7)
                     }
                     .frame(width: 360)
                     .padding()
@@ -73,9 +101,10 @@ struct TransportistaSec : View {
     }
 }
 
-struct RecoleccionDeEmpaqueView: View {
+struct RecoleccionDeEmpaqueTS: View {
     @State private var showConfirmation = false
     @State private var termsAccepted = false
+    var videoURL: String
     
     var body: some View {
         VStack {
@@ -90,7 +119,7 @@ struct RecoleccionDeEmpaqueView: View {
                     .font(.headline)
                     .padding(.bottom, 10)
                 VStack {
-                    WebView(url: URL(string: "https://www.youtube.com/watch?v=nwC9jzTYty4")!)
+                    WebView(url: URL(string: videoURL)!)
                         .frame(height: 200)
                         .cornerRadius(10)
                         .shadow(radius: 5)
@@ -145,9 +174,10 @@ struct RecoleccionDeEmpaqueView: View {
     }
 }
 
-struct BasculaGenericView: View {
+struct BasculaGenericTS: View {
     let instructionText: String
     let navigationTitle: String
+    var videoURL: String
     @State private var termsAccepted = false
     
     var body: some View {
@@ -164,7 +194,7 @@ struct BasculaGenericView: View {
                     .font(.headline)
                     .padding(.bottom, 10)
                 VStack {
-                    WebView(url: URL(string: "https://www.youtube.com/watch?v=nwC9jzTYty4")!)
+                    WebView(url: URL(string: videoURL)!)
                         .frame(height: 200)
                         .cornerRadius(10)
                         .shadow(radius: 5)
@@ -213,9 +243,10 @@ struct BasculaGenericView: View {
                 .padding()
             }
             
-            TextField("Inserte Peso (Incluye foto del camión)", text: .constant(""))
+            TextField("Inserte el peso en Toneladas", text: .constant(""))
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
+                .keyboardType(.numberPad)
             Button(action: {
                 // Code to handle button tap
             }) {
@@ -258,6 +289,6 @@ struct BasculaGenericView: View {
 
 struct TransportistaSec_Previews: PreviewProvider {
     static var previews: some View {
-        TransportistaSec(tranSecStep: 4)
+        TransportistaSec(tranSecStep: 6)
     }
 }

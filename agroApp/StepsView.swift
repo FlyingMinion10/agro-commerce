@@ -104,34 +104,34 @@ struct StepsView: View {
                         VStack(spacing: 20) {
                             NavigationLink(destination: ContratoStep(interaction_id: interaction_id, step: currentStep)) {
                                 HStack {
-                                    Text("Contrato C-V")
+                                    Text("Contrato compra-venta")
                                 }
                             }
-                            .activeStepStyle(color: .yellow, currentStep: currentStep, step: 1)
+                            .activeStepStyle(color: .blue, currentStep: currentStep, step: 1)
                             
                             HStack {
                                 Image(systemName: "lock")
-                                Text("Form Agro")
+                                Text("Datos Agricultor")
                             }
                             .lockedStepStyle(currentStep: currentStep, step: 2)
                         
                             NavigationLink(destination: FormBodega(interaction_id: interaction_id, step: currentStep)) {
                                 HStack {
-                                    Text("Form Bodeguero")
+                                    Text("Datos Bodeguero")
                                 }
                             }
-                            .activeStepStyle(color: .blue, currentStep: currentStep, step: 3)
+                            .activeStepStyle(color: .cyan, currentStep: currentStep, step: 3)
                             
                             NavigationLink(destination: NegociacionTran(interaction_id: interaction_id, producto_completo: producto_completo)) {
                                 HStack {
                                     Text("Negociacion transporte")
                                 }
                             }
-                            .activeStepStyle(color: .green, currentStep: currentStep, step: 4)
+                            .activeStepStyle(color: .blue, currentStep: currentStep, step: 4)
                             
                             NavigationLink(destination: TransportistaPrim(tranPrimStep: 2)) { // MFM
                                 HStack {
-                                    Text("Transportista 1 (1-3)")
+                                    Text("Transportista 1 (1-2)")
                                 }
                             }
                             .activeStepStyle(color: .cyan, currentStep: currentStep, step: 5)
@@ -141,14 +141,14 @@ struct StepsView: View {
                                     Text("Pago STP")
                                 }
                             }
-                            .activeStepStyle(color: .pink, currentStep: currentStep, step: 6)
+                            .activeStepStyle(color: .blue, currentStep: currentStep, step: 6)
 
-                            NavigationLink(destination: TransportistaSec(tranSecStep: 4)) { // MFM
+                            NavigationLink(destination: TransportistaSec(tranSecStep: 7)) { // MFM
                                 HStack {
-                                    Text("Transportista 2 (4-7)")
+                                    Text("Transportista 2 (3-7)")
                                 }
                             }
-                            .activeStepStyle(color: .purple, currentStep: currentStep, step: 7)
+                            .activeStepStyle(color: .cyan, currentStep: currentStep, step: 7)
                             
                             NavigationLink(destination: InspeccionCorreccion()) {
                                 HStack {
@@ -162,28 +162,28 @@ struct StepsView: View {
                                     Text("Contrato Modificado")
                                 }
                             }
-                            .activeStepStyle(color: .gray, currentStep: currentStep, step: 9)
+                            .activeStepStyle(color: .cyan, currentStep: currentStep, step: 9)
 
-                            NavigationLink(destination: TransportistaTer(tranTerStep: 5)) {
+                            NavigationLink(destination: TransportistaTer(tranTerStep: 11)) {
                                 HStack {
                                     Text("Transportista 3 (8-13)")
                                 }
                             }
-                            .activeStepStyle(color: .yellow, currentStep: currentStep, step: 10)
+                            .activeStepStyle(color: .blue, currentStep: currentStep, step: 10)
 
                             NavigationLink(destination: LiberarPago()) {
                                 HStack {
                                     Text("Liberar Pago")
                                 }
                             }
-                            .activeStepStyle(color: .orange, currentStep: currentStep, step: 11)
+                            .activeStepStyle(color: .cyan, currentStep: currentStep, step: 11)
 
                             NavigationLink(destination: RatingPage()) {
                                 HStack {
                                     Text("Rating")
                                 }
                             }
-                            .activeStepStyle(color: .pink, currentStep: currentStep, step: 12)
+                            .activeStepStyle(color: .blue, currentStep: currentStep, step: 12)
 
                             NavigationLink(destination: FacturaCompraVenta()) {
                                 HStack {
@@ -197,7 +197,7 @@ struct StepsView: View {
                                     Text("Finalizar Transacción")
                                 }
                             }
-                            .activeStepStyle(color: .gray, currentStep: currentStep, step: 14)
+                            .activeStepStyle(color: .blue, currentStep: currentStep, step: 14)
 
                         }
                         .padding(.top, 20)
@@ -208,21 +208,21 @@ struct StepsView: View {
                         VStack(spacing: 20) {
                             NavigationLink(destination: ContratoStep(interaction_id: interaction_id, step: currentStep)) {
                                 HStack {
-                                    Text("Contrato C-V")
+                                    Text("Contrato compra-venta")
                                 }
                             }
-                            .activeStepStyle(color: .yellow, currentStep: currentStep, step: 1)
+                            .activeStepStyle(color: .green, currentStep: currentStep, step: 1)
 
                             NavigationLink(destination: FormAgr(interaction_id: interaction_id, step: currentStep)) {
                                 HStack {
-                                    Text("Form Agro")
+                                    Text("Datos Agricultor")
                                 }
                             }
-                            .activeStepStyle(color: .red, currentStep: currentStep, step: 2)
+                            .activeStepStyle(color: .mint, currentStep: currentStep, step: 2)
                             
                             HStack {
                                     Image(systemName: "lock")
-                                    Text("Form Bodeguero")
+                                    Text("Datos Bodeguero")
                             }
                             .lockedStepStyle(currentStep: currentStep, step: 3)
                             
@@ -234,73 +234,73 @@ struct StepsView: View {
                             .activeStepStyle(color: .green, currentStep: currentStep, step: 4)
                             NavigationLink(destination: TransportistaPrim(tranPrimStep: 2)) {
                                 HStack {
-                                    Text("Transportista 1 (1-3)")
+                                    Text("Transportista 1 (1-2)")
                                 }
                             }
-                            .activeStepStyle(color: .cyan, currentStep: currentStep, step: 5)
+                            .activeStepStyle(color: .mint, currentStep: currentStep, step: 5)
 
                             NavigationLink(destination: PagoSTPStep()) {
                                 HStack {
                                     Text("Pago STP")
                                 }
                             }
-                            .activeStepStyle(color: .pink, currentStep: currentStep, step: 6)
+                            .activeStepStyle(color: .green, currentStep: currentStep, step: 6)
 
-                            NavigationLink(destination: TransportistaSec(tranSecStep: 4)) {
+                            NavigationLink(destination: TransportistaSec(tranSecStep: 7)) {
                                 HStack {
-                                    Text("Transportista 2 (4-7)")
+                                    Text("Transportista 2 (3-7)")
                                 }
                             }
-                            .activeStepStyle(color: .purple, currentStep: currentStep, step: 7)
+                            .activeStepStyle(color: .mint, currentStep: currentStep, step: 7)
 
                             NavigationLink(destination: InspeccionCorreccion()) {
                                 HStack {
                                     Text("Inspeción Corrección")
                                 }
                             }
-                            .activeStepStyle(color: .blue, currentStep: currentStep, step: 8)
+                            .activeStepStyle(color: .green, currentStep: currentStep, step: 8)
 
                             NavigationLink(destination: ContratoModStep(interaction_id: interaction_id, step: currentStep)) {
                                 HStack {
                                     Text("Contrato Modificado")
                                 }
                             }
-                            .activeStepStyle(color: .gray, currentStep: currentStep, step: 9)
+                            .activeStepStyle(color: .mint, currentStep: currentStep, step: 9)
 
-                            NavigationLink(destination: TransportistaTer(tranTerStep: 5)) {
+                            NavigationLink(destination: TransportistaTer(tranTerStep: 11)) {
                                 HStack {
                                     Text("Transportista 3 (8-13)")
                                 }
                             }
-                            .activeStepStyle(color: .yellow, currentStep: currentStep, step: 10)
+                            .activeStepStyle(color: .green, currentStep: currentStep, step: 10)
 
                             NavigationLink(destination: LiberarPago()) {
                                 HStack {
                                     Text("Liberar Pago")
                                 }
                             }
-                            .activeStepStyle(color: .orange, currentStep: currentStep, step: 11)
+                            .activeStepStyle(color: .mint, currentStep: currentStep, step: 11)
 
                             NavigationLink(destination: RatingPage()) {
                                 HStack {
                                     Text("Rating")
                                 }
                             }
-                            .activeStepStyle(color: .pink, currentStep: currentStep, step: 12)
+                            .activeStepStyle(color: .green, currentStep: currentStep, step: 12)
 
                             NavigationLink(destination: FacturaCompraVenta()) {
                                 HStack {
                                     Text("Factura compra-venta")
                                 }
                             }
-                            .activeStepStyle(color: .cyan, currentStep: currentStep, step: 13)
+                            .activeStepStyle(color: .mint, currentStep: currentStep, step: 13)
 
                             NavigationLink(destination: FinalizarTransaccion()) {
                                 HStack {
                                     Text("Finalizar Transacción")
                                 }
                             }
-                            .activeStepStyle(color: .gray, currentStep: currentStep, step: 14)
+                            .activeStepStyle(color: .green, currentStep: currentStep, step: 14)
                         }
                         .padding(.top, 20)
                         .frame(width: screenWidth, height: .infinity)

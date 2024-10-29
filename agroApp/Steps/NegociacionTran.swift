@@ -114,7 +114,7 @@ struct NegociacionTran: View {
                 ScrollView {
                     LazyVStack {
                         ForEach(transportOffers) { transportOffer in
-                            NavigationLink(destination: DetailOffer(transportOffer: transportOffer, offer_tran_id: transportOffer.id ?? 0)) {
+                            NavigationLink(destination: DetailOffer(transportOffer: transportOffer, offer_tran_id: transportOffer.id ?? 0, interaction_id: interaction_id)) {
                                 HStack {
                                     VStack {
                                         Text(transportOffer.empresa_tran)
@@ -310,6 +310,7 @@ struct DetailOffer: View {
     
     var transportOffer: TransportOffer // Assume you have a `TransportOffer` model
     var offer_tran_id: Int
+    var interaction_id: Int
 
     var body: some View {
        ZStack {
@@ -499,7 +500,8 @@ struct DetailOffer: View {
 
         // Crear el diccionario con los datos formateados
         let idToAcceptDeal: [String: Any] = [
-            "offer_tran_id": offer_tran_id // MFM Verificar si "ID" es el nombre correcto
+            "offer_tran_id": offer_tran_id, // MFM Verificar si "ID" es el nombre
+            "interaction_id": interaction_id
         ]
 
         // Serializar los datos a JSON
@@ -538,7 +540,7 @@ struct DetailOffer: View {
 
     // MARK: - Func Edit Mply
     func editTranOffer() {
-        guard let url = URL(string: "https://my-backend-production.up.railway.app/step-four/edit") else { return }
+        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/step-four/edit") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

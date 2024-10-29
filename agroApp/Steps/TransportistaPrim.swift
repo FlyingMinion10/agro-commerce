@@ -42,14 +42,14 @@ struct TransportistaPrim : View {
                                 Text("Contrato transportista")
                             }
                         }
-                        .activeStepStyle(color: .orange, currentStep: tranPrimStep, step: 1)
+                        .activeStepStyle(color: .red, currentStep: tranPrimStep, step: 1)
                         
                         NavigationLink(destination: PagoSTPFleteView()) {
                             HStack {
                                 Text("Pago 15% STP")
                             }
                         }
-                        .activeStepStyle(color: .red, currentStep: tranPrimStep, step: 2)
+                        .activeStepStyle(color: .orange, currentStep: tranPrimStep, step: 2)
                         
                     }
                     .frame(width: 360)
@@ -195,7 +195,7 @@ struct PagoSTPFleteView: View {
                 Button(action: {
                     // Acción para ir al sitio externo de Mifiel (por implementar)
                 }) {
-                    Text("Ir a firmar mi contrato en Mifiel")
+                    Text("Hacer pago mediante STP")
                         .foregroundColor(.white)
                         .font(.headline)
                         .padding()

@@ -68,15 +68,14 @@ public struct Stock {
     static let transporte: [String] = ["A cargo del bodeguero", "A cargo de AFFIN"]
 
     static let colores: [Color] = [Color.red, Color.orange, Color.yellow, Color.green, Color.blue, Color.purple, Color.cyan, Color.mint]
+
+    static let videos: [String: String] = [
+        "Recolección de Empaque": "https://www.youtube.com/watch?v=nwC9jzTYty4",
+        "Báscula 1": "https://www.youtube.com/watch?v=nwC9jzTYty4",
+        "Evidencia para Inspección": "https://www.youtube.com/watch?v=nwC9jzTYty4",
+        "Báscula 2": "https://www.youtube.com/watch?v=nwC9jzTYty4",
+        "Báscula 3": "https://www.youtube.com/watch?v=nwC9jzTYty4"
+        ]
+
+
 }
-
-// OtroArchivo.swift
-
-// import Foundation
-
-// class AlgunaClase {
-//     func ejemplo() {
-//         let aguacates = Stock.variedades["Aguacate"]
-//         print(aguacates ?? "No se encontraron aguacates.")
-//     }
-// }
