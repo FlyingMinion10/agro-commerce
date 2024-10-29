@@ -60,8 +60,9 @@ struct dismiss_header: View {
 struct StepsView: View {
     let screenWidth = UIScreen.main.bounds.width
     
-    // MARK: - State Variables
+    // State Variables
     private let myAccountType: String = ProfileView.accountType
+    @State private var tranStep: Int = 0
     
     // Variables heredadas desde ChatsView para la negociación
     var interaction_id: Int
@@ -129,7 +130,7 @@ struct StepsView: View {
                             }
                             .activeStepStyle(color: .blue, currentStep: currentStep, step: 4)
                             
-                            NavigationLink(destination: TransportistaPrim(tranPrimStep: 2)) { // MFM
+                            NavigationLink(destination: TransportistaPrim(tranStep: 2)) { // MFM
                                 HStack {
                                     Text("Transportista 1 (1-2)")
                                 }
@@ -143,7 +144,7 @@ struct StepsView: View {
                             }
                             .activeStepStyle(color: .blue, currentStep: currentStep, step: 6)
 
-                            NavigationLink(destination: TransportistaSec(tranSecStep: 7)) { // MFM
+                            NavigationLink(destination: TransportistaSec(tranStep: 7)) { // MFM
                                 HStack {
                                     Text("Transportista 2 (3-7)")
                                 }
@@ -164,7 +165,7 @@ struct StepsView: View {
                             }
                             .activeStepStyle(color: .cyan, currentStep: currentStep, step: 9)
 
-                            NavigationLink(destination: TransportistaTer(tranTerStep: 11)) {
+                            NavigationLink(destination: TransportistaTer(tranStep: 11)) {
                                 HStack {
                                     Text("Transportista 3 (8-13)")
                                 }
@@ -232,7 +233,7 @@ struct StepsView: View {
                                 }
                             }
                             .activeStepStyle(color: .green, currentStep: currentStep, step: 4)
-                            NavigationLink(destination: TransportistaPrim(tranPrimStep: 2)) {
+                            NavigationLink(destination: TransportistaPrim(tranStep: 2)) {
                                 HStack {
                                     Text("Transportista 1 (1-2)")
                                 }
@@ -246,7 +247,7 @@ struct StepsView: View {
                             }
                             .activeStepStyle(color: .green, currentStep: currentStep, step: 6)
 
-                            NavigationLink(destination: TransportistaSec(tranSecStep: 7)) {
+                            NavigationLink(destination: TransportistaSec(tranStep: 7)) {
                                 HStack {
                                     Text("Transportista 2 (3-7)")
                                 }
@@ -267,7 +268,7 @@ struct StepsView: View {
                             }
                             .activeStepStyle(color: .mint, currentStep: currentStep, step: 9)
 
-                            NavigationLink(destination: TransportistaTer(tranTerStep: 11)) {
+                            NavigationLink(destination: TransportistaTer(tranStep: 11)) {
                                 HStack {
                                     Text("Transportista 3 (8-13)")
                                 }

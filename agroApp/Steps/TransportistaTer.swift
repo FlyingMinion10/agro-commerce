@@ -7,9 +7,9 @@
 import SwiftUI
 
 struct TransportistaTer : View {
-    var tranTerStep: Int
     let screenWidth = UIScreen.main.bounds.width
     @Environment(\.dismiss) var dismiss
+    var tranStep: Int
     var body: some View {
         NavigationView {
             VStack {
@@ -41,73 +41,73 @@ struct TransportistaTer : View {
                                 Image(systemName: "checkmark.circle")
                                     
                         }
-                        .lockedStepStyle(currentStep: tranTerStep, step: 1)
+                        .lockedStepStyle(currentStep: tranStep, step: 1)
                         
                         HStack {
                                 Text("Pago 15% STP")
                                 Image(systemName: "checkmark.circle")
                                     
                         }
-                        .lockedStepStyle(currentStep: tranTerStep, step: 2)
+                        .lockedStepStyle(currentStep: tranStep, step: 2)
                         
                         HStack {
                             Text("Recolección de Empaque")
                             Image(systemName: "checkmark.circle")
                         }
-                        .lockedStepStyle(currentStep: tranTerStep, step: 3)
+                        .lockedStepStyle(currentStep: tranStep, step: 3)
                         
                         HStack {
                             Text("Báscula 1")
                             Image(systemName: "checkmark.circle")
                         }
-                        .lockedStepStyle(currentStep: tranTerStep, step: 4)
+                        .lockedStepStyle(currentStep: tranStep, step: 4)
                         
                         HStack {
                             Text("Evidencia para Inspección")
                             Image(systemName: "checkmark.circle")
                         }
-                        .lockedStepStyle(currentStep: tranTerStep, step: 5)
+                        .lockedStepStyle(currentStep: tranStep, step: 5)
                         
                         HStack {
                             Text("Báscula 2")
                             Image(systemName: "checkmark.circle")
                         }
-                        .lockedStepStyle(currentStep: tranTerStep, step: 6)
+                        .lockedStepStyle(currentStep: tranStep, step: 6)
                         //////////////////// DIV //////////////////// DIV //////////////////// DIV //////////////////// DIV
                         NavigationLink(destination: ConfirmacionLlegadaCamionTran()) {
                             HStack {
                                 Text("Confirmar llegada de camión")
                             }
                         }
-                        .activeStepStyle(color: .orange, currentStep: tranTerStep, step: 7)
+                        .activeStepStyle(color: .orange, currentStep: tranStep, step: 7)
                         
-                        NavigationLink(destination: LiberarPagoTran()) {
+                        NavigationLink(destination: LiberarPagoTT()) {
                             HStack {
                                 Text("Liberar pago")
                             }
                         }
-                        .activeStepStyle(color: .yellow, currentStep: tranTerStep, step: 8)
+                        .activeStepStyle(color: .yellow, currentStep: tranStep, step: 8)
                         
-                        NavigationLink(destination: RatingPageTran()) {
+                        NavigationLink(destination: RatingPageTT()) {
                             HStack {
                                 Text("Rating")
                             }
                         }
-                        .activeStepStyle(color: .orange, currentStep: tranTerStep, step: 9)
+                        .activeStepStyle(color: .orange, currentStep: tranStep, step: 9)
                         
-                        NavigationLink(destination: FacturaTran()) {
+                        NavigationLink(destination: FacturaTT()) {
                             HStack {
                                 Text("Factura")
                             }
                         }
-                        .activeStepStyle(color: .yellow, currentStep: tranTerStep, step: 10)
+                        .activeStepStyle(color: .yellow, currentStep: tranStep, step: 10)
                         
-                        NavigationLink(destination: FinalizarTransaccionTran()) {
+                        NavigationLink(destination: FinalizarTransaccionTT()) {
                             HStack {
                                 Text("Finalizar")
                             }
                         }
-                        .activeStepStyle(color: .orange, currentStep: tranTerStep, step: 11)
+                        .activeStepStyle(color: .orange, currentStep: tranStep, step: 11)
                     }
                     .frame(width: 360)
                     .padding()
@@ -206,7 +206,7 @@ struct ConfirmacionLlegadaCamionTran: View {
     }
 }
 
-struct LiberarPagoTran: View {
+struct LiberarPagoTT: View {
     var body: some View {
             VStack(spacing: 20) {
 
@@ -309,7 +309,7 @@ struct LiberarPagoTran: View {
     }
 }
 
-struct RatingPageTran: View {
+struct RatingPageTT: View {
     @State private var negotiationRating: Double = 3.0
     @State private var responseTimeRating: Double = 3.0
     @State private var serviceQualityRating: Double = 3.0
@@ -396,7 +396,7 @@ struct RatingPageTran: View {
     }
 }
 
-struct FacturaTran: View {
+struct FacturaTT: View {
     @State private var empresaPoliciesAccepted: Bool = false
     @State private var confirmProcess: Bool = false
     
@@ -504,7 +504,7 @@ struct FacturaTran: View {
     }
 }
 
-struct FinalizarTransaccionTran: View {
+struct FinalizarTransaccionTT: View {
     var body: some View {
 
         VStack(spacing: 20) {
@@ -597,6 +597,6 @@ struct FinalizarTransaccionTran: View {
 
 struct TransportistaTer_Previews: PreviewProvider {
     static var previews: some View {
-        TransportistaTer(tranTerStep: 11)
+        TransportistaTer(tranStep: 11)
     }
 }

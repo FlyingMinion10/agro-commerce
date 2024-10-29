@@ -8,8 +8,8 @@ import SwiftUI
 
 struct TransportistaPrim : View {
     let screenWidth = UIScreen.main.bounds.width
-    var tranPrimStep: Int
     @Environment(\.dismiss) var dismiss
+    var tranStep: Int
     var body: some View {
         NavigationView {
             VStack {
@@ -37,19 +37,19 @@ struct TransportistaPrim : View {
                 .background(Color.white)
                 ScrollView {
                     VStack(spacing: 20) {
-                        NavigationLink(destination: ContratoServicioFleteView()) {
+                        NavigationLink(destination: ContratoServicioTP()) {
                             HStack {
                                 Text("Contrato transportista")
                             }
                         }
-                        .activeStepStyle(color: .red, currentStep: tranPrimStep, step: 1)
+                        .activeStepStyle(color: .red, currentStep: tranStep, step: 1)
                         
-                        NavigationLink(destination: PagoSTPFleteView()) {
+                        NavigationLink(destination: PagoSTP_TP()) {
                             HStack {
                                 Text("Pago 15% STP")
                             }
                         }
-                        .activeStepStyle(color: .orange, currentStep: tranPrimStep, step: 2)
+                        .activeStepStyle(color: .orange, currentStep: tranStep, step: 2)
                         
                     }
                     .frame(width: 360)
@@ -62,7 +62,7 @@ struct TransportistaPrim : View {
 }
 
 // MARK: - Paso secundario 1
-struct ContratoServicioFleteView: View {
+struct ContratoServicioTP: View {
     @State private var termsAccepted = false
     
     var body: some View {
@@ -141,7 +141,7 @@ struct ContratoServicioFleteView: View {
 }
 
 // MARK: - Paso secundario 2
-struct PagoSTPFleteView: View {
+struct PagoSTP_TP: View {
     @State private var termsAccepted = false
     
     var body: some View {
@@ -218,6 +218,6 @@ struct PagoSTPFleteView: View {
 
 struct TransportistaPrim_Previews: PreviewProvider {
     static var previews: some View {
-        TransportistaPrim(tranPrimStep: 4)
+        TransportistaPrim(tranStep: 4)
     }
 }

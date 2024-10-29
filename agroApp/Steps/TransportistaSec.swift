@@ -1,9 +1,9 @@
 import SwiftUI
 
 struct TransportistaSec : View {
-    var tranSecStep: Int
     let screenWidth = UIScreen.main.bounds.width
     @Environment(\.dismiss) var dismiss
+    var tranStep: Int
     var body: some View {
         NavigationView {
             VStack {
@@ -35,14 +35,14 @@ struct TransportistaSec : View {
                                 Image(systemName: "checkmark.circle")
                                     
                         }
-                        .lockedStepStyle(currentStep: tranSecStep, step: 1)
+                        .lockedStepStyle(currentStep: tranStep, step: 1)
                         
                         HStack {
                                 Text("Pago 15% STP")
                                 Image(systemName: "checkmark.circle")
                                     
                         }
-                        .lockedStepStyle(currentStep: tranSecStep, step: 2)
+                        .lockedStepStyle(currentStep: tranStep, step: 2)
 
                         NavigationLink(destination: RecoleccionDeEmpaqueTS(
                             videoURL: Stock.videos["Recolección de Empaque"]!)) {
@@ -50,7 +50,7 @@ struct TransportistaSec : View {
                                 Text("Recolección de Empaque")
                             }
                         }
-                        .activeStepStyle(color: .red, currentStep: tranSecStep, step: 3)
+                        .activeStepStyle(color: .red, currentStep: tranStep, step: 3)
                         
                         NavigationLink(destination: BasculaGenericTS(
                             instructionText: "Tome o importe una foto y registre el peso del camión en la báscula 1.", 
@@ -60,9 +60,9 @@ struct TransportistaSec : View {
                                 Text("Báscula 1")
                             }
                         }
-                        .activeStepStyle(color: .yellow, currentStep: tranSecStep, step: 4)
+                        .activeStepStyle(color: .yellow, currentStep: tranStep, step: 4)
                         
-                        NavigationLink(destination: BasculaGenericTS(
+                        NavigationLink(destination: EvidenciaInspeccionTS(
                             instructionText: "Tome o importe una foto y registre la evidencia de inspección del producto.", 
                             navigationTitle: "Evidencia para Inspección",
                             videoURL: Stock.videos["Evidencia para Inspección"]!)) {
@@ -70,7 +70,7 @@ struct TransportistaSec : View {
                                 Text("Evidencia para Inspección")
                             }
                         }
-                        .activeStepStyle(color: .red, currentStep: tranSecStep, step: 5)
+                        .activeStepStyle(color: .red, currentStep: tranStep, step: 5)
                         
                         NavigationLink(destination: BasculaGenericTS(
                             instructionText: "Tome o importe una foto y registre el peso del camión en la báscula 2.", 
@@ -80,7 +80,7 @@ struct TransportistaSec : View {
                                 Text("Báscula 2")
                             }
                         }
-                        .activeStepStyle(color: .yellow, currentStep: tranSecStep, step: 6)
+                        .activeStepStyle(color: .yellow, currentStep: tranStep, step: 6)
                         
                         NavigationLink(destination: BasculaGenericTS(
                             instructionText: "Tome o importe una foto y registre el peso del camión en la báscula 3.", 
@@ -90,7 +90,7 @@ struct TransportistaSec : View {
                                 Text("Báscula 3")
                             }
                         }
-                        .activeStepStyle(color: .red, currentStep: tranSecStep, step: 7)
+                        .activeStepStyle(color: .red, currentStep: tranStep, step: 7)
                     }
                     .frame(width: 360)
                     .padding()
@@ -287,8 +287,117 @@ struct BasculaGenericTS: View {
     }
 }
 
+struct EvidenciaInspeccionTS: View {
+    let instructionText: String
+    let navigationTitle: String
+    var videoURL: String
+    @State private var termsAccepted = false
+    
+    var body: some View {
+        VStack {
+            dismiss_header(title: navigationTitle)
+            // Instrucciones
+            Text(instructionText)
+                .padding()
+            
+            Spacer()
+            // Video de YouTube
+            VStack {
+                Text("Instrucciones en Video")
+                    .font(.headline)
+                    .padding(.bottom, 10)
+                VStack {
+                    WebView(url: URL(string: videoURL)!)
+                        .frame(height: 200)
+                        .cornerRadius(10)
+                        .shadow(radius: 5)
+                }
+                .padding()
+            }
+            HStack {
+                Button(action: {
+                    if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                        let picker = UIImagePickerController()
+                        picker.sourceType = .camera
+                        UIApplication.shared.windows.first?.rootViewController?.present(picker, animated: true, completion: nil)
+                    }
+                }) {
+                    HStack {
+                        Image(systemName: "camera.fill")
+                        Text("Tomar Foto")
+                    }
+                    .padding(.vertical, 15)
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+                    .shadow(color: .gray, radius: 5, x: 0, y: 5)
+                }
+                .padding()
+                
+                Button(action: {
+                    if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+                        let picker = UIImagePickerController()
+                        picker.sourceType = .photoLibrary
+                        UIApplication.shared.windows.first?.rootViewController?.present(picker, animated: true, completion: nil)
+                    }
+                }) {
+                    HStack {
+                        Image(systemName: "photo.fill.on.rectangle.fill")
+                        Text("Subir Foto")  
+                    }
+                    .padding(.vertical, 15)
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+                    .shadow(color: .gray, radius: 5, x: 0, y: 5)
+                }
+                .padding()
+            }
+            
+            Button(action: {
+                // Code to handle button tap
+            }) {
+                HStack {
+                    Image(systemName: "paperplane.fill")
+                        .font(.title)
+                        .foregroundColor(.white)
+                    Text("Enviar")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                }
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(termsAccepted ? Color.green : Color.gray)
+                .cornerRadius(10)
+                .shadow(color: .gray, radius: 5, x: 0, y: 5)
+            }
+            Spacer()
+            // Disclaimer        
+            Text("Descargo de responsabilidad: Este documento es solo para fines informativos y no constituye asesoramiento legal. No nos hacemos responsables de ninguna acción tomada en base a la información proporcionada en este documento. Se recomienda encarecidamente buscar asesoramiento legal profesional antes de tomar cualquier decisión o acción relacionada con el contenido de este documento.")
+                .font(.footnote)
+                .foregroundStyle(Color.red)
+                .italic()
+                .padding()
+            HStack {
+                Button(action: {
+                    termsAccepted.toggle()
+                }) {
+                    Image(systemName: termsAccepted ? "checkmark.square.fill" : "square")
+                        .foregroundColor(.blue)
+                }
+                Text("Acepto los términos y condiciones")
+                    .font(.system(size: 20))
+            }
+            .padding()
+        }
+        .navigationBarBackButtonHidden(true)
+    }
+}
+
 struct TransportistaSec_Previews: PreviewProvider {
     static var previews: some View {
-        TransportistaSec(tranSecStep: 6)
+        TransportistaSec(tranStep: 6)
     }
 }
