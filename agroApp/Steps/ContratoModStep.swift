@@ -58,7 +58,7 @@ struct ContratoModStep: View {
     }
 
     func saveToDatabase() {
-        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/step-four/post") else { return }
+        guard let url = URL(string: "\(Stock.endPoint)/api/step-four/post") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

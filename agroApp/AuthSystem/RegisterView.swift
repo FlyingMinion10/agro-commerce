@@ -57,7 +57,7 @@ struct RegisterView: View {
     }
 
     func registerUser() {
-        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/register") else {
+        guard let url = URL(string: "\(Stock.endPoint)/api/register") else {
             self.alertMessage = "URL inválida"
             self.showAlert = true
             return

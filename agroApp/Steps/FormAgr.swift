@@ -208,7 +208,7 @@ struct FormAgr: View {
     }
 
     func saveToDatabase() {
-        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/step-two/post") else { return }
+        guard let url = URL(string: "\(Stock.endPoint)/api/step-two/post") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

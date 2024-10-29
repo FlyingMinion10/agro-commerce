@@ -163,7 +163,7 @@ struct NegociacionTran: View {
     // MARK: - Helper Functions
 
     func fetchStartingValues() {
-        guard let baseUrl = URL(string: "https://my-backend-production.up.railway.app/api/step-four/mine") else {
+        guard let baseUrl = URL(string: "\(Stock.endPoint)/api/step-four/mine") else {
             print("URL no válida")
             return
         }
@@ -233,7 +233,7 @@ struct NegociacionTran: View {
     }
     
     func fetchOffers() {
-        guard let baseUrl = URL(string: "https://my-backend-production.up.railway.app/api/step-four/get") else {
+        guard let baseUrl = URL(string: "\(Stock.endPoint)/api/step-four/get") else {
             print("URL no válida")
             return
         }
@@ -493,7 +493,7 @@ struct DetailOffer: View {
     
     // MARK: - Func Accept Deal
     func acceptTranDeal() {
-        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/step-four/accept") else { return }
+        guard let url = URL(string: "\(Stock.endPoint)/api/step-four/accept") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -540,7 +540,7 @@ struct DetailOffer: View {
 
     // MARK: - Func Edit Mply
     func editTranOffer() {
-        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/step-four/edit") else { return }
+        guard let url = URL(string: "\(Stock.endPoint)/api/step-four/edit") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

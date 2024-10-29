@@ -371,7 +371,7 @@ struct PublicationCreatorView: View {
     }
 
     func saveToDatabase() {
-        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/publications/post") else { return }
+        guard let url = URL(string: "\(Stock.endPoint)/api/publications/post") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

@@ -1,4 +1,5 @@
 import SwiftUI
+import Foundation
 
 struct InfoTutoRec: View {
     let number: Int
@@ -130,7 +131,7 @@ struct StepsView: View {
                             }
                             .activeStepStyle(color: .blue, currentStep: currentStep, step: 4)
                             
-                            NavigationLink(destination: TransportistaPrim(tranStep: 2)) { // MFM
+                            NavigationLink(destination: TransportistaPrim(tranStep: tranStep)) { // MFM
                                 HStack {
                                     Text("Transportista 1 (1-2)")
                                 }
@@ -144,7 +145,7 @@ struct StepsView: View {
                             }
                             .activeStepStyle(color: .blue, currentStep: currentStep, step: 6)
 
-                            NavigationLink(destination: TransportistaSec(tranStep: 7)) { // MFM
+                            NavigationLink(destination: TransportistaSec(tranStep: tranStep)) { // MFM
                                 HStack {
                                     Text("Transportista 2 (3-7)")
                                 }
@@ -165,7 +166,7 @@ struct StepsView: View {
                             }
                             .activeStepStyle(color: .cyan, currentStep: currentStep, step: 9)
 
-                            NavigationLink(destination: TransportistaTer(tranStep: 11)) {
+                            NavigationLink(destination: TransportistaTer(tranStep: tranStep)) {
                                 HStack {
                                     Text("Transportista 3 (8-13)")
                                 }
@@ -233,7 +234,7 @@ struct StepsView: View {
                                 }
                             }
                             .activeStepStyle(color: .green, currentStep: currentStep, step: 4)
-                            NavigationLink(destination: TransportistaPrim(tranStep: 2)) {
+                            NavigationLink(destination: TransportistaPrim(tranStep: tranStep)) {
                                 HStack {
                                     Text("Transportista 1 (1-2)")
                                 }
@@ -247,7 +248,7 @@ struct StepsView: View {
                             }
                             .activeStepStyle(color: .green, currentStep: currentStep, step: 6)
 
-                            NavigationLink(destination: TransportistaSec(tranStep: 7)) {
+                            NavigationLink(destination: TransportistaSec(tranStep: tranStep)) {
                                 HStack {
                                     Text("Transportista 2 (3-7)")
                                 }
@@ -268,7 +269,7 @@ struct StepsView: View {
                             }
                             .activeStepStyle(color: .mint, currentStep: currentStep, step: 9)
 
-                            NavigationLink(destination: TransportistaTer(tranStep: 11)) {
+                            NavigationLink(destination: TransportistaTer(tranStep: tranStep)) {
                                 HStack {
                                     Text("Transportista 3 (8-13)")
                                 }
@@ -308,9 +309,81 @@ struct StepsView: View {
                     }
                 }
             }
+            .onAppear {
+            if currentStep > 4 {
+                fetchTranStep(interactionID: interaction_id)
+            }
+        }
 //            .background(Color.gray.opacity(0.1))
         }
         .navigationBarBackButtonHidden(true)
+    }
+
+    func fetchTranStep(interactionID: Int) {
+    // func fetchStartingValues() {
+        guard let baseUrl = URL(string: "\(Stock.endPoint)/api/tran-step/get") else {
+            print("URL no válida")
+            return
+        }
+
+        // Construir la URL con el parámetro de consulta
+        var urlComponents = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false)!
+        urlComponents.queryItems = [
+            URLQueryItem(name: "interaction_id", value: String(interactionID)), // Convertir Int? a String?
+        ]
+
+        guard let url = urlComponents.url else {
+            print("URL no válida")
+            return
+        }
+
+        // print("URL final: \(url)") // PRINT FOR DEBUG
+
+        var request = URLRequest(url: url)
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error al obtener tranStep: \(error.localizedDescription)")
+                return
+            }
+
+            guard let data = data else {
+                print("No se recibieron datos de la bodega.")
+                return
+            }
+
+        //     // Imprimir los datos recibidos en formato JSON
+            if let jsonString = String(data: data, encoding: .utf8) {
+                print("Datos recibidos del servidor StepView: \(jsonString)") // PRINT FOR DEBUG
+            }
+
+            do {
+                let decodedResponse = try JSONDecoder().decode([ServerResponse].self, from: data)
+                DispatchQueue.main.async {
+//                    if let firstResponse = decodedResponse.first {
+//                        print("Datos decodificados correctamente: \(firstResponse)") // PRINT FOR DEBUG
+//                        self.tranStep = firstResponse.tran_step
+//                    }
+                }
+            } catch {
+                print("Error al decodificar datos de StepView: \(error)")
+                if let decodingError = error as? DecodingError {
+                    switch decodingError {
+                    case .typeMismatch(let key, let context):
+                        print("Tipo no coincide para la clave \(key), \(context.debugDescription)")
+                    case .valueNotFound(let key, let context):
+                        print("Valor no encontrado para la clave \(key), \(context.debugDescription)")
+                    case .keyNotFound(let key, let context):
+                        print("Clave no encontrada \(key), \(context.debugDescription)")
+                    case .dataCorrupted(let context):
+                        print("Datos corruptos: \(context.debugDescription)")
+                    @unknown default:
+                        print("Error desconocido de decodificación")
+                    }
+                }
+            }
+        }.resume()
     }
 }
 
@@ -342,6 +415,10 @@ extension View {
                     .stroke(Color.black.opacity(currentStep < step ? 0.5 : 1), lineWidth: 2)
             )
     }
+}
+
+struct ServerResponse: Codable {
+    let tran_step: Int
 }
 
 struct StepsView_Previews: PreviewProvider {

@@ -200,7 +200,7 @@ struct FormBodega: View {
     }
 
     func fetchValues() {
-        guard let baseUrl = URL(string: "https://my-backend-production.up.railway.app/api/step-three/get") else {
+        guard let baseUrl = URL(string: "\(Stock.endPoint)/api/step-three/get") else {
             print("URL no válida")
             return
         }
@@ -269,7 +269,7 @@ struct FormBodega: View {
     }
 
     func saveToDatabase() {
-        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/step-three/post") else { return }
+        guard let url = URL(string: "\(Stock.endPoint)/api/step-three/post") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

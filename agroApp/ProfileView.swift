@@ -182,7 +182,7 @@ struct ProfileView: View {
     
     // MARK: - Funcion para obtener pubs
     func fetchMyPublications() {
-        guard let baseUrl = URL(string: "https://my-backend-production.up.railway.app/api/publications/get") else {
+        guard let baseUrl = URL(string: "\(Stock.endPoint)/api/publications/get") else {
             print("URL no válida")
             return
         }

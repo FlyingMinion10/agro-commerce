@@ -50,7 +50,7 @@ struct LoginView: View {
     }
 
     func loginUser() {
-        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/login?userInput=\(userInput)&password=\(password)") else { return }
+        guard let url = URL(string: "\(Stock.endPoint)/api/login?userInput=\(userInput)&password=\(password)") else { return }
 
         URLSession.shared.dataTask(with: url) { data, response, error in
             if let error = error {

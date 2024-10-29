@@ -76,7 +76,7 @@ struct ChatsView: View {
     
     // MARK: - Funcion para obtener chats
     func fetchChats() {
-        guard let baseUrl = URL(string: "https://my-backend-production.up.railway.app/api/chats/get") else {
+        guard let baseUrl = URL(string: "\(Stock.endPoint)/api/chats/get") else {
             print("URL no válida")
             return
         }
@@ -478,7 +478,7 @@ struct ChatView: View {
 
     // MARK: - Func Get Mply
     func fetchMonopoly() {
-        guard let baseUrl = URL(string: "https://my-backend-production.up.railway.app/api/monopoly/get") else {
+        guard let baseUrl = URL(string: "\(Stock.endPoint)/api/monopoly/get") else {
             print("URL no válida")
             return
         }
@@ -550,7 +550,7 @@ struct ChatView: View {
 
     // MARK: - Func Get Msj
     func fetchMessages() {
-        guard let baseUrl = URL(string: "https://my-backend-production.up.railway.app/api/messages/get") else {
+        guard let baseUrl = URL(string: "\(Stock.endPoint)/api/messages/get") else {
             print("URL no válida")
             return
         }
@@ -616,7 +616,7 @@ struct ChatView: View {
     
     // MARK: - Func Accept Deal
     func acceptDeal() {
-        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/monopoly/accept") else { return }
+        guard let url = URL(string: "\(Stock.endPoint)/api/monopoly/accept") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -662,7 +662,7 @@ struct ChatView: View {
 
     // MARK: - Func Edit Mply
     func editMonopoly() {
-        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/monopoly/edit") else { return }
+        guard let url = URL(string: "\(Stock.endPoint)/api/monopoly/edit") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -717,7 +717,7 @@ struct ChatView: View {
     
     // MARK: - Func Send Msj
     func sendMessage() {
-        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/messages/send") else { return }
+        guard let url = URL(string: "\(Stock.endPoint)/api/messages/send") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

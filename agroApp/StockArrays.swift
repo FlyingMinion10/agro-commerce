@@ -77,5 +77,5 @@ public struct Stock {
         "Báscula 3": "https://www.youtube.com/watch?v=nwC9jzTYty4"
         ]
 
-
+    static let endPoint: String = "https://my-backend-production.up.railway.app"
 }

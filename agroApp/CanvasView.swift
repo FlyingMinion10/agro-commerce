@@ -286,7 +286,7 @@ struct CanvasView: View {
     
     // MARK: - Fetch Publications
     func fetchPublications(with additionalFilters: [String: String] = [:]) {
-        guard let baseUrl = URL(string: "https://my-backend-production.up.railway.app/api/publications/get") else {
+        guard let baseUrl = URL(string: "\(Stock.endPoint)/api/publications/get") else {
             print("URL no válida")
             return
         }
@@ -585,7 +585,7 @@ struct DetailView: View {
     
     // MARK: - Create interaction
     func createInteraction() {
-        guard let url = URL(string: "https://my-backend-production.up.railway.app/api/interaction/create") else { return }
+        guard let url = URL(string: "\(Stock.endPoint)/api/interaction/create") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
