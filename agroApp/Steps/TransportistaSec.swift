@@ -1,4 +1,6 @@
 import SwiftUI
+import UIKit
+import AVFoundation
 
 struct TransportistaSec : View {
     let screenWidth = UIScreen.main.bounds.width
@@ -54,7 +56,7 @@ struct TransportistaSec : View {
                         
                         NavigationLink(destination: BasculaGenericTS(
                             instructionText: "Tome o importe una foto y registre el peso del camión en la báscula 1.", 
-                            navigationTitle: "Báscula 1",
+                            basculaIndex: "1",
                             videoURL: Stock.videos["Báscula 1"]!)) {
                             HStack {
                                 Text("Báscula 1")
@@ -74,7 +76,7 @@ struct TransportistaSec : View {
                         
                         NavigationLink(destination: BasculaGenericTS(
                             instructionText: "Tome o importe una foto y registre el peso del camión en la báscula 2.", 
-                            navigationTitle: "Báscula 2",
+                            basculaIndex: "2",
                             videoURL: Stock.videos["Báscula 2"]!)) {
                             HStack {
                                 Text("Báscula 2")
@@ -84,7 +86,7 @@ struct TransportistaSec : View {
                         
                         NavigationLink(destination: BasculaGenericTS(
                             instructionText: "Tome o importe una foto y registre el peso del camión en la báscula 3.", 
-                            navigationTitle: "Báscula 3",
+                            basculaIndex: "3",
                             videoURL: Stock.videos["Báscula 3"]!)) {
                             HStack {
                                 Text("Báscula 3")
@@ -176,17 +178,21 @@ struct RecoleccionDeEmpaqueTS: View {
 
 struct BasculaGenericTS: View {
     let instructionText: String
-    let navigationTitle: String
+    let basculaIndex: String
     var videoURL: String
     @State private var termsAccepted = false
-    
+    @State private var selectedImage: UIImage?
+    @State private var isShowingImagePicker = false
+    @State private var isCamera = false
+    @State private var net_weight: String = ""
+
     var body: some View {
         VStack {
-            dismiss_header(title: navigationTitle)
+            dismiss_header(title: "Báscula " + basculaIndex)
             // Instrucciones
             Text(instructionText)
                 .padding()
-            
+
             Spacer()
             // Video de YouTube
             VStack {
@@ -204,9 +210,8 @@ struct BasculaGenericTS: View {
             HStack {
                 Button(action: {
                     if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                        let picker = UIImagePickerController()
-                        picker.sourceType = .camera
-                        UIApplication.shared.windows.first?.rootViewController?.present(picker, animated: true, completion: nil)
+                        isCamera = true
+                        isShowingImagePicker = true
                     }
                 }) {
                     HStack {
@@ -221,17 +226,16 @@ struct BasculaGenericTS: View {
                     .shadow(color: .gray, radius: 5, x: 0, y: 5)
                 }
                 .padding()
-                
+
                 Button(action: {
                     if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-                        let picker = UIImagePickerController()
-                        picker.sourceType = .photoLibrary
-                        UIApplication.shared.windows.first?.rootViewController?.present(picker, animated: true, completion: nil)
+                        isCamera = false
+                        isShowingImagePicker = true
                     }
                 }) {
                     HStack {
                         Image(systemName: "photo.fill.on.rectangle.fill")
-                        Text("Subir Foto")  
+                        Text("Subir Foto")
                     }
                     .padding(.vertical, 15)
                     .frame(maxWidth: .infinity)
@@ -243,12 +247,21 @@ struct BasculaGenericTS: View {
                 .padding()
             }
             
-            TextField("Inserte el peso en Toneladas", text: .constant(""))
+            TextField("Inserte el peso en Toneladas", text: $net_weight)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
                 .keyboardType(.numberPad)
+
             Button(action: {
-                // Code to handle button tap
+                if let image = selectedImage {
+                    sendImageToAPI(image: image) { response in
+                        DispatchQueue.main.async {
+                            net_weight = response
+                        }
+                    }
+                } else {
+                    sendWeight(weight: net_weight)
+                }
             }) {
                 HStack {
                     Image(systemName: "paperplane.fill")
@@ -258,14 +271,14 @@ struct BasculaGenericTS: View {
                         .font(.headline)
                         .foregroundColor(.white)
                 }
-                .padding()
                 .frame(maxWidth: .infinity)
                 .background(termsAccepted ? Color.green : Color.gray)
                 .cornerRadius(10)
                 .shadow(color: .gray, radius: 5, x: 0, y: 5)
             }
+            .padding() // MFM
             Spacer()
-            // Disclaimer        
+            // Disclaimer
             Text("Descargo de responsabilidad: Este documento es solo para fines informativos y no constituye asesoramiento legal. No nos hacemos responsables de ninguna acción tomada en base a la información proporcionada en este documento. Se recomienda encarecidamente buscar asesoramiento legal profesional antes de tomar cualquier decisión o acción relacionada con el contenido de este documento.")
                 .font(.footnote)
                 .foregroundStyle(Color.red)
@@ -283,9 +296,89 @@ struct BasculaGenericTS: View {
             }
             .padding()
         }
+        .sheet(isPresented: $isShowingImagePicker) {
+            ImagePicker(sourceType: isCamera ? .camera : .photoLibrary, selectedImage: $selectedImage)
+        }
         .navigationBarBackButtonHidden(true)
     }
+
+    func sendImageToAPI(image: UIImage, completion: @escaping (String) -> Void) {
+        guard let imageData = image.jpegData(compressionQuality: 0.8) else { return }
+        let url = URL(string: "\(Stock.endPoint)/api/openai/weight/get")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let base64Image = imageData.base64EncodedString()
+        let json: [String: Any] = ["image": base64Image]
+
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: json, options: [])
+        } catch {
+            print("Error serializing JSON: \(error)")
+            return
+        }
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error sending request: \(error)")
+                return
+            }
+
+            guard let data = data else { return }
+
+            do {
+                if let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                   let weight = jsonResponse["weight"] as? String {
+                    completion(weight)
+                }
+            } catch {
+                print("Error parsing response: \(error)")
+            }
+        }.resume()
+    }
+
+    
 }
+
+struct ImagePicker: UIViewControllerRepresentable {
+    class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+        let parent: ImagePicker
+
+        init(_ parent: ImagePicker) {
+            self.parent = parent
+        }
+
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+            if let uiImage = info[.originalImage] as? UIImage {
+                parent.selectedImage = uiImage
+            }
+
+            picker.dismiss(animated: true)
+        }
+
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            picker.dismiss(animated: true)
+        }
+    }
+
+    var sourceType: UIImagePickerController.SourceType
+    @Binding var selectedImage: UIImage?
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.delegate = context.coordinator
+        picker.sourceType = sourceType
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+}
+
 
 struct EvidenciaInspeccionTS: View {
     let instructionText: String
