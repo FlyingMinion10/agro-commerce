@@ -48,7 +48,10 @@ struct TransportistaSec : View {
                         .lockedStepStyle(currentStep: tranStep, step: 2)
 
                         NavigationLink(destination: RecoleccionDeEmpaqueTS(
-                            videoURL: Stock.videos["Recolección de Empaque"]!)) {
+                            videoURL: Stock.videos["Recolección de Empaque"]!,
+                            interaction_id: interaction_id,
+                            tranStep: tranStep
+                            )) {
                             HStack {
                                 Text("Recolección de Empaque")
                             }
@@ -111,7 +114,10 @@ struct RecoleccionDeEmpaqueTS: View {
     @State private var showConfirmation = false
     @State private var termsAccepted = false
     var videoURL: String
+    var interaction_id: Int
+    var tranStep: Int
     
+    @Environment(\.dismiss) var dismiss
     var body: some View {
         VStack {
             dismiss_header(title: "Recolección de empaque")
@@ -133,32 +139,43 @@ struct RecoleccionDeEmpaqueTS: View {
                 .padding()
             }
             // Boton
-            Button(action: {
-                showConfirmation = true
-            }) {
-                HStack {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.title)
-                        .foregroundColor(.white)
-                    Text("Confirmar Acción")
-                        .font(.headline)
-                        .foregroundColor(.white)
+            if tranStep == 3 {
+                Button(action: {
+                    confirmPickup()
+                    showConfirmation = true
+                }) {
+                    HStack {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.title)
+                            .foregroundColor(.white)
+                        Text("Confirmar Acción")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(termsAccepted ? Color.green : Color.gray)
+                    .cornerRadius(10)
+                    .shadow(color: .gray, radius: 5, x: 0, y: 5)
+                }
+                .disabled(!termsAccepted)
+                .alert(isPresented: $showConfirmation) {
+                    Alert(
+                        title: Text("¿Seguro que quieres confirmar?"),
+                        primaryButton: .default(Text("Sí")),
+                        secondaryButton: .cancel(Text("No"))
+                    )
                 }
                 .padding()
-                .frame(maxWidth: .infinity)
-                .background(termsAccepted ? Color.green : Color.gray)
-                .cornerRadius(10)
-                .shadow(color: .gray, radius: 5, x: 0, y: 5)
-            }
-            .disabled(!termsAccepted)
-            .alert(isPresented: $showConfirmation) {
-                Alert(
-                    title: Text("¿Seguro que quieres confirmar?"),
-                    primaryButton: .default(Text("Sí")),
-                    secondaryButton: .cancel(Text("No"))
-                )
-            }
-            .padding()
+            } else {
+                    VStack {
+                        Text("Recolección confirmada")
+                            .font(.system(size: 40))
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 100))
+                            .foregroundStyle(.green)
+                    }
+                }
             // Disclaimer            
             Text("Descargo de responsabilidad: Este documento es solo para fines informativos y no constituye asesoramiento legal. No nos hacemos responsables de ninguna acción tomada en base a la información proporcionada en este documento. Se recomienda encarecidamente buscar asesoramiento legal profesional antes de tomar cualquier decisión o acción relacionada con el contenido de este documento.")
                 .font(.footnote)
@@ -170,6 +187,7 @@ struct RecoleccionDeEmpaqueTS: View {
                 }) {
                     Image(systemName: termsAccepted ? "checkmark.square.fill" : "square")
                         .foregroundColor(.blue)
+                        .font(.system(size: 30))
                 }
                 Text("Acepto los términos y condiciones")
                     .font(.system(size: 20))
@@ -177,6 +195,49 @@ struct RecoleccionDeEmpaqueTS: View {
             .padding()
         }
         .navigationBarBackButtonHidden(true)
+    }
+
+    func confirmPickup() { 
+        guard let url = URL(string: "\(Stock.endPoint)/api/tran/step-three/post") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        // Crear el diccionario con los datos formateados
+        let idToConfirmPickup: [String: Any] = [
+            "interaction_id": interaction_id
+        ]
+
+        // Serializar los datos a JSON
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: idToConfirmPickup, options: []) else {
+            print("Error al serializar los datos para confirmar la recolección de empaque")
+            return
+        }
+
+        request.httpBody = httpBody
+
+        // Crear y ejecutar la tarea de red
+        let session = URLSession.shared
+        session.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error al guardar los datos: \(error)")
+                return
+            }
+
+            guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                print("Error en la respuesta del servidor confirmPickup()")
+                return
+            }
+
+            do {
+            //    if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+            //        print("Respuesta del servidor: \(json)")
+            //        // Aquí puedes manejar la respuesta del servidor
+            //    }
+            } catch {
+                print("Error al decodificar la respuesta JSON")
+            }
+        }.resume()
     }
 }
 
@@ -190,7 +251,9 @@ struct BasculaGenericTS: View {
     @State private var isShowingImagePicker = false
     @State private var isCamera = false
     @State private var net_weight: String = ""
+    @State private var fetch_weight: String = ""
 
+    @Environment(\.dismiss) var dismiss
     var body: some View {
         VStack {
             dismiss_header(title: "Báscula " + basculaIndex)
@@ -212,76 +275,89 @@ struct BasculaGenericTS: View {
                 }
                 .padding()
             }
-            HStack {
-                Button(action: {
-                    if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                        isCamera = true
-                        isShowingImagePicker = true
-                    }
-                }) {
-                    HStack {
-                        Image(systemName: "camera.fill")
-                        Text("Tomar Foto")
-                    }
-                    .padding(.vertical, 15)
-                    .frame(maxWidth: .infinity)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-                    .shadow(color: .gray, radius: 5, x: 0, y: 5)
-                }
-                .padding()
-
-                Button(action: {
-                    if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-                        isCamera = false
-                        isShowingImagePicker = true
-                    }
-                }) {
-                    HStack {
-                        Image(systemName: "photo.fill.on.rectangle.fill")
-                        Text("Subir Foto")
-                    }
-                    .padding(.vertical, 15)
-                    .frame(maxWidth: .infinity)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-                    .shadow(color: .gray, radius: 5, x: 0, y: 5)
-                }
-                .padding()
-            }
-            
-            TextField("Inserte el peso en Toneladas", text: $net_weight)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
-                .keyboardType(.numberPad)
-
-            Button(action: {
-                if let image = selectedImage {
-                    sendImageToAPI(image: image) { response in
-                        DispatchQueue.main.async {
-                            net_weight = response
-                        }
-                    }
-                } else {
-                    sendWeight()
-                }
-            }) {
+            if (fetch_weight == "") {
                 HStack {
-                    Image(systemName: "paperplane.fill")
-                        .font(.title)
+                    Button(action: {
+                        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                            isCamera = true
+                            isShowingImagePicker = true
+                        }
+                    }) {
+                        HStack {
+                            Image(systemName: "camera.fill")
+                            Text("Tomar Foto")
+                        }
+                        .padding(.vertical, 15)
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue)
                         .foregroundColor(.white)
-                    Text("Enviar")
-                        .font(.headline)
+                        .cornerRadius(10)
+                        .shadow(color: .gray, radius: 5, x: 0, y: 5)
+                    }
+                    .padding()
+
+                    Button(action: {
+                        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+                            isCamera = false
+                            isShowingImagePicker = true
+                        }
+                    }) {
+                        HStack {
+                            Image(systemName: "photo.fill.on.rectangle.fill")
+                            Text("Subir Foto")
+                        }
+                        .padding(.vertical, 15)
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue)
                         .foregroundColor(.white)
+                        .cornerRadius(10)
+                        .shadow(color: .gray, radius: 5, x: 0, y: 5)
+                    }
+                    .padding()
                 }
-                .frame(maxWidth: .infinity)
-                .background(termsAccepted ? Color.green : Color.gray)
-                .cornerRadius(10)
-                .shadow(color: .gray, radius: 5, x: 0, y: 5)
+                
+                TextField("Inserte el peso en Toneladas", text: $net_weight)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding()
+                    .keyboardType(.numberPad)
+
+                Button(action: {
+                    if let image = selectedImage {
+                        sendImageToAPI(image: image) { response in
+                            DispatchQueue.main.async {
+                                net_weight = response
+                            }
+                        }
+                    } else {
+                        sendWeight()
+                    }
+                    dismiss()
+                }) {
+                    HStack {
+                        Image(systemName: "paperplane.fill")
+                            .font(.title)
+                            .foregroundColor(.white)
+                        Text("Enviar")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 50)
+                    .background(termsAccepted ? Color.green : Color.gray)
+                    .cornerRadius(10)
+                    .shadow(color: .gray, radius: 5, x: 0, y: 5)
+                }
+                .padding() // MFM
+            } else {
+                // Display the weight
+                Text("Peso: \(fetch_weight) Toneladas")
+                    .font(.title)
+                    .padding()
+                    .foregroundColor(.blue)
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(10)
+                    .padding(.horizontal)
             }
-            .padding() // MFM
             Spacer()
             // Disclaimer
             Text("Descargo de responsabilidad: Este documento es solo para fines informativos y no constituye asesoramiento legal. No nos hacemos responsables de ninguna acción tomada en base a la información proporcionada en este documento. Se recomienda encarecidamente buscar asesoramiento legal profesional antes de tomar cualquier decisión o acción relacionada con el contenido de este documento.")
@@ -295,6 +371,7 @@ struct BasculaGenericTS: View {
                 }) {
                     Image(systemName: termsAccepted ? "checkmark.square.fill" : "square")
                         .foregroundColor(.blue)
+                        .font(.system(size: 30))
                 }
                 Text("Acepto los términos y condiciones")
                     .font(.system(size: 20))
@@ -305,6 +382,9 @@ struct BasculaGenericTS: View {
             ImagePicker(sourceType: isCamera ? .camera : .photoLibrary, selectedImage: $selectedImage)
         }
         .navigationBarBackButtonHidden(true)
+        .onAppear {
+            getWeight()
+        }
     }
 
     func sendImageToAPI(image: UIImage, completion: @escaping (String) -> Void) {
@@ -391,7 +471,74 @@ struct BasculaGenericTS: View {
     }
 
     // Funcion para obtener el peso de la báscula
-    
+    func getWeight() {
+        // func fetchStartingValues() {
+        guard let baseUrl = URL(string: "\(Stock.endPoint)/api/tran/bascula/get") else {
+            print("URL no válida")
+            return
+        }
+
+        // Construir la URL con el parámetro de consulta
+        var urlComponents = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false)!
+        urlComponents.queryItems = [
+            URLQueryItem(name: "interaction_id", value: String(interaction_id)), // Convertir Int? a String?
+            URLQueryItem(name: "basculaIndex", value: String(basculaIndex)), // Convertir Int? a String?
+        ]
+
+        guard let url = urlComponents.url else {
+            print("URL no válida")
+            return
+        }
+
+        // print("URL final: \(url)") // PRINT FOR DEBUG
+
+        var request = URLRequest(url: url)
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error al obtener tranStep: \(error.localizedDescription)")
+                return
+            }
+
+            guard let data = data else {
+                print("No se recibieron datos de la bodega.")
+                return
+            }
+
+            // Imprimir los datos recibidos en formato JSON
+            // if let jsonString = String(data: data, encoding: .utf8) {
+            //     print("Datos recibidos del servidor StepView: \(jsonString)") // PRINT FOR DEBUG
+            // }
+
+            do {
+                let decodedResponse = try JSONDecoder().decode([BasculaResponse].self, from: data)
+                DispatchQueue.main.async {
+                    //print("FormBodega Datos decodificados correctamente: \(decodedResponse)") // PRINT FOR DEBUG
+            
+                    if let firstResponse = decodedResponse.first {
+                        self.fetch_weight = firstResponse.net_weight
+                    }
+                }
+            } catch {
+                print("Error al decodificar datos de StepView: \(error)")
+                if let decodingError = error as? DecodingError {
+                    switch decodingError {
+                    case .typeMismatch(let key, let context):
+                        print("Tipo no coincide para la clave \(key), \(context.debugDescription)")
+                    case .valueNotFound(let key, let context):
+                        print("Valor no encontrado para la clave \(key), \(context.debugDescription)")
+                    case .keyNotFound(let key, let context):
+                        print("Clave no encontrada \(key), \(context.debugDescription)")
+                    case .dataCorrupted(let context):
+                        print("Datos corruptos: \(context.debugDescription)")
+                    @unknown default:
+                        print("Error desconocido de decodificación")
+                    }
+                }
+            }
+        }.resume()
+    }
 }
 
 struct ImagePicker: UIViewControllerRepresentable {
@@ -532,6 +679,7 @@ struct EvidenciaInspeccionTS: View {
                 }) {
                     Image(systemName: termsAccepted ? "checkmark.square.fill" : "square")
                         .foregroundColor(.blue)
+                        .font(.system(size: 30))
                 }
                 Text("Acepto los términos y condiciones")
                     .font(.system(size: 20))
@@ -540,6 +688,10 @@ struct EvidenciaInspeccionTS: View {
         }
         .navigationBarBackButtonHidden(true)
     }
+}
+
+struct BasculaResponse: Codable {
+    let net_weight: String
 }
 
 struct TransportistaSec_Previews: PreviewProvider {
