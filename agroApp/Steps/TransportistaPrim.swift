@@ -8,8 +8,10 @@ import SwiftUI
 
 struct TransportistaPrim : View {
     let screenWidth = UIScreen.main.bounds.width
-    @Environment(\.dismiss) var dismiss
     var tranStep: Int
+    var interaction_id: Int
+    
+    @Environment(\.dismiss) var dismiss
     var body: some View {
         NavigationView {
             VStack {
@@ -37,14 +39,14 @@ struct TransportistaPrim : View {
                 .background(Color.white)
                 ScrollView {
                     VStack(spacing: 20) {
-                        NavigationLink(destination: ContratoServicioTP()) {
+                        NavigationLink(destination: ContratoServicioTP(interaction_id: interaction_id)) {
                             HStack {
                                 Text("Contrato transportista")
                             }
                         }
                         .activeStepStyle(color: .red, currentStep: tranStep, step: 1)
                         
-                        NavigationLink(destination: PagoSTP_TP()) {
+                        NavigationLink(destination: PagoSTP_TP(interaction_id: interaction_id)) {
                             HStack {
                                 Text("Pago 15% STP")
                             }
@@ -64,7 +66,9 @@ struct TransportistaPrim : View {
 // MARK: - Paso secundario 1
 struct ContratoServicioTP: View {
     @State private var termsAccepted = false
+    var interaction_id: Int
     
+    @Environment(\.dismiss) var dismiss
     var body: some View {
         dismiss_header(title: "Contrato de Servicio de Flete")
         ScrollView {
@@ -76,8 +80,6 @@ struct ContratoServicioTP: View {
                         .padding(.top, 10)
 
                     Text("MiFiel es una plataforma que facilita la firma electrónica de contratos y documentos de manera segura y legal, utilizando la Firma Electrónica Avanzada (FIEL) proporcionada por el SAT. La FIEL tiene la misma validez legal que una firma autógrafa en México.")
-//                        .padding()
-//                        .background(Color.gray.opacity(0.2))
                         .cornerRadius(8)
                 }
                 .padding(.horizontal)
@@ -118,6 +120,7 @@ struct ContratoServicioTP: View {
                 // Botón para firmar
                 Button(action: {
                     // Acción para ir al sitio externo de Mifiel (por implementar)
+                    updateToTranStep2()
                 }) {
                     Text("Ir a firmar mi contrato en Mifiel")
                         .foregroundColor(.white)
@@ -138,12 +141,58 @@ struct ContratoServicioTP: View {
         .ignoresSafeArea(edges: .bottom)
         .navigationBarBackButtonHidden(true)
     }
+
+    func updateToTranStep2() { 
+        guard let url = URL(string: "\(Stock.endPoint)/api/tran/step-one/post") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        // Crear el diccionario con los datos formateados
+        let idToUpdateTranStep: [String: Any] = [
+            "interaction_id": interaction_id
+        ]
+
+        // Serializar los datos a JSON
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: idToUpdateTranStep, options: []) else {
+            print("Error al serializar los datos para confirmar la recolección de empaque")
+            return
+        }
+
+        request.httpBody = httpBody
+
+        // Crear y ejecutar la tarea de red
+        let session = URLSession.shared
+        session.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error al guardar los datos: \(error)")
+                return
+            }
+
+            guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                print("Error en la respuesta del servidor updateToTranStep2()")
+                return
+            }
+
+            do {
+            //    if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+            //        print("Respuesta del servidor: \(json)")
+            //        // Aquí puedes manejar la respuesta del servidor
+            //    }
+                
+            } catch {
+                print("Error al decodificar la respuesta JSON")
+            }
+        }.resume()
+    }
 }
 
 // MARK: - Paso secundario 2
 struct PagoSTP_TP: View {
     @State private var termsAccepted = false
+    var interaction_id: Int
     
+    @Environment(\.dismiss) var dismiss
     var body: some View {
         dismiss_header(title: "Pago STP de flete")
         ScrollView {
@@ -194,6 +243,7 @@ struct PagoSTP_TP: View {
                 // Botón para firmar
                 Button(action: {
                     // Acción para ir al sitio externo de Mifiel (por implementar)
+                    updateToTranStep3()
                 }) {
                     Text("Hacer pago mediante STP")
                         .foregroundColor(.white)
@@ -214,10 +264,54 @@ struct PagoSTP_TP: View {
         .ignoresSafeArea(edges: .bottom)
         .navigationBarBackButtonHidden(true)
     }
+
+    func updateToTranStep3() { 
+        guard let url = URL(string: "\(Stock.endPoint)/api/tran/step-two/post") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        // Crear el diccionario con los datos formateados
+        let idToUpdateTranStep: [String: Any] = [
+            "interaction_id": interaction_id
+        ]
+
+        // Serializar los datos a JSON
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: idToUpdateTranStep, options: []) else {
+            print("Error al serializar los datos para confirmar la recolección de empaque")
+            return
+        }
+
+        request.httpBody = httpBody
+
+        // Crear y ejecutar la tarea de red
+        let session = URLSession.shared
+        session.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error al guardar los datos: \(error)")
+                return
+            }
+
+            guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                print("Error en la respuesta del servidor updateToTranStep3()")
+                return
+            }
+
+            do {
+            //    if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+            //        print("Respuesta del servidor: \(json)")
+            //        // Aquí puedes manejar la respuesta del servidor
+            //    }
+                
+            } catch {
+                print("Error al decodificar la respuesta JSON")
+            }
+        }.resume()
+    }
 }
 
 struct TransportistaPrim_Previews: PreviewProvider {
     static var previews: some View {
-        TransportistaPrim(tranStep: 4)
+        TransportistaPrim(tranStep: 4, interaction_id: 3)
     }
 }
