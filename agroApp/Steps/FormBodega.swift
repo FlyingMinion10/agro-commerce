@@ -239,15 +239,15 @@ struct FormBodega: View {
 
             do {
                 let decodedResponse = try JSONDecoder().decode([BodegaResponse].self, from: data)
-            DispatchQueue.main.async {
-                //print("FormBodega Datos decodificados correctamente: \(decodedResponse)") // PRINT FOR DEBUG
-        
-                if let firstResponse = decodedResponse.first {
-                    self.coste_flete_sug = firstResponse.coste_flete
-                    self.tipo_de_camion_sug = firstResponse.tipo_de_camion
-                    self.form_completo = firstResponse.form_completo
+                DispatchQueue.main.async {
+                    //print("FormBodega Datos decodificados correctamente: \(decodedResponse)") // PRINT FOR DEBUG
+            
+                    if let firstResponse = decodedResponse.first {
+                        self.coste_flete_sug = firstResponse.coste_flete
+                        self.tipo_de_camion_sug = firstResponse.tipo_de_camion
+                        self.form_completo = firstResponse.form_completo
+                    }
                 }
-            }
             } catch {
                 print("Error al decodificar datos de la bodega: \(error)")
                 if let decodingError = error as? DecodingError {

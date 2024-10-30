@@ -63,7 +63,7 @@ struct StepsView: View {
     
     // State Variables
     private let myAccountType: String = ProfileView.accountType
-    @State private var tranStep: Int = 0
+    @State var tranStep: Int?
     
     // Variables heredadas desde ChatsView para la negociación
     var interaction_id: Int
@@ -131,7 +131,7 @@ struct StepsView: View {
                             }
                             .activeStepStyle(color: .blue, currentStep: currentStep, step: 4)
                             
-                            NavigationLink(destination: TransportistaPrim(tranStep: tranStep)) { // MFM
+                            NavigationLink(destination: TransportistaPrim(tranStep: tranStep ?? 0, interaction_id: interaction_id)) { // MFM
                                 HStack {
                                     Text("Transportista 1 (1-2)")
                                 }
@@ -145,7 +145,7 @@ struct StepsView: View {
                             }
                             .activeStepStyle(color: .blue, currentStep: currentStep, step: 6)
 
-                            NavigationLink(destination: TransportistaSec(tranStep: tranStep, interaction_id: interaction_id)) { // MFM
+                            NavigationLink(destination: TransportistaSec(tranStep: tranStep ?? 0, interaction_id: interaction_id)) { // MFM
                                 HStack {
                                     Text("Transportista 2 (3-7)")
                                 }
@@ -166,7 +166,7 @@ struct StepsView: View {
                             }
                             .activeStepStyle(color: .cyan, currentStep: currentStep, step: 9)
 
-                            NavigationLink(destination: TransportistaTer(tranStep: tranStep)) {
+                            NavigationLink(destination: TransportistaTer(tranStep: tranStep ?? 0)) {
                                 HStack {
                                     Text("Transportista 3 (8-13)")
                                 }
@@ -234,7 +234,7 @@ struct StepsView: View {
                                 }
                             }
                             .activeStepStyle(color: .green, currentStep: currentStep, step: 4)
-                            NavigationLink(destination: TransportistaPrim(tranStep: tranStep)) {
+                            NavigationLink(destination: TransportistaPrim(tranStep: tranStep ?? 0, interaction_id: interaction_id)) {
                                 HStack {
                                     Text("Transportista 1 (1-2)")
                                 }
@@ -248,7 +248,7 @@ struct StepsView: View {
                             }
                             .activeStepStyle(color: .green, currentStep: currentStep, step: 6)
 
-                            NavigationLink(destination: TransportistaSec(tranStep: tranStep, interaction_id: interaction_id)) {
+                            NavigationLink(destination: TransportistaSec(tranStep: tranStep ?? 0, interaction_id: interaction_id)) {
                                 HStack {
                                     Text("Transportista 2 (3-7)")
                                 }
@@ -269,7 +269,7 @@ struct StepsView: View {
                             }
                             .activeStepStyle(color: .mint, currentStep: currentStep, step: 9)
 
-                            NavigationLink(destination: TransportistaTer(tranStep: tranStep)) {
+                            NavigationLink(destination: TransportistaTer(tranStep: tranStep ?? 0)) {
                                 HStack {
                                     Text("Transportista 3 (8-13)")
                                 }
@@ -353,18 +353,21 @@ struct StepsView: View {
                 return
             }
 
-        //     // Imprimir los datos recibidos en formato JSON
-            if let jsonString = String(data: data, encoding: .utf8) {
-                print("Datos recibidos del servidor StepView: \(jsonString)") // PRINT FOR DEBUG
-            }
+            // Imprimir los datos recibidos en formato JSON
+            // if let jsonString = String(data: data, encoding: .utf8) {
+            //     print("Datos recibidos del servidor StepView: \(jsonString)") // PRINT FOR DEBUG
+            // }
 
             do {
-                let decodedResponse = try JSONDecoder().decode([ServerResponse].self, from: data)
+                let decodedResponse = try JSONDecoder().decode([StepResponse].self, from: data)
                 DispatchQueue.main.async {
-//                    if let firstResponse = decodedResponse.first {
-//                        print("Datos decodificados correctamente: \(firstResponse)") // PRINT FOR DEBUG
-//                        self.tranStep = firstResponse.tran_step
-//                    }
+                    DispatchQueue.main.async {
+                        if let firstResponse = decodedResponse.first {
+                            print("Datos decodificados correctamente: \(firstResponse)") // PRINT FOR DEBUG
+                            self.tranStep = firstResponse.tran_step
+                        }
+                    }
+
                 }
             } catch {
                 print("Error al decodificar datos de StepView: \(error)")
@@ -417,7 +420,7 @@ extension View {
     }
 }
 
-struct ServerResponse: Codable {
+struct StepResponse: Codable {
     let tran_step: Int
 }
 
