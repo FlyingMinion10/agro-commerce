@@ -340,7 +340,7 @@ struct PublicationCreatorView: View {
                 //                }
                 //            }
                 .sheet(isPresented: $showImagePicker) {
-                    ImagePicker(selectedImage: $selectedImage)
+                    ImagePickerAD(selectedImage: $selectedImage)
                 }
             }
         }
@@ -438,7 +438,7 @@ struct PublicationCreatorView: View {
 }
 
 // MARK: - Image Picker
-struct ImagePicker: UIViewControllerRepresentable {
+struct ImagePickerAD: UIViewControllerRepresentable {
     @Binding var selectedImage: UIImage?
     
     func makeUIViewController(context: Context) -> some UIViewController {
@@ -457,9 +457,9 @@ struct ImagePicker: UIViewControllerRepresentable {
     }
     
     class Coordinator: NSObject, PHPickerViewControllerDelegate {
-        let parent: ImagePicker
+        let parent: ImagePickerAD
         
-        init(_ parent: ImagePicker) {
+        init(_ parent: ImagePickerAD) {
             self.parent = parent
         }
         

@@ -6,6 +6,7 @@ struct TransportistaSec : View {
     let screenWidth = UIScreen.main.bounds.width
     @Environment(\.dismiss) var dismiss
     var tranStep: Int
+    var interaction_id: Int
     var body: some View {
         NavigationView {
             VStack {
@@ -55,6 +56,7 @@ struct TransportistaSec : View {
                         .activeStepStyle(color: .red, currentStep: tranStep, step: 3)
                         
                         NavigationLink(destination: BasculaGenericTS(
+                            interaction_id: interaction_id,
                             instructionText: "Tome o importe una foto y registre el peso del camión en la báscula 1.", 
                             basculaIndex: "1",
                             videoURL: Stock.videos["Báscula 1"]!)) {
@@ -75,6 +77,7 @@ struct TransportistaSec : View {
                         .activeStepStyle(color: .red, currentStep: tranStep, step: 5)
                         
                         NavigationLink(destination: BasculaGenericTS(
+                            interaction_id: interaction_id,
                             instructionText: "Tome o importe una foto y registre el peso del camión en la báscula 2.", 
                             basculaIndex: "2",
                             videoURL: Stock.videos["Báscula 2"]!)) {
@@ -85,6 +88,7 @@ struct TransportistaSec : View {
                         .activeStepStyle(color: .yellow, currentStep: tranStep, step: 6)
                         
                         NavigationLink(destination: BasculaGenericTS(
+                            interaction_id: interaction_id,
                             instructionText: "Tome o importe una foto y registre el peso del camión en la báscula 3.", 
                             basculaIndex: "3",
                             videoURL: Stock.videos["Báscula 3"]!)) {
@@ -177,6 +181,7 @@ struct RecoleccionDeEmpaqueTS: View {
 }
 
 struct BasculaGenericTS: View {
+    var interaction_id: Int
     let instructionText: String
     let basculaIndex: String
     var videoURL: String
@@ -260,7 +265,7 @@ struct BasculaGenericTS: View {
                         }
                     }
                 } else {
-                    sendWeight(weight: net_weight)
+                    sendWeight()
                 }
             }) {
                 HStack {
@@ -338,6 +343,54 @@ struct BasculaGenericTS: View {
         }.resume()
     }
 
+    func sendWeight() {
+        guard let url = URL(string: "\(Stock.endPoint)/api/tran/bascula/send") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        // Crear el diccionario con los datos actualizados
+        let basculaData: [String: Any] = [
+            "interaction_id": interaction_id,
+            "basculaIndex": basculaIndex,
+            "net_weight": net_weight
+        ]
+
+        // Serializar los datos a JSON
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: basculaData, options: []) else {
+            print("Error al serializar los datos para editar monopoly")
+            return
+        }
+
+        request.httpBody = httpBody
+
+        // Crear y ejecutar la tarea de red
+        let session = URLSession.shared
+        session.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error al guardar los datos: \(error)")
+                return
+            }
+
+            guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                print("Error en la respuesta del servidor sendWeight()")
+                return
+            }
+
+            do {
+//              Aquí puedes manejar la respuesta del servidor
+                print("Peso enviado exitosamente")
+                // Una vez que la solicitud se complete exitosamente, llamar a
+                DispatchQueue.main.async {
+                    // Ejecutar funciones .self si es necesario
+                }
+            } catch {
+                print("Error al decodificar la respuesta JSON")
+            }
+        }.resume()
+    }
+
+    // Funcion para obtener el peso de la báscula
     
 }
 
@@ -491,6 +544,6 @@ struct EvidenciaInspeccionTS: View {
 
 struct TransportistaSec_Previews: PreviewProvider {
     static var previews: some View {
-        TransportistaSec(tranStep: 6)
+        TransportistaSec(tranStep: 7,  interaction_id: 3)
     }
 }

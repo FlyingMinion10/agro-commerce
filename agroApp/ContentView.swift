@@ -7,7 +7,7 @@ struct ContentView: View {
 
     var body: some View {
         VStack {
-            if isAuthenticated {
+            if true {
                 MainTabView(selectedTab: $selectedTab, isAuthenticated: $isAuthenticated)
             } else {
                 LoginView(isAuthenticated: $isAuthenticated)

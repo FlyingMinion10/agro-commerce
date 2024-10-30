@@ -8,19 +8,23 @@ import SwiftUI
 
 struct InspeccionCorreccion: View {
     var body: some View {
-            VStack(spacing: 20) {
-
-                Text("Inspección/Corrección")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .padding(.bottom, 10)
-
-                Divider()
-                    .padding(.horizontal)
+        VStack(spacing: 20) {
+            dismiss_header(title: "Inspección/Corrección")
+            Text("¿Qué significa hacer una corrección y qué conlleva?")
+                .font(.title2)
+                .padding(.bottom, 0)
+            Text("Realizar una corrección en la compra-venta del producto implica modificar algún aspecto acordado previamente, como el precio, la cantidad, o los términos del contrato. Esto requiere la aprobación de ambas partes involucradas y conlleva una actualización del contrato original.")
+                .foregroundStyle(Color.red)
+                .italic()
+                .padding()
+                .padding(.top, 0)
+            
+            Divider()
+            
             ScrollView {
-                // Participantes de la transacción
+                // Valores del Monopoly en la negociacion cv
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Participantes de la Transacción")
+                    Text("Monopoly")
                         .font(.headline)
                     Rectangle()
                         .fill(Color.gray.opacity(0.2))
@@ -32,9 +36,9 @@ struct InspeccionCorreccion: View {
                 .cornerRadius(10)
                 .padding(.horizontal)
 
-                // Datos de la transacción
+                // Bascula 1
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Datos de la Transacción")
+                    Text("Bascula 1")
                         .font(.headline)
                     Rectangle()
                         .fill(Color.gray.opacity(0.2))
@@ -46,9 +50,37 @@ struct InspeccionCorreccion: View {
                 .cornerRadius(10)
                 .padding(.horizontal)
 
-                // Precios de la transacción
+                // Bascula 2
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Precios de la Transacción")
+                    Text("Bascula 2")
+                        .font(.headline)
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.2))
+                        .frame(height: 150)
+                        .cornerRadius(8)
+                }
+                .padding()
+                .background(Color.gray.opacity(0.1))
+                .cornerRadius(10)
+                .padding(.horizontal)
+
+                // Bascula 3
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Bascula 3")
+                        .font(.headline)
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.2))
+                        .frame(height: 150)
+                        .cornerRadius(8)
+                }
+                .padding()
+                .background(Color.gray.opacity(0.1))
+                .cornerRadius(10)
+                .padding(.horizontal)
+
+                // Evidencia del camion
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Evidencia del camion")
                         .font(.headline)
                     Rectangle()
                         .fill(Color.gray.opacity(0.2))
@@ -61,20 +93,6 @@ struct InspeccionCorreccion: View {
                 .padding(.horizontal)
 
                 Divider()
-
-                // Explicación de corrección
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("¿Qué significa hacer una corrección y qué conlleva?")
-                        .font(.headline)
-                    Text("Realizar una corrección en la compra-venta del producto implica modificar algún aspecto acordado previamente, como el precio, la cantidad, o los términos del contrato. Esto requiere la aprobación de ambas partes involucradas y conlleva una actualización del contrato original.")
-                        .padding()
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(8)
-                }
-                .padding()
-                .background(Color.gray.opacity(0.1))
-                .cornerRadius(10)
-                .padding(.horizontal)
 
                 // Botones para corrección
                 VStack(spacing: 15) {
@@ -112,6 +130,7 @@ struct InspeccionCorreccion: View {
             .background(Color.white)
         }
         .ignoresSafeArea(edges: .bottom)
+        .navigationBarBackButtonHidden(true)
     }
 }
 

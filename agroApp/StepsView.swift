@@ -145,7 +145,7 @@ struct StepsView: View {
                             }
                             .activeStepStyle(color: .blue, currentStep: currentStep, step: 6)
 
-                            NavigationLink(destination: TransportistaSec(tranStep: tranStep)) { // MFM
+                            NavigationLink(destination: TransportistaSec(tranStep: tranStep, interaction_id: interaction_id)) { // MFM
                                 HStack {
                                     Text("Transportista 2 (3-7)")
                                 }
@@ -248,7 +248,7 @@ struct StepsView: View {
                             }
                             .activeStepStyle(color: .green, currentStep: currentStep, step: 6)
 
-                            NavigationLink(destination: TransportistaSec(tranStep: tranStep)) {
+                            NavigationLink(destination: TransportistaSec(tranStep: tranStep, interaction_id: interaction_id)) {
                                 HStack {
                                     Text("Transportista 2 (3-7)")
                                 }
