@@ -357,6 +357,6 @@ struct AllWeightsResponse: Codable {
 
 struct InspeccionCorreccion_Previews: PreviewProvider {
     static var previews: some View {
-        InspeccionCorreccion(interaction_id: 3)
+        InspeccionCorreccion(interaction_id: 3, seller: "d")
     }
 }

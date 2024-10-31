@@ -623,8 +623,10 @@ struct ChatView: View {
 
         // Crear el diccionario con los datos formateados
         let idToAcceptDeal: [String: Any] = [
-            "interaction_id": interaction_id
+            "interaction_id": interaction_id,
+            "step": monopoly.first?.step ?? 1,
         ]
+        print("idToAcceptDeal: \(idToAcceptDeal)")
 
         // Serializar los datos a JSON
         guard let httpBody = try? JSONSerialization.data(withJSONObject: idToAcceptDeal, options: []) else {
