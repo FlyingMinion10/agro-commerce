@@ -251,7 +251,7 @@ struct BasculaGenericTS: View {
     @State private var isShowingImagePicker = false
     @State private var isCamera = false
     @State private var net_weight: String = ""
-    @State private var fetch_weight: String = ""
+    @State private var fetchWeight: String = ""
 
     @Environment(\.dismiss) var dismiss
     var body: some View {
@@ -275,7 +275,7 @@ struct BasculaGenericTS: View {
                 }
                 .padding()
             }
-            if (fetch_weight == "") {
+            if (fetchWeight == "") {
                 HStack {
                     Button(action: {
                         if UIImagePickerController.isSourceTypeAvailable(.camera) {
@@ -347,10 +347,11 @@ struct BasculaGenericTS: View {
                     .cornerRadius(10)
                     .shadow(color: .gray, radius: 5, x: 0, y: 5)
                 }
+                .disabled(!termsAccepted)
                 .padding() // MFM
             } else {
                 // Display the weight
-                Text("Peso: \(fetch_weight) Toneladas")
+                Text("Peso: \(fetchWeight) Toneladas")
                     .font(.title)
                     .padding()
                     .foregroundColor(.blue)
@@ -517,7 +518,7 @@ struct BasculaGenericTS: View {
                     //print("FormBodega Datos decodificados correctamente: \(decodedResponse)") // PRINT FOR DEBUG
             
                     if let firstResponse = decodedResponse.first {
-                        self.fetch_weight = firstResponse.net_weight
+                        self.fetchWeight = firstResponse.net_weight
                     }
                 }
             } catch {

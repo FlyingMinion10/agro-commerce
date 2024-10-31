@@ -232,9 +232,9 @@ struct ChatView: View {
                         Image(systemName: "arrowshape.right.circle")
                             .foregroundColor(.green)
                             .font(.system(size: 30))
-                            .opacity(monopoly.first?.accepted == false ? 0 : 1)
+                            .opacity((monopoly.first?.accepted == false && monopoly.first?.step == 1) ? 0 : 1)
                     }
-                    .disabled(monopoly.first?.accepted == false)
+                    .disabled(monopoly.first?.accepted == false && monopoly.first?.step == 1)
                 }
                 .padding()
                 .frame(width: screenWidth, height: 60)
@@ -501,7 +501,7 @@ struct ChatView: View {
 
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("Error fetching publications: \(error.localizedDescription)")
+                print("Error fetching Monopoly: \(error.localizedDescription)")
                 return
             }
 
@@ -511,9 +511,9 @@ struct ChatView: View {
             }
 
             // Imprimir los datos recibidos en formato JSON
-//            if let jsonString = String(data: data, encoding: .utf8) {
-//                print("Datos recibidos del servidor Monopoly: \(jsonString)") // PRINT FOR DEBUG
-//            }
+        //    if let jsonString = String(data: data, encoding: .utf8) {
+        //        print("Datos recibidos del servidor Monopoly: \(jsonString)") // PRINT FOR DEBUG
+        //    }
 
             do {
                 let decodedMonopoly = try JSONDecoder().decode([Monopoly].self, from: data)
@@ -648,10 +648,10 @@ struct ChatView: View {
             }
 
             do {
-//                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-//                    print("Respuesta del servidor: \(json)")
-//                    // Aquí puedes manejar la respuesta del servidor
-//                }
+            //    if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+            //        print("Respuesta del servidor: \(json)")
+            //        // Aquí puedes manejar la respuesta del servidor
+            //    }
                 self.fetchMonopoly()
                 self.showSteps = true
             } catch {

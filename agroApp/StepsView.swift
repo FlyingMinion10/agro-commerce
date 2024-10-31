@@ -152,7 +152,7 @@ struct StepsView: View {
                             }
                             .activeStepStyle(color: .cyan, currentStep: currentStep, step: 7)
                             
-                            NavigationLink(destination: InspeccionCorreccion()) {
+                            NavigationLink(destination: InspeccionCorreccion(interaction_id: interaction_id, seller: seller)) {
                                 HStack {
                                     Text("Inspeción Corrección")
                                 }
@@ -255,7 +255,7 @@ struct StepsView: View {
                             }
                             .activeStepStyle(color: .mint, currentStep: currentStep, step: 7)
 
-                            NavigationLink(destination: InspeccionCorreccion()) {
+                            NavigationLink(destination: InspeccionCorreccion(interaction_id: interaction_id, seller: seller)) {
                                 HStack {
                                     Text("Inspeción Corrección")
                                 }

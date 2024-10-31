@@ -73,41 +73,47 @@ struct TransportistaTer : View {
                             Image(systemName: "checkmark.circle")
                         }
                         .lockedStepStyle(currentStep: tranStep, step: 6)
+                        
+                        HStack {
+                            Text("Báscula 3")
+                            Image(systemName: "checkmark.circle")
+                        }
+                        .lockedStepStyle(currentStep: tranStep, step: 7)
                         //////////////////// DIV //////////////////// DIV //////////////////// DIV //////////////////// DIV
                         NavigationLink(destination: ConfirmacionLlegadaCamionTran()) {
                             HStack {
                                 Text("Confirmar llegada de camión")
                             }
                         }
-                        .activeStepStyle(color: .orange, currentStep: tranStep, step: 7)
+                        .activeStepStyle(color: .orange, currentStep: tranStep, step: 8)
                         
                         NavigationLink(destination: LiberarPagoTT()) {
                             HStack {
                                 Text("Liberar pago")
                             }
                         }
-                        .activeStepStyle(color: .yellow, currentStep: tranStep, step: 8)
+                        .activeStepStyle(color: .yellow, currentStep: tranStep, step: 9)
                         
                         NavigationLink(destination: RatingPageTT()) {
                             HStack {
                                 Text("Rating")
                             }
                         }
-                        .activeStepStyle(color: .orange, currentStep: tranStep, step: 9)
+                        .activeStepStyle(color: .orange, currentStep: tranStep, step: 10)
                         
                         NavigationLink(destination: FacturaTT()) {
                             HStack {
                                 Text("Factura")
                             }
                         }
-                        .activeStepStyle(color: .yellow, currentStep: tranStep, step: 10)
+                        .activeStepStyle(color: .yellow, currentStep: tranStep, step: 11)
                         
                         NavigationLink(destination: FinalizarTransaccionTT()) {
                             HStack {
                                 Text("Finalizar")
                             }
                         }
-                        .activeStepStyle(color: .orange, currentStep: tranStep, step: 11)
+                        .activeStepStyle(color: .orange, currentStep: tranStep, step: 12)
                     }
                     .frame(width: 360)
                     .padding()
