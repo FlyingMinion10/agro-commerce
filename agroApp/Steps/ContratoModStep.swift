@@ -25,9 +25,10 @@ struct ContratoModStep: View {
                 """)
                 .padding()
             }
-            .frame(height: 300)
+            .frame(width: .infinity , height: 300)
             .border(Color.gray, width: 1)
-            if step == 1 {
+            .cornerRadius(16)
+            if step == 9 {
                 HStack {
                     CheckBoxView(isChecked: $isAccepted)
                     Text("Acepto los términos y condiciones")
@@ -35,6 +36,7 @@ struct ContratoModStep: View {
                 
                 Button(action: {
                     // Acción al enviar
+                    signContractMod()
                 }) {
                     Text("Enviar")
                         .frame(maxWidth: .infinity)
@@ -57,8 +59,8 @@ struct ContratoModStep: View {
         .padding()
     }
 
-    func saveToDatabase() {
-        guard let url = URL(string: "\(Stock.endPoint)/api/step-four/post") else { return }
+    func signContractMod() {
+        guard let url = URL(string: "\(Stock.endPoint)/api/step-nine/post") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -104,6 +106,6 @@ struct ContratoModStep: View {
 
 struct ContratoModStep_Previews: PreviewProvider {
     static var previews: some View {
-        ContratoModStep(interaction_id: 1, step: 1)
+        ContratoModStep(interaction_id: 3, step: 9)
     }
 }

@@ -27,6 +27,7 @@ struct ContratoStep: View {
                 
                 Button(action: {
                     // Acción al enviar
+                    signContract()
                 }) {
                     Text("Enviar")
                         .frame(maxWidth: .infinity)
@@ -49,8 +50,8 @@ struct ContratoStep: View {
         .padding()
     }
 
-    func saveToDatabase() {
-        guard let url = URL(string: "\(Stock.endPoint)/api/step-four/post") else { return }
+    func signContract() {
+        guard let url = URL(string: "\(Stock.endPoint)/api/step-one/post") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
