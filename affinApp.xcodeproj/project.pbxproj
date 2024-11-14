@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		061E5FC32C8956A800D35C88 /* StockArrays.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061E5FC22C8956A800D35C88 /* StockArrays.swift */; };
 		0628A3D62C95E994007E41CD /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0628A3D52C95E993007E41CD /* UserData.swift */; };
+		0653341A2CE527FD0067E749 /* TransactionScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065334192CE527FD0067E749 /* TransactionScrollView.swift */; };
 		0690EACC2C9120A700848E5C /* CanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0690EACB2C9120A700848E5C /* CanvasView.swift */; };
 		06B4F2212CA3560300CCAE34 /* StepsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B4F2202CA355F500CCAE34 /* StepsView.swift */; };
 		06D97A512CCFF6B900F30079 /* ContratoModStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D97A422CCFF6B900F30079 /* ContratoModStep.swift */; };
@@ -68,6 +69,7 @@
 /* Begin PBXFileReference section */
 		061E5FC22C8956A800D35C88 /* StockArrays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockArrays.swift; sourceTree = "<group>"; };
 		0628A3D52C95E993007E41CD /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
+		065334192CE527FD0067E749 /* TransactionScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionScrollView.swift; sourceTree = "<group>"; };
 		0690EACB2C9120A700848E5C /* CanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasView.swift; sourceTree = "<group>"; };
 		06B4F2202CA355F500CCAE34 /* StepsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsView.swift; sourceTree = "<group>"; };
 		06D97A422CCFF6B900F30079 /* ContratoModStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContratoModStep.swift; sourceTree = "<group>"; };
@@ -199,6 +201,7 @@
 				06B4F2202CA355F500CCAE34 /* StepsView.swift */,
 				06FFC4692C837FAB005432AE /* ProfileView.swift */,
 				061E5FC22C8956A800D35C88 /* StockArrays.swift */,
+				065334192CE527FD0067E749 /* TransactionScrollView.swift */,
 				06F466092C9B2AD900C428CB /* GoogleService-Info.plist */,
 				06D97A502CCFF6B900F30079 /* Steps */,
 				065600092C9A565A0010E560 /* AuthSystem */,
@@ -393,6 +396,7 @@
 				06D97A5C2CCFF6B900F30079 /* TransportistaPrim.swift in Sources */,
 				06D97A5D2CCFF6B900F30079 /* TransportistaSec.swift in Sources */,
 				06D97A5E2CCFF6B900F30079 /* TransportistaTer.swift in Sources */,
+				0653341A2CE527FD0067E749 /* TransactionScrollView.swift in Sources */,
 				06FFC43A2C837A5D005432AE /* agroAppApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -573,7 +577,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = Tutorial.agroApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.affin.affin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -606,7 +610,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = Tutorial.agroApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.affin.affin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
