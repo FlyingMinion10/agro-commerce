@@ -12,6 +12,18 @@ struct PasosIniciales: View {
     }
 }
 
+struct SubTitle: View {
+    var text: String
+    var body: some View {
+        VStack {
+            Text(text)
+            .font(.system(size: 30))
+            .bold()
+            .foregroundStyle(Color.black.opacity(0.7))
+        }
+    }
+}
+
 struct TransactionScrollView: View {
     @State private var progress: Double = 0.3
     var rating: Int = 5
@@ -102,12 +114,11 @@ struct TransactionScrollView: View {
 
                     }
                     // Calendario de eventos
-                    Section(header: Text("Calendario de eventos")) {}
+                    SubTitle(text: "Calendario de eventos")
                     
-
                     // Tabla de meta 1
-                    Section(header: Text("META 1")) {}
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
+                    SubTitle(text: "META")
+                    LazyVGrid(columns: [GridItem(.fixed(160)), GridItem(.fixed(160))]) {
                         PasosIniciales(label: "Negociación Inicial")
                         PasosIniciales(label: "Financiamiento de Insumos")
                         PasosIniciales(label: "Cuidados y Siembra")
