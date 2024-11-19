@@ -228,7 +228,7 @@ struct ChatView: View {
                     Text(ProfileView.accountType == "Bodeguero" ? chat.seller_name : chat.buyer_name)
                         .font(.headline)
                     Spacer()
-                    NavigationLink (destination: StepsView(interaction_id: interaction_id, producto_completo: chat.item_preview, buyer: chat.buyer, seller: chat.seller, currentStep: monopoly.first?.step ?? 0)) {
+                    NavigationLink (destination: TransactionScrollView(interaction_id: interaction_id, producto_completo: chat.item_preview, buyer: chat.buyer, seller: chat.seller, currentStep: monopoly.first?.step ?? 0)) {
                         Image(systemName: "arrowshape.right.circle")
                             .foregroundColor(.green)
                             .font(.system(size: 30))

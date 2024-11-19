@@ -136,6 +136,14 @@ struct TransactionScrollView: View {
     @State private var progress: Double = 0.3
     var name: String = "Interlocutor"
     var rating: Int = 5
+
+    // Variables heredadas desde ChatsView para la negociación
+    var interaction_id: Int
+    var producto_completo: String
+    var buyer: String
+    var seller: String
+    var currentStep: Int
+
     var body: some View {
         VStack {
             HStack {
@@ -241,6 +249,9 @@ struct TransactionScrollView: View {
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(Color.black.opacity(1), lineWidth: 1)
                     )
+                    VStack {
+                        StepsView(interaction_id: interaction_id, producto_completo: chat.item_preview, buyer: chat.buyer, seller: chat.seller, currentStep: monopoly.first?.step ?? 0)
+                    }
                 }
             }
             .padding(.horizontal)
