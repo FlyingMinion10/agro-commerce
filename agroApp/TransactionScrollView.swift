@@ -261,6 +261,6 @@ struct TransactionScrollView: View {
 
 struct TransactionScrollView_Previews: PreviewProvider {
     static var previews: some View {
-        TransactionScrollView()
+        TransactionScrollView(interaction_id: 3, producto_completo: "Aguacate Hass", buyer: "p", seller: "j", currentStep: 15)
     }
 }
