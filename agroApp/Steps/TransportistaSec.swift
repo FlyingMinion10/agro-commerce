@@ -56,7 +56,7 @@ struct TransportistaSec : View {
                                 Text("Recolección de Empaque")
                             }
                         }
-                        .activeStepStyle(color: .red, currentStep: tranStep, step: 3)
+                        .activeStepStyle(currentStep: tranStep, step: 3)
                         
                         NavigationLink(destination: BasculaGenericTS(
                             interaction_id: interaction_id,
@@ -67,7 +67,7 @@ struct TransportistaSec : View {
                                 Text("Báscula 1")
                             }
                         }
-                        .activeStepStyle(color: .yellow, currentStep: tranStep, step: 4)
+                        .activeStepStyle( currentStep: tranStep, step: 4)
                         
                         NavigationLink(destination: EvidenciaInspeccionTS(
                             instructionText: "Tome o importe una foto y registre la evidencia de inspección del producto.", 
@@ -77,7 +77,7 @@ struct TransportistaSec : View {
                                 Text("Evidencia para Inspección")
                             }
                         }
-                        .activeStepStyle(color: .red, currentStep: tranStep, step: 5)
+                        .activeStepStyle(currentStep: tranStep, step: 5)
                         
                         NavigationLink(destination: BasculaGenericTS(
                             interaction_id: interaction_id,
@@ -88,7 +88,7 @@ struct TransportistaSec : View {
                                 Text("Báscula 2")
                             }
                         }
-                        .activeStepStyle(color: .yellow, currentStep: tranStep, step: 6)
+                        .activeStepStyle( currentStep: tranStep, step: 6)
                         
                         NavigationLink(destination: BasculaGenericTS(
                             interaction_id: interaction_id,
@@ -99,7 +99,7 @@ struct TransportistaSec : View {
                                 Text("Báscula 3")
                             }
                         }
-                        .activeStepStyle(color: .red, currentStep: tranStep, step: 7)
+                        .activeStepStyle(currentStep: tranStep, step: 7)
                     }
                     .frame(width: 360)
                     .padding()

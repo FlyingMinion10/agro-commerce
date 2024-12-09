@@ -44,14 +44,14 @@ struct TransportistaPrim : View {
                                 Text("Contrato transportista")
                             }
                         }
-                        .activeStepStyle(color: .red, currentStep: tranStep, step: 1)
+                        .activeStepStyle(currentStep: tranStep, step: 1)
                         
                         NavigationLink(destination: PagoSTP_TP(interaction_id: interaction_id)) {
                             HStack {
                                 Text("Pago 15% STP")
                             }
                         }
-                        .activeStepStyle(color: .orange, currentStep: tranStep, step: 2)
+                        .activeStepStyle(currentStep: tranStep, step: 2)
                         
                     }
                     .frame(width: 360)

@@ -133,9 +133,15 @@ struct CalendarView: View {
 }
 
 struct TransactionScrollView: View {
+    let screenWidth = UIScreen.main.bounds.width
+
     @State private var progress: Double = 0.3
     var name: String = "Interlocutor"
     var rating: Int = 5
+
+    // State Variables
+    private let myAccountType: String = ProfileView.accountType
+    @State var tranStep: Int?
 
     // Variables heredadas desde ChatsView para la negociación
     var interaction_id: Int
@@ -236,26 +242,306 @@ struct TransactionScrollView: View {
                     )
                     // Tabla de meta 2
                     SubTitle(text: "META 2")
-                    HStack {
-                        Text("Ir a firmar contrato")
-//                            .font(.system(size: 20))
-                        Image(systemName: "arrowshape.right.fill")
+                    ZStack(alignment: .leading) {
+                        // Fondo de la barra
+                        RoundedRectangle(cornerRadius: 15)
+                            .fill(Color.gray.opacity(0.3))
+                            .frame(width: 300, height: 20) // Tamaño de la barra
                         
+                        // Progreso
+                        RoundedRectangle(cornerRadius: 15)
+                            .fill(Color.accentColor)
+                            .frame(width: CGFloat(progress) * 300, height: 15) // Ancho según el progreso
                     }
-                    .font(.system(size: 20))
-                    .frame(width: 340)
-                    .padding(10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color.black.opacity(1), lineWidth: 1)
-                    )
-                    VStack {
-                        StepsView(interaction_id: interaction_id, producto_completo: chat.item_preview, buyer: chat.buyer, seller: chat.seller, currentStep: monopoly.first?.step ?? 0)
+                    
+                    if true {
+                    // if myAccountType == "Bodeguero" {
+                    // MARK: - STEPS DEL BODEGUERO // STEPS DEL BODEGUERO
+                        VStack(alignment: .leading, spacing: 10) {
+                            
+                            NavigationLink(destination: ContratoStep(interaction_id: interaction_id, step: currentStep)) {
+                                meta2style(currentStep: currentStep, step: 1, text: "Contrato compra-venta")
+                            }
+                            /// Divider()
+                            NavigationLink(destination: FormAgr(interaction_id: interaction_id, step: currentStep)) {
+                                meta2style(currentStep: currentStep, step: 2, text: "Datos Agricultor")
+                            }
+                            /// Divider()
+                            NavigationLink(destination: FormBodega(interaction_id: interaction_id, step: currentStep)) {
+                                meta2style(currentStep: currentStep, step: 3, text: "Datos Bodeguero")
+                            }
+                            /// Divider()
+                            NavigationLink(destination: NegociacionTran(interaction_id: interaction_id, producto_completo: producto_completo)) {
+                                meta2style(currentStep: currentStep, step: 4, text: "Negociacion transporte")
+                            }
+                            /// Divider()
+                            NavigationLink(destination: TransportistaPrim(tranStep: tranStep ?? 0, interaction_id: interaction_id)) { // MFM
+                                meta2style(currentStep: currentStep, step: 5, text: "Transportista 1 (1-2)")
+                            }
+                            /// Divider()
+                            NavigationLink(destination: PagoSTPStep()) { // MFM
+                                meta2style(currentStep: currentStep, step: 6, text: "Pago STP")
+                            }
+                            /// Divider()
+                            NavigationLink(destination: TransportistaSec(tranStep: tranStep ?? 0, interaction_id: interaction_id)) { // MFM
+                                meta2style(currentStep: currentStep, step: 7, text: "Transportista 2 (3-7)")
+                            }
+                            /// Divider()
+                            NavigationLink(destination: InspeccionCorreccion(interaction_id: interaction_id, seller: seller)) {
+                                meta2style(currentStep: currentStep, step: 8, text: "Inspeccion y correccion")
+                            }
+                            /// Divider()
+                            NavigationLink(destination: ContratoModStep(interaction_id: interaction_id, step: currentStep)) {
+                                meta2style(currentStep: currentStep, step: 9, text: "Contrato modificacion")
+                            }
+                            /// Divider()
+                            NavigationLink(destination: TransportistaTer(tranStep: tranStep ?? 0)) {
+                                meta2style(currentStep: currentStep, step: 10, text: "Transportista 3 (8-10)")
+                            }
+                            /// Divider()
+                            NavigationLink(destination: LiberarPago()) {
+                                meta2style(currentStep: currentStep, step: 11, text: "Liberar pago")
+                            }
+                            /// Divider()
+                            NavigationLink(destination: RatingPage()) {
+                                meta2style(currentStep: currentStep, step: 12, text: "Rating")
+                            }
+                            /// Divider()
+                            NavigationLink(destination: FacturaCompraVenta()) {
+                                meta2style(currentStep: currentStep, step: 13, text: "Factura compra-venta")
+                            }
+                            /// Divider()
+                            NavigationLink(destination: FinalizarTransaccion()) {
+                                meta2style(currentStep: currentStep, step: 14, text: "Finalizar transaccion")
+                            }
+
+                        }
+                        .frame(width: 340)
+                        .padding(10)
+                        // .overlay(
+                        //     RoundedRectangle(cornerRadius: 16)
+                        //         .stroke(Color.black.opacity(1), lineWidth: 1)
+                        // )
+                    }
+                    SubTitle(text: "Pagos y Financiamento")
+                    VStack{
+                        // Próximos pagos
+                        SectionView(title: "Próximos Pagos") {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("Pago transportista - 1 enero")
+                                Text("Pago Factura insumo [183405]")
+                                Text("Pago cosecha - 5 enero")
+                                Text("Pago transportista - 5 enero")
+                            }
+                            .frame(width: 300)
+                        }
+
+                        // Insumos y Financiamiento
+                        SectionView(title: "Insumos y Financiamiento") {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("Facturas y Pagos de insumos")
+                                Text("Factura [183405] [Fecha] [$$$]")
+                                    .padding(.leading)
+
+                                Text("Financiamiento Total: $$$")
+                                Text("Financiamiento utilizado:")
+                                VStack(alignment: .leading, spacing: 5) {
+                                    Text("- Plásticos: 50m")
+                                    Text("- Semillas: 50kg")
+                                    Text("- Semillas: 15")
+                                }
+                                
+                                Button("+ Añadir Financiamiento") {
+                                    // Acción al añadir financiamiento
+                                }
+                            }
+                            .frame(width: 300)
+                        }
+
+                        // Pagos de Flete
+                        SectionView(title: "Pagos de Flete") {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("Historial de pagos:")
+                                VStack(alignment: .leading) {
+                                    Text("- Pago 1 enero $$$ Empresa Trans1")
+                                    Text("- Pago 5 enero $$$ Empresa Lum")
+                                }
+                                Text("Pagos Pendientes:")
+                                Text("- Pago 6 enero [Empresa Xmile] $$$")
+                                Text("Próximos pagos:")
+                                Text("- Pago 14 enero $$$")
+                            }
+                            .frame(width: 300)
+                        }
+
+                        // Pagos del Cultivo
+                        SectionView(title: "Pagos del Cultivo") {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("Historial de pagos")
+                                Text("Pagos Pendientes")
+                                Text("Próximos pagos")
+                            }
+                            .frame(width: 300)
+                        }
+
+                        // Estados de Cuenta
+                        SectionView(title: "Estados de Cuenta") {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("Historial")
+                                Text("Tabla de pagos")
+                                Text("Total de la transacción")
+                                Text("Gráficas")
+                            }
+                            .frame(width: 300)
+                        }
+                    }
+                }
+                .padding(.horizontal)
+            }
+            
+        }
+    }
+    func fetchTranStep(interactionID: Int) {
+    // func fetchStartingValues() {
+        guard let baseUrl = URL(string: "\(Stock.endPoint)/api/tran-step/get") else {
+            print("URL no válida")
+            return
+        }
+
+        // Construir la URL con el parámetro de consulta
+        var urlComponents = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false)!
+        urlComponents.queryItems = [
+            URLQueryItem(name: "interaction_id", value: String(interactionID)), // Convertir Int? a String?
+        ]
+
+        guard let url = urlComponents.url else {
+            print("URL no válida")
+            return
+        }
+
+        // print("URL final: \(url)") // PRINT FOR DEBUG
+
+        var request = URLRequest(url: url)
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error al obtener tranStep: \(error.localizedDescription)")
+                return
+            }
+
+            guard let data = data else {
+                print("No se recibieron datos de la bodega.")
+                return
+            }
+
+            // Imprimir los datos recibidos en formato JSON
+            // if let jsonString = String(data: data, encoding: .utf8) {
+            //     print("Datos recibidos del servidor StepView: \(jsonString)") // PRINT FOR DEBUG
+            // }
+
+            do {
+                let decodedResponse = try JSONDecoder().decode([StepResponse].self, from: data)
+                DispatchQueue.main.async {
+                    DispatchQueue.main.async {
+                        if let firstResponse = decodedResponse.first {
+                            print("Datos decodificados correctamente: \(firstResponse)") // PRINT FOR DEBUG
+                            self.tranStep = firstResponse.tran_step
+                        }
+                    }
+
+                }
+            } catch {
+                print("Error al decodificar datos de StepView: \(error)")
+                if let decodingError = error as? DecodingError {
+                    switch decodingError {
+                    case .typeMismatch(let key, let context):
+                        print("Tipo no coincide para la clave \(key), \(context.debugDescription)")
+                    case .valueNotFound(let key, let context):
+                        print("Valor no encontrado para la clave \(key), \(context.debugDescription)")
+                    case .keyNotFound(let key, let context):
+                        print("Clave no encontrada \(key), \(context.debugDescription)")
+                    case .dataCorrupted(let context):
+                        print("Datos corruptos: \(context.debugDescription)")
+                    @unknown default:
+                        print("Error desconocido de decodificación")
                     }
                 }
             }
-            .padding(.horizontal)
+        }.resume()
+    }
+}
+
+struct meta2style: View {
+    var currentStep: Int
+    var step: Int
+    var text: String
+
+    var body: some View {
+        HStack {
+            Text(text)
+                .frame(width: 260, height: 35)
+                .foregroundStyle(Color.black.opacity(currentStep < step ? 0.5 : 1))
+                .font(.system(size: 20))
+                .disabled(currentStep < step)
+                .background(Color.gray.opacity(0.2))
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+            Image(systemName: "shield.lefthalf.filled.badge.checkmark")
+                .foregroundStyle(Color.superGreen)
+                .font(.system(size: 20))
+                .padding(.horizontal, 20)
+
         }
+        .frame(width: 330, height: 40)
+    }
+}
+
+// Reutilizable para secciones
+struct SectionView<Content: View>: View {
+    let title: String
+    let content: Content
+
+    init(title: String, @ViewBuilder content: () -> Content) {
+        self.title = title
+        self.content = content()
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(title)
+                .font(.headline)
+                .fontWeight(.bold)
+                .padding(.bottom, 5)
+
+            content
+                .padding()
+                .background(Color.gray.opacity(0.1))
+                .cornerRadius(10)
+        }
+        
+    }
+}
+
+extension View {
+    func activeStepStyle(currentStep: Int, step: Int) -> some View {
+        self
+            .frame(width: 330, height: 50)
+            .background(Color.white)
+            .foregroundStyle(Color.black.opacity(currentStep < step ? 0.5 : 1))
+            .font(.system(size: 25))
+            .disabled(currentStep < step)
+            
+    }
+}
+
+extension View {
+    func lockedStepStyle(currentStep: Int, step: Int) -> some View {
+        self
+            .frame(width: 330, height: 50)
+            .foregroundStyle(Color.black.opacity(currentStep < step ? 0.5 : 1))
+            .font(.system(size: 25))
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+            
     }
 }
 

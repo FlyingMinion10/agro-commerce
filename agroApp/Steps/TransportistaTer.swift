@@ -85,35 +85,35 @@ struct TransportistaTer : View {
                                 Text("Confirmar llegada de camión")
                             }
                         }
-                        .activeStepStyle(color: .orange, currentStep: tranStep, step: 8)
+                        .activeStepStyle(currentStep: tranStep, step: 8)
                         
                         NavigationLink(destination: LiberarPagoTT()) {
                             HStack {
                                 Text("Liberar pago")
                             }
                         }
-                        .activeStepStyle(color: .yellow, currentStep: tranStep, step: 9)
+                        .activeStepStyle( currentStep: tranStep, step: 9)
                         
                         NavigationLink(destination: RatingPageTT()) {
                             HStack {
                                 Text("Rating")
                             }
                         }
-                        .activeStepStyle(color: .orange, currentStep: tranStep, step: 10)
+                        .activeStepStyle(currentStep: tranStep, step: 10)
                         
                         NavigationLink(destination: FacturaTT()) {
                             HStack {
                                 Text("Factura")
                             }
                         }
-                        .activeStepStyle(color: .yellow, currentStep: tranStep, step: 11)
+                        .activeStepStyle( currentStep: tranStep, step: 11)
                         
                         NavigationLink(destination: FinalizarTransaccionTT()) {
                             HStack {
                                 Text("Finalizar")
                             }
                         }
-                        .activeStepStyle(color: .orange, currentStep: tranStep, step: 12)
+                        .activeStepStyle(currentStep: tranStep, step: 12)
                     }
                     .frame(width: 360)
                     .padding()
