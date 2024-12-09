@@ -1,3 +1,11 @@
+//
+//  PasosIniciales.swift
+//  affinApp
+//
+//  Created by Juan Felipe Zepeda on 08/12/24.
+//
+
+
 import SwiftUI
 
 struct PasosIniciales: View {
