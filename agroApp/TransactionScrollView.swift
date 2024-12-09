@@ -639,11 +639,48 @@ struct TransactionScrollView: View {
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .center)
 
+                    // MARK: - Finalizar
+                    SubTitle(text: "Finalizar")
+                    VStack(alignment: .center, spacing: 20) {
+                        Text("Finalizar la transacción, liberar pagos \nmandar resumen a [Email/número].")
+                            .multilineTextAlignment(.center)
+                            .font(.subheadline)
+                            .padding(.horizontal)
+
+                        // NIP AFFIN
+                        Text("NIP AFFIN")
+                            .font(.headline)
+                            .fontWeight(.semibold)
+
+                        // Espacios para el NIP
+                        HStack(spacing: 15) {
+                            ForEach(0..<4, id: \.self) { _ in
+                                Rectangle()
+                                    .frame(width: 30, height: 2)
+                                    .foregroundColor(.black)
+                            }
+                        }
+                        
+                        Button(action: {
+                            // Acción para finalizar la transacción
+                        }) {
+                            Text("Finalizar")
+                                .font(.headline)
+                                .fontWeight(.bold)
+                                .foregroundColor(.black)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.yellow)
+                                .cornerRadius(10)
+                        }
+                        
+                    }
+                    .cornerRadius(10)
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .center)
                 }
                 .padding(.horizontal)
-                    
             }
-            
         }
     }
     func fetchTranStep(interactionID: Int) {
