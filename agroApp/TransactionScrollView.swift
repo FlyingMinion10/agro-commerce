@@ -490,6 +490,107 @@ struct TransactionScrollView: View {
                     }
                     .padding()
                     
+                    // MARK: - Facturas
+                    SubTitle(text: "Facturas")
+                    VStack(alignment: .leading, spacing: 20) {
+                        // Sección de Cultivo
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Cultivo")
+                                .font(.headline)
+                                .fontWeight(.bold)
+
+                            VStack(alignment: .leading, spacing: 5) {
+                                HStack {
+                                    Text("1 Febrero")
+                                    Text("[Monto]")
+                                    Spacer()
+                                    Text("[Descargar/Email]")
+                                }
+                                .font(.subheadline)
+
+                                HStack {
+                                    Text("5 Febrero")
+                                    Text("[Monto]")
+                                    Spacer()
+                                    Text("[Descargar/Email]")
+                                }
+                                .font(.subheadline)
+                            }
+                        }
+
+                        Divider()
+
+                        // Sección de Insumos
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Insumos")
+                                .font(.headline)
+                                .fontWeight(.bold)
+
+                            VStack(alignment: .leading, spacing: 10) {
+                                VStack(alignment: .leading, spacing: 5) {
+                                    HStack {
+                                        Text("6 Febrero")
+                                        Text("[Monto]")
+                                        Text("[I.D. 1]")
+                                        Spacer()
+                                        Text("[Cotización/Factura]")
+                                    }
+                                    .font(.subheadline)
+                                    Text("PAGADO")
+                                        .font(.title3)
+                                        .foregroundStyle(Color.blue)
+                                }
+
+                                VStack(alignment: .leading, spacing: 5) {
+                                    HStack {
+                                        Text("15 Febrero")
+                                        Text("[Monto]")
+                                        Text("[Estatus]")
+                                        Spacer()
+                                        Text("[Cotización/Factura]")
+                                    }
+                                    .font(.subheadline)
+
+                                    Button("Ir a Pagar") {
+                                        // Acción para ir al pago
+                                    }
+                                    .padding()
+                                    .frame(maxWidth: .infinity)
+                                    .background(Color.green.opacity(0.2))
+                                    .cornerRadius(8)
+                                }
+                            }
+                        }
+
+                        Divider()
+
+                        // Sección de Fletes
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Fletes")
+                                .font(.headline)
+                                .fontWeight(.bold)
+
+                            VStack(alignment: .leading, spacing: 5) {
+                                HStack {
+                                    Text("1 Febrero")
+                                    Text("[Monto]")
+                                    Spacer()
+                                    Text("[Descargar/Email]")
+                                }
+                                .font(.subheadline)
+
+                                HStack {
+                                    Text("15 Febrero")
+                                    Text("[Monto]")
+                                    Spacer()
+                                    Text("[Descargar/Email]")
+                                }
+                                .font(.subheadline)
+                            }
+                        }
+                    }
+                    .padding()
+
                     
 
 
