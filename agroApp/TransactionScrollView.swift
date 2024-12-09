@@ -591,8 +591,53 @@ struct TransactionScrollView: View {
                     }
                     .padding()
 
-                    
+                    // MARK: - Rating
+                    SubTitle(text: "Rating")
+                    VStack(alignment: .center, spacing: 20) {
+                        // Subtítulo
+                        Text("Califica tu experiencia:")
+                            .font(.headline)
 
+                        // Sección de calificación del sistema
+                        VStack(alignment: .center, spacing: 10) {
+                            Text("Califica el funcionamiento del sistema")
+                                .font(.subheadline)
+
+                            HStack {
+                                ForEach(1...5, id: \.self) { _ in
+                                    Image(systemName: "star.fill")
+                                        .font(.title)
+                                        .foregroundStyle(Color.yellow)
+                                }
+                            }
+                        }
+
+                        // Sección de calificación del chat
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Califica tu experiencia en el chat")
+                                .font(.subheadline)
+
+                            HStack {
+                                ForEach(1...5, id: \.self) { _ in
+                                    Image(systemName: "star.fill")
+                                        .font(.title)
+                                        .foregroundStyle(Color.yellow)
+                                }
+                            }
+                        }
+
+                        // Comentarios
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Comentario")
+                                .font(.subheadline)
+
+                            TextField("Escribe tu comentario aquí", text: .constant(""))
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .frame(height: 40)
+                        }
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .center)
 
                 }
                 .padding(.horizontal)
