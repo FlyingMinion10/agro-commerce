@@ -399,7 +399,7 @@ struct TransactionScrollView: View {
                         fleteView(fecha: "25 de enero", diasRestantes: 47)
                         fleteView(fecha: "28 de enero", diasRestantes: 40)
                     }
-                    
+
                     // MARK: - Dudas y reclamos
                     SubTitle(text: "Dudas y Reclamos")
                     VStack(alignment: .leading, spacing: 20) {
@@ -490,198 +490,12 @@ struct TransactionScrollView: View {
                     }
                     .padding()
                     
-                    // MARK: - Facturas
-                    SubTitle(text: "Facturas")
-                    VStack(alignment: .leading, spacing: 20) {
-                        // Sección de Cultivo
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text("Cultivo")
-                                .font(.headline)
-                                .fontWeight(.bold)
-
-                            VStack(alignment: .leading, spacing: 5) {
-                                HStack {
-                                    Text("1 Febrero")
-                                    Text("[Monto]")
-                                    Spacer()
-                                    Text("[Descargar/Email]")
-                                }
-                                .font(.subheadline)
-
-                                HStack {
-                                    Text("5 Febrero")
-                                    Text("[Monto]")
-                                    Spacer()
-                                    Text("[Descargar/Email]")
-                                }
-                                .font(.subheadline)
-                            }
-                        }
-
-                        Divider()
-
-                        // Sección de Insumos
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text("Insumos")
-                                .font(.headline)
-                                .fontWeight(.bold)
-
-                            VStack(alignment: .leading, spacing: 10) {
-                                VStack(alignment: .leading, spacing: 5) {
-                                    HStack {
-                                        Text("6 Febrero")
-                                        Text("[Monto]")
-                                        Text("[I.D. 1]")
-                                        Spacer()
-                                        Text("[Cotización/Factura]")
-                                    }
-                                    .font(.subheadline)
-                                    Text("PAGADO")
-                                        .font(.title3)
-                                        .foregroundStyle(Color.blue)
-                                }
-
-                                VStack(alignment: .leading, spacing: 5) {
-                                    HStack {
-                                        Text("15 Febrero")
-                                        Text("[Monto]")
-                                        Text("[Estatus]")
-                                        Spacer()
-                                        Text("[Cotización/Factura]")
-                                    }
-                                    .font(.subheadline)
-
-                                    Button("Ir a Pagar") {
-                                        // Acción para ir al pago
-                                    }
-                                    .padding()
-                                    .frame(maxWidth: .infinity)
-                                    .background(Color.green.opacity(0.2))
-                                    .cornerRadius(8)
-                                }
-                            }
-                        }
-
-                        Divider()
-
-                        // Sección de Fletes
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text("Fletes")
-                                .font(.headline)
-                                .fontWeight(.bold)
-
-                            VStack(alignment: .leading, spacing: 5) {
-                                HStack {
-                                    Text("1 Febrero")
-                                    Text("[Monto]")
-                                    Spacer()
-                                    Text("[Descargar/Email]")
-                                }
-                                .font(.subheadline)
-
-                                HStack {
-                                    Text("15 Febrero")
-                                    Text("[Monto]")
-                                    Spacer()
-                                    Text("[Descargar/Email]")
-                                }
-                                .font(.subheadline)
-                            }
-                        }
-                    }
-                    .padding()
-
-                    // MARK: - Rating
-                    SubTitle(text: "Rating")
-                    VStack(alignment: .center, spacing: 20) {
-                        // Subtítulo
-                        Text("Califica tu experiencia:")
-                            .font(.headline)
-
-                        // Sección de calificación del sistema
-                        VStack(alignment: .center, spacing: 10) {
-                            Text("Califica el funcionamiento del sistema")
-                                .font(.subheadline)
-
-                            HStack {
-                                ForEach(1...5, id: \.self) { _ in
-                                    Image(systemName: "star.fill")
-                                        .font(.title)
-                                        .foregroundStyle(Color.yellow)
-                                }
-                            }
-                        }
-
-                        // Sección de calificación del chat
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text("Califica tu experiencia en el chat")
-                                .font(.subheadline)
-
-                            HStack {
-                                ForEach(1...5, id: \.self) { _ in
-                                    Image(systemName: "star.fill")
-                                        .font(.title)
-                                        .foregroundStyle(Color.yellow)
-                                }
-                            }
-                        }
-
-                        // Comentarios
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text("Comentario")
-                                .font(.subheadline)
-
-                            TextField("Escribe tu comentario aquí", text: .constant(""))
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .frame(height: 40)
-                        }
-                    }
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .center)
-
-                    // MARK: - Finalizar
-                    SubTitle(text: "Finalizar")
-                    VStack(alignment: .center, spacing: 20) {
-                        Text("Finalizar la transacción, liberar pagos \nmandar resumen a [Email/número].")
-                            .multilineTextAlignment(.center)
-                            .font(.subheadline)
-                            .padding(.horizontal)
-
-                        // NIP AFFIN
-                        Text("NIP AFFIN")
-                            .font(.headline)
-                            .fontWeight(.semibold)
-
-                        // Espacios para el NIP
-                        HStack(spacing: 15) {
-                            ForEach(0..<4, id: \.self) { _ in
-                                Rectangle()
-                                    .frame(width: 30, height: 2)
-                                    .foregroundColor(.black)
-                            }
-                        }
-                        
-                        Button(action: {
-                            // Acción para finalizar la transacción
-                        }) {
-                            Text("Finalizar")
-                                .font(.headline)
-                                .fontWeight(.bold)
-                                .foregroundColor(.black)
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(Color.yellow)
-                                .cornerRadius(10)
-                        }
-                        
-                    }
-                    .cornerRadius(10)
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .center)
+                    
 
 
                 }
                 .padding(.horizontal)
+                    
             }
             
         }
