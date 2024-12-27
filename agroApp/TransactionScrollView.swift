@@ -222,24 +222,26 @@ struct TransactionScrollView: View {
                     
                     // MARK: - META 1
                     SubTitle(text: "META 1")
-                    VStack {
-                        LazyVGrid(columns: [GridItem(.fixed(160)), GridItem(.fixed(160))]) {
-                            PasosIniciales(label: "Negociación Inicial")
-                            PasosIniciales(label: "Financiamiento de Insumos")
-                            PasosIniciales(label: "Cuidados y Siembra")
-                            PasosIniciales(label: "Cosecha y entrega")
-                            PasosIniciales(label: "Evaluacion de calidad")
-                            PasosIniciales(label: "Liquidacion y pagos")
-                            PasosIniciales(label: "Garantias y Resp")
-                            PasosIniciales(label: "Confidencialidad y restricciones")
+                    NavigationLink(destination: MetaUno()) {
+                        VStack {
+                            LazyVGrid(columns: [GridItem(.fixed(160)), GridItem(.fixed(160))]) {
+                                PasosIniciales(label: "Negociación Inicial")
+                                PasosIniciales(label: "Financiamiento de Insumos") 
+                                PasosIniciales(label: "Cuidados y Siembra")
+                                PasosIniciales(label: "Cosecha y entrega")
+                                PasosIniciales(label: "Evaluacion de calidad")
+                                PasosIniciales(label: "Liquidacion y pagos")
+                                PasosIniciales(label: "Garantias y Resp")
+                                PasosIniciales(label: "Confidencialidad y restricciones")
+                            }
                         }
+                        .frame(width: 340)
+                        .padding(10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(Color.black.opacity(1), lineWidth: 1)
+                        )
                     }
-                    .frame(width: 340)
-                    .padding(10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color.black.opacity(1), lineWidth: 1)
-                    )
                     
                     // MARK: - META 2
                     SubTitle(text: "META 2")
