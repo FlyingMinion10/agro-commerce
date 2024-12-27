@@ -206,7 +206,17 @@ struct MenuItem: View {
     }
 }
 
-
+extension View {
+    func cardStyle() -> some View {
+        self
+            .frame(width: 330)
+            .padding()
+            .background(Color.white)
+            .cornerRadius(15)
+            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 5)
+            .padding(.horizontal, 20)
+    }
+}
 
 struct MetaUno_Previews: PreviewProvider {
     static var previews: some View {
